@@ -1,0 +1,25 @@
+{
+  "name": "coop-wordle",
+  "version": "1.0.0",
+  "description": "Wordle en ligne solo et coop avec rooms partageables",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "wordle",
+    "multiplayer",
+    "coop",
+    "websocket"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

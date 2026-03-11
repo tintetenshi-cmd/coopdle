@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Coop Wordle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="screen screen-title" id="screen-title">
+        <div class="title-card glass">
+          <h1>Coop Wordle</h1>
+          <p class="subtitle">
+            Devinez le même mot à plusieurs, en 6 essais.
+          </p>
+          <button id="btn-play" class="btn primary">Jouer</button>
+        </div>
+        <div class="accent-orbit"></div>
+      </div>
+
+      <div class="screen screen-mode hidden" id="screen-mode">
+        <div class="mode-card glass">
+          <h2>Choix du mode</h2>
+          <p>Un mot aléatoire entre 2 et 10 lettres.</p>
+          <div class="mode-buttons">
+            <button id="btn-solo" class="btn primary">Solo</button>
+            <button id="btn-coop" class="btn outline">Coop</button>
+          </div>
+          <button id="btn-back-to-title" class="btn ghost small">
+            &larr; Retour
+          </button>
+        </div>
+      </div>
+
+      <div class="screen screen-game hidden" id="screen-game">
+        <header class="top-bar">
+          <div class="top-left">
+            <button id="btn-back-to-mode" class="btn ghost small">
+              &larr; Modes
+            </button>
+          </div>
+          <div class="top-center">
+            <span class="badge" id="badge-mode"></span>
+            <span class="badge subtle" id="badge-room"></span>
+          </div>
+          <div class="top-right">
+            <button id="btn-new-game" class="btn ghost small">
+              Nouvelle partie
+            </button>
+          </div>
+        </header>
+
+        <main class="game-layout">
+          <section class="board-panel glass">
+            <h2 class="panel-title">Mot mystère</h2>
+            <p class="hint">
+              Longueur :
+              <span id="word-length">-</span> lettres • Essais :
+              <span id="attempts">0</span>/<span id="max-attempts">6</span>
+            </p>
+            <div id="board" class="board"></div>
+          </section>
+
+          <section class="side-panel glass">
+            <h2 class="panel-title">Votre essai</h2>
+            <div id="status-current-player" class="status-line"></div>
+            <div class="input-row">
+              <input
+                id="input-guess"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                maxlength="10"
+                placeholder="Tapez un mot..."
+              />
+              <button id="btn-submit" class="btn primary small">
+                Valider
+              </button>
+            </div>
+            <div id="error" class="message error hidden"></div>
+            <div id="info" class="message info hidden"></div>
+
+            <div id="share-container" class="share-container hidden">
+              <h3>Partager la room</h3>
+              <p class="share-url" id="share-url"></p>
+              <button id="btn-copy-link" class="btn outline small">
+                Copier le lien
+              </button>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
+
