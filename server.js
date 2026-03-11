@@ -355,6 +355,7 @@ wss.on("connection", (ws) => {
           playerId: clientId,
           length: room.length,
           maxAttempts: room.maxAttempts,
+          revealedLetters: room.revealedLetters || Array(room.length).fill(null),
           players: room.players.map((p) => ({
             id: p.id,
             pseudo: p.pseudo,

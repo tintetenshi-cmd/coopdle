@@ -79,6 +79,7 @@
 
   let previewGuess = "";
   let previewAuthorId = null;
+  let revealedLetters = [];
 
   const AVATAR_EMOJIS = [
     "🦶",
@@ -341,11 +342,10 @@
           }
         } else {
           if (
-            typeof window.revealedLetters !== "undefined" &&
-            window.revealedLetters &&
-            window.revealedLetters[col]
+            revealedLetters &&
+            revealedLetters[col]
           ) {
-            cell.textContent = window.revealedLetters[col].toUpperCase();
+            cell.textContent = revealedLetters[col].toUpperCase();
             cell.classList.add("revealed-letter");
           }
           if (
@@ -376,8 +376,9 @@
       ws.close();
     }
 
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const wsUrl = `${protocol}://${window.location.host}`;
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const host = window.location.host || "localhost:3000";
+    const wsUrl = `${protocol}//${host}`;
     ws = new WebSocket(wsUrl);
 
     ws.addEventListener("open", () => {
@@ -413,7 +414,7 @@
         currentPlayerId = null;
         previewGuess = "";
         previewAuthorId = null;
-        window.revealedLetters = msg.revealedLetters || [];
+        revealedLetters = msg.revealedLetters || Array(length).fill(null);
         renderBoard();
         renderParticipants();
         updateStatusLine();
@@ -428,7 +429,7 @@
         status = msg.status || "playing";
         currentPlayerId = msg.currentPlayerId || null;
         players = msg.players || players;
-        window.revealedLetters = msg.revealedLetters || window.revealedLetters;
+        revealedLetters = msg.revealedLetters || revealedLetters;
         wordLengthSpan.textContent = length.toString();
         attemptsSpan.textContent = attempts.toString();
         maxAttemptsSpan.textContent = maxAttempts.toString();
@@ -452,10 +453,10 @@
           renderBoard();
         }
       } else if (msg.type === "revealLetter") {
-        if (!window.revealedLetters) {
-          window.revealedLetters = [];
+        if (!revealedLetters) {
+          revealedLetters = Array(length).fill(null);
         }
-        window.revealedLetters[msg.index] = msg.letter;
+        revealedLetters[msg.index] = msg.letter;
         showInfo("Une lettre a été révélée via le shop !");
         renderBoard();
       } else if (msg.type === "effect") {
@@ -808,5 +809,91 @@
       }, 3000);
     }
   }
+
+  // Monkey logic
+  const monkeyContainer = document.getElementById("monkey-container");
+  const monkeyBubble = document.getElementById("monkey-bubble");
+
+  const MONKEY_PHRASES = [
+    "Les bananes sont carrées",
+    "J'ai vu un nuage manger une chaussette",
+    "Le temps est un sandwich",
+    "Les lettres dansent la nuit",
+    "Mon cousin est une cuillère",
+    "Les mots ont des pattes",
+    "J'entends les couleurs",
+    "Le silence a un goût de fraise",
+    "Les chiffres me regardent",
+    "Je rêve en pixels",
+    "La lune est un fromage menteur",
+    "Les arbres parlent en morse",
+    "J'ai oublié comment voler",
+    "Le vide est plein de tout",
+    "Les étoiles sont des trous",
+    "Je compte les secondes à l'envers",
+    "Le néant sent la vanille",
+    "Les ombres ont des secrets",
+    "Je suis fait de questions",
+    "Le futur est déjà passé"
+  ];
+
+  let monkeyInterval = null;
+
+  function showMonkeyPhrase() {
+    if (!monkeyBubble || status !== "playing") return;
+    const phrase = MONKEY_PHRASES[Math.floor(Math.random() * MONKEY_PHRASES.length)];
+    monkeyBubble.textContent = phrase;
+    monkeyBubble.classList.add("show");
+    
+    setTimeout(() => {
+      monkeyBubble.classList.remove("show");
+    }, 4000);
+  }
+
+  function startMonkey() {
+    if (monkeyContainer) {
+      monkeyContainer.classList.remove("hidden");
+      if (monkeyInterval) clearInterval(monkeyInterval);
+      
+      // Première phrase après 5-10 secondes
+      setTimeout(() => {
+        showMonkeyPhrase();
+      }, Math.random() * 5000 + 5000);
+      
+      // Puis toutes les 15-30 secondes
+      monkeyInterval = setInterval(() => {
+        if (status === "playing" && Math.random() > 0.3) {
+          showMonkeyPhrase();
+        }
+      }, Math.random() * 15000 + 15000);
+    }
+  }
+
+  function stopMonkey() {
+    if (monkeyContainer) {
+      monkeyContainer.classList.add("hidden");
+      if (monkeyInterval) {
+        clearInterval(monkeyInterval);
+        monkeyInterval = null;
+      }
+      if (monkeyBubble) {
+        monkeyBubble.classList.remove("show");
+      }
+    }
+  }
+
+  // Start monkey when game starts
+  const originalStartMode = startMode;
+  startMode = function(mode, existingRoomId, pseudo, explicitLength) {
+    originalStartMode(mode, existingRoomId, pseudo, explicitLength);
+    setTimeout(() => {
+      startMonkey();
+    }, 2000);
+  };
+
+  // Stop monkey when leaving game
+  btnBackToMode.addEventListener("click", () => {
+    stopMonkey();
+  });
 })();
 
