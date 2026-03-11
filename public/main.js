@@ -428,6 +428,10 @@
         if (currentMode === "coop") {
           prepareShareLink();
         }
+        // Start monkey after joining
+        setTimeout(() => {
+          startMonkey();
+        }, 2000);
       } else if (msg.type === "state") {
         length = msg.length;
         guesses = msg.guesses || [];
@@ -508,13 +512,6 @@
         ? explicitLength
         : null;
     connectWebSocket(currentRoomId, pseudo || "Joueur", lengthValue);
-    
-    // Start monkey after a short delay
-    setTimeout(() => {
-      if (typeof startMonkey === "function") {
-        startMonkey();
-      }
-    }, 2000);
   }
 
   function prepareShareLink() {
@@ -565,9 +562,7 @@
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.close();
     }
-    if (typeof stopMonkey === "function") {
-      stopMonkey();
-    }
+    stopMonkey();
     showScreen(screenMode);
   });
 
