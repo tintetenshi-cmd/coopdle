@@ -2,15 +2,24 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>Coop Wordle</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coopdle</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="app">
       <div class="screen screen-title" id="screen-title">
         <div class="title-card glass">
-          <h1>Coop Wordle</h1>
+          <h1>Coopdle</h1>
           <p class="subtitle">
             Devinez le même mot à plusieurs, en 6 essais.
           </p>
@@ -35,6 +44,21 @@
               autocomplete="off"
               placeholder="Entrez votre pseudo"
             />
+          </div>
+
+          <div class="field-row">
+            <div class="field-group field-half">
+              <label for="select-avatar">Icône</label>
+              <select id="select-avatar" aria-label="Choisir une icône">
+                <option value="random">🎲 Aléatoire</option>
+              </select>
+            </div>
+            <div class="field-group field-half">
+              <label for="select-name-color">Couleur du pseudo</label>
+              <select id="select-name-color" aria-label="Choisir une couleur">
+                <option value="random">🎲 Aléatoire</option>
+              </select>
+            </div>
           </div>
 
           <div class="field-group" id="field-length">
@@ -89,7 +113,34 @@
         </header>
 
         <main class="game-layout">
-          <section class="board-panel glass">
+          <section class="chat-panel glass" aria-label="Chat de la room">
+            <h2 class="panel-title">Chat</h2>
+            <div
+              id="chat-messages"
+              class="chat-messages"
+              role="log"
+              aria-live="polite"
+            ></div>
+            <div class="chat-input-row">
+              <input
+                id="input-chat"
+                type="text"
+                autocomplete="off"
+                maxlength="200"
+                placeholder="Écrivez un message..."
+                aria-label="Message de chat"
+              />
+              <button id="btn-send-chat" class="btn outline small">
+                Envoyer
+              </button>
+            </div>
+          </section>
+
+          <section
+            class="board-panel glass"
+            id="board-panel"
+            aria-label="Grille du mot à deviner"
+          >
             <h2 class="panel-title">Mot mystère</h2>
             <p class="hint">
               Longueur :
@@ -99,9 +150,13 @@
             <div id="board" class="board"></div>
           </section>
 
-          <section class="side-panel glass">
+          <section class="side-panel glass" aria-label="Zone de saisie et outils">
             <h2 class="panel-title">Votre essai</h2>
-            <div id="status-current-player" class="status-line"></div>
+            <div
+              id="status-current-player"
+              class="status-line"
+              aria-live="polite"
+            ></div>
             <div class="input-row">
               <input
                 id="input-guess"
@@ -110,13 +165,23 @@
                 spellcheck="false"
                 maxlength="10"
                 placeholder="Tapez un mot..."
+                aria-label="Mot proposé"
               />
               <button id="btn-submit" class="btn primary small">
                 Valider
               </button>
             </div>
-            <div id="error" class="message error hidden"></div>
-            <div id="info" class="message info hidden"></div>
+            <div
+              id="error"
+              class="message error hidden"
+              aria-live="polite"
+              role="alert"
+            ></div>
+            <div
+              id="info"
+              class="message info hidden"
+              aria-live="polite"
+            ></div>
 
             <div id="share-container" class="share-container hidden">
               <h3>Partager la room</h3>
@@ -137,7 +202,13 @@
                 Cliquez sur le pied pour accumuler des pas pendant la partie.
               </p>
               <div class="idle-main">
-                <button id="btn-foot-click" class="idle-foot-btn">🦶</button>
+                <button
+                  id="btn-foot-click"
+                  class="idle-foot-btn"
+                  aria-label="Cliquer pour gagner des pas"
+                >
+                  🦶
+                </button>
                 <div class="idle-stats">
                   <div class="idle-stat-line">
                     <span>Pas :</span>
@@ -160,6 +231,53 @@
                 <button id="btn-upgrade-auto" class="btn outline small">
                   + Auto (coût <span id="cost-auto">25</span>)
                 </button>
+              </div>
+
+              <div class="idle-shop">
+                <h4>Shop</h4>
+                <p class="idle-caption">
+                  Dépensez vos pas pour influencer la partie.
+                </p>
+                <button id="btn-shop-letter" class="btn outline small">
+                  Lettre aléatoire (coût <span id="cost-letter">500</span>)
+                </button>
+                <div class="idle-effects-grid">
+                  <button
+                    id="btn-effect-flames"
+                    class="btn outline small"
+                    aria-label="Effet flammes"
+                  >
+                    Bordure flammes
+                  </button>
+                  <button
+                    id="btn-effect-shake"
+                    class="btn outline small"
+                    aria-label="Effet tremblement"
+                  >
+                    Tremblement
+                  </button>
+                  <button
+                    id="btn-effect-neon"
+                    class="btn outline small"
+                    aria-label="Effet néon"
+                  >
+                    Halo néon
+                  </button>
+                  <button
+                    id="btn-effect-rain"
+                    class="btn outline small"
+                    aria-label="Effet pluie de lettres"
+                  >
+                    Pluie de lettres
+                  </button>
+                  <button
+                    id="btn-effect-blur"
+                    class="btn outline small"
+                    aria-label="Effet flou"
+                  >
+                    Flou cosmique
+                  </button>
+                </div>
               </div>
             </div>
           </section>

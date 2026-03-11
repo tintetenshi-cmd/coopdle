@@ -23,6 +23,8 @@
   const fieldLength = document.getElementById("field-length");
   const inputPseudo = document.getElementById("input-pseudo");
   const selectLength = document.getElementById("select-length");
+  const selectAvatar = document.getElementById("select-avatar");
+  const selectNameColor = document.getElementById("select-name-color");
 
   const wordLengthSpan = document.getElementById("word-length");
   const attemptsSpan = document.getElementById("attempts");
@@ -36,6 +38,8 @@
   const shareContainer = document.getElementById("share-container");
   const shareUrlEl = document.getElementById("share-url");
   const participantsList = document.getElementById("participants-list");
+  const boardPanel = document.getElementById("board-panel");
+  const screenGameEl = document.getElementById("screen-game");
 
   const btnFootClick = document.getElementById("btn-foot-click");
   const btnUpgradeClick = document.getElementById("btn-upgrade-click");
@@ -45,6 +49,11 @@
   const idleAutoRateEl = document.getElementById("idle-auto-rate");
   const idleCostClickEl = document.getElementById("cost-click");
   const idleCostAutoEl = document.getElementById("cost-auto");
+  const idleCostLetterEl = document.getElementById("cost-letter");
+
+  const inputChat = document.getElementById("input-chat");
+  const btnSendChat = document.getElementById("btn-send-chat");
+  const chatMessagesEl = document.getElementById("chat-messages");
 
   let ws = null;
   let currentRoomId = null;
@@ -66,6 +75,146 @@
   let idleAutoRate = 0;
   let idleCostClick = 10;
   let idleCostAuto = 25;
+  let idleCostLetter = 500;
+
+  let previewGuess = "";
+  let previewAuthorId = null;
+
+  const AVATAR_EMOJIS = [
+    "🦶",
+    "🦄",
+    "🐉",
+    "🦖",
+    "🦕",
+    "🐙",
+    "🦑",
+    "🦈",
+    "🐬",
+    "🦭",
+    "🐳",
+    "🐋",
+    "🐊",
+    "🐍",
+    "🦂",
+    "🕷️",
+    "🦇",
+    "🦊",
+    "🐺",
+    "🐯",
+    "🦁",
+    "🐮",
+    "🐷",
+    "🐸",
+    "🐵",
+    "🦍",
+    "🦧",
+    "🐧",
+    "🐦",
+    "🦚",
+    "🦜",
+    "🦢",
+    "🦩",
+    "🐢",
+    "🦋",
+    "🐝",
+    "🪲",
+    "🪳",
+    "🦀",
+    "🦞",
+    "🦐",
+    "🐼",
+    "🐱",
+    "🐶",
+    "🐰",
+    "🦝",
+    "🦓",
+    "🦒",
+    "🦘",
+    "🦥",
+    "🦦",
+    "🦨",
+    "🐲",
+    "👾",
+    "🤖",
+    "👻",
+    "💀",
+    "🎃",
+    "😺",
+    "😈",
+    "🥷",
+    "🧙‍♂️",
+    "🧙‍♀️",
+    "🧛‍♂️",
+    "🧛‍♀️",
+    "🧟‍♂️",
+    "🧟‍♀️",
+    "🧞‍♂️",
+    "🧞‍♀️",
+    "🧚‍♂️",
+    "🧚‍♀️",
+    "🧜‍♂️",
+    "🧜‍♀️",
+    "🧠",
+    "💎",
+    "🔥",
+    "⚡",
+    "🌙",
+    "⭐",
+    "🌈",
+    "🍕",
+    "🍣",
+    "🍩",
+    "🍪",
+    "🧁",
+    "🥨",
+    "🧋",
+    "☕",
+    "🎧",
+    "🎮",
+    "🕹️",
+    "🎲",
+    "🧩",
+    "🛸",
+    "🚀",
+    "🏎️",
+    "🧨",
+    "🎆"
+  ];
+
+  const NAME_COLORS = [
+    { id: "violet", label: "Violet", value: "#a855f7" },
+    { id: "indigo", label: "Indigo", value: "#818cf8" },
+    { id: "cyan", label: "Cyan", value: "#22d3ee" },
+    { id: "emerald", label: "Émeraude", value: "#34d399" },
+    { id: "lime", label: "Lime", value: "#a3e635" },
+    { id: "amber", label: "Ambre", value: "#fbbf24" },
+    { id: "orange", label: "Orange", value: "#fb923c" },
+    { id: "rose", label: "Rose", value: "#fb7185" },
+    { id: "fuchsia", label: "Fuchsia", value: "#e879f9" },
+    { id: "red", label: "Rouge", value: "#f87171" },
+    { id: "blue", label: "Bleu", value: "#60a5fa" },
+    { id: "teal", label: "Turquoise", value: "#2dd4bf" },
+    { id: "slate", label: "Gris clair", value: "#e5e7eb" }
+  ];
+
+  function fillAvatarAndColorSelects() {
+    if (selectAvatar && selectAvatar.options.length <= 1) {
+      AVATAR_EMOJIS.forEach((e) => {
+        const opt = document.createElement("option");
+        opt.value = e;
+        opt.textContent = `${e} ${e}`;
+        selectAvatar.appendChild(opt);
+      });
+    }
+    if (selectNameColor && selectNameColor.options.length <= 1) {
+      NAME_COLORS.forEach((c) => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.label;
+        selectNameColor.appendChild(opt);
+      });
+    }
+  }
 
   function showScreen(screen) {
     [screenTitle, screenMode, screenGame].forEach((s) => {
@@ -100,6 +249,9 @@
       const name = document.createElement("span");
       name.className = "participant-name";
       name.textContent = p.pseudo || "Joueur";
+      if (p.color) {
+        name.style.color = p.color;
+      }
 
       li.appendChild(avatar);
       li.appendChild(name);
@@ -125,12 +277,14 @@
     if (status === "won") {
       statusCurrentPlayer.textContent = "Bravo ! Vous avez trouvé le mot.";
       btnNewGame.classList.add("pulse");
+      updateInputEnabled();
       return;
     }
     if (status === "lost") {
       statusCurrentPlayer.textContent =
         "Partie terminée. Lancez une nouvelle partie pour rejouer.";
       btnNewGame.classList.add("pulse");
+      updateInputEnabled();
       return;
     }
     btnNewGame.classList.remove("pulse");
@@ -148,6 +302,17 @@
           "C'est le tour de votre coéquipier. La grille se synchronise en temps réel.";
       }
     }
+    updateInputEnabled();
+  }
+
+  function updateInputEnabled() {
+    const canType =
+      status === "playing" &&
+      (currentMode === "solo" ||
+        !currentPlayerId ||
+        currentPlayerId === playerId);
+    inputGuess.disabled = !canType;
+    btnSubmit.disabled = !canType;
   }
 
   function renderBoard() {
@@ -174,6 +339,26 @@
           if (feedback) {
             cell.classList.add(feedback);
           }
+        } else {
+          if (
+            typeof window.revealedLetters !== "undefined" &&
+            window.revealedLetters &&
+            window.revealedLetters[col]
+          ) {
+            cell.textContent = window.revealedLetters[col].toUpperCase();
+            cell.classList.add("revealed-letter");
+          }
+          if (
+            row === attempts &&
+            previewGuess &&
+            previewAuthorId &&
+            previewAuthorId === currentPlayerId
+          ) {
+            const letter = previewGuess[col] || "";
+            if (letter) {
+              cell.textContent = letter.toUpperCase();
+            }
+          }
         }
         rowEl.appendChild(cell);
       }
@@ -196,12 +381,16 @@
     ws = new WebSocket(wsUrl);
 
     ws.addEventListener("open", () => {
+      const avatarValue = selectAvatar?.value || "random";
+      const colorId = selectNameColor?.value || "random";
       ws.send(
         JSON.stringify({
           type: "join",
           roomId,
           pseudo,
-          desiredLength
+          desiredLength,
+          avatar: avatarValue,
+          colorId
         })
       );
       clearMessages();
@@ -222,6 +411,9 @@
         attempts = 0;
         status = "playing";
         currentPlayerId = null;
+        previewGuess = "";
+        previewAuthorId = null;
+        window.revealedLetters = msg.revealedLetters || [];
         renderBoard();
         renderParticipants();
         updateStatusLine();
@@ -236,6 +428,7 @@
         status = msg.status || "playing";
         currentPlayerId = msg.currentPlayerId || null;
         players = msg.players || players;
+        window.revealedLetters = msg.revealedLetters || window.revealedLetters;
         wordLengthSpan.textContent = length.toString();
         attemptsSpan.textContent = attempts.toString();
         maxAttemptsSpan.textContent = maxAttempts.toString();
@@ -250,6 +443,23 @@
         } else {
           showInfo(`Le mot était : ${msg.word.toUpperCase()}`);
         }
+      } else if (msg.type === "chat") {
+        appendChatMessage(msg);
+      } else if (msg.type === "typing") {
+        if (msg.from && msg.from === currentPlayerId) {
+          previewAuthorId = msg.from;
+          previewGuess = msg.text || "";
+          renderBoard();
+        }
+      } else if (msg.type === "revealLetter") {
+        if (!window.revealedLetters) {
+          window.revealedLetters = [];
+        }
+        window.revealedLetters[msg.index] = msg.letter;
+        showInfo("Une lettre a été révélée via le shop !");
+        renderBoard();
+      } else if (msg.type === "effect") {
+        applyEffect(msg.effect);
       }
     });
 
@@ -315,6 +525,8 @@
     const guess = inputGuess.value.trim();
     ws.send(JSON.stringify({ type: "guess", guess }));
     inputGuess.value = "";
+    previewGuess = "";
+    previewAuthorId = null;
   }
 
   function sendNewGame() {
@@ -415,6 +627,8 @@
     showScreen(screenTitle);
   }
 
+  fillAvatarAndColorSelects();
+
   // Idle game logic
   function updateIdleUI() {
     idleStepsEl.textContent = idleSteps.toString();
@@ -422,6 +636,7 @@
     idleAutoRateEl.textContent = idleAutoRate.toString();
     idleCostClickEl.textContent = idleCostClick.toString();
     idleCostAutoEl.textContent = idleCostAuto.toString();
+    idleCostLetterEl.textContent = idleCostLetter.toString();
   }
 
   btnFootClick.addEventListener("click", () => {
@@ -453,5 +668,145 @@
   }, 1000);
 
   updateIdleUI();
+
+  // Chat logic
+  function appendChatMessage(msg) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "chat-message";
+    if (msg.from === playerId) {
+      wrapper.classList.add("you");
+    }
+    const avatar = document.createElement("div");
+    avatar.className = "chat-avatar";
+    avatar.textContent = msg.avatar || "🙂";
+
+    const content = document.createElement("div");
+    content.className = "chat-content";
+
+    const meta = document.createElement("div");
+    meta.className = "chat-meta";
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = msg.pseudo || "Joueur";
+    if (msg.color) {
+      nameSpan.style.color = msg.color;
+      nameSpan.style.fontWeight = "700";
+    }
+    const timeSpan = document.createElement("span");
+    const date = msg.ts ? new Date(msg.ts) : new Date();
+    timeSpan.textContent = date.toLocaleTimeString("fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+    meta.appendChild(nameSpan);
+    meta.appendChild(timeSpan);
+
+    const textP = document.createElement("div");
+    textP.className = "chat-text";
+    textP.textContent = msg.text;
+
+    content.appendChild(meta);
+    content.appendChild(textP);
+
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(content);
+    chatMessagesEl.appendChild(wrapper);
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+  }
+
+  function sendChatMessage() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    const text = inputChat.value.trim();
+    if (!text) return;
+    ws.send(JSON.stringify({ type: "chat", text }));
+    inputChat.value = "";
+  }
+
+  btnSendChat.addEventListener("click", () => {
+    sendChatMessage();
+  });
+
+  inputChat.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendChatMessage();
+    }
+  });
+
+  // typing preview sending
+  inputGuess.addEventListener("input", () => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    if (status !== "playing") return;
+    if (currentMode === "coop" && currentPlayerId && currentPlayerId !== playerId)
+      return;
+    previewGuess = inputGuess.value;
+    previewAuthorId = playerId;
+    renderBoard();
+    ws.send(
+      JSON.stringify({
+        type: "typing",
+        text: previewGuess
+      })
+    );
+  });
+
+  // shop logic
+  const btnShopLetter = document.getElementById("btn-shop-letter");
+  const btnEffectFlames = document.getElementById("btn-effect-flames");
+  const btnEffectShake = document.getElementById("btn-effect-shake");
+  const btnEffectNeon = document.getElementById("btn-effect-neon");
+  const btnEffectRain = document.getElementById("btn-effect-rain");
+  const btnEffectBlur = document.getElementById("btn-effect-blur");
+
+  function buyLetterReveal() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    if (idleSteps < idleCostLetter) return;
+    idleSteps -= idleCostLetter;
+    idleCostLetter = Math.round(idleCostLetter * 1.9);
+    updateIdleUI();
+    ws.send(JSON.stringify({ type: "shop", item: "letter" }));
+  }
+
+  btnShopLetter.addEventListener("click", buyLetterReveal);
+
+  function triggerEffect(effect) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify({ type: "effect", effect }));
+  }
+
+  btnEffectFlames.addEventListener("click", () => triggerEffect("flames"));
+  btnEffectShake.addEventListener("click", () => triggerEffect("shake"));
+  btnEffectNeon.addEventListener("click", () => triggerEffect("neon"));
+  btnEffectRain.addEventListener("click", () => triggerEffect("rain"));
+  btnEffectBlur.addEventListener("click", () => triggerEffect("blur"));
+
+  function applyEffect(effect) {
+    if (!effect) return;
+    if (effect === "flames") {
+      boardPanel.classList.add("effect-flames");
+      setTimeout(() => {
+        boardPanel.classList.remove("effect-flames");
+      }, 4500);
+    } else if (effect === "shake") {
+      screenGameEl.classList.add("effect-shake");
+      setTimeout(() => {
+        screenGameEl.classList.remove("effect-shake");
+      }, 1200);
+    } else if (effect === "neon") {
+      boardPanel.classList.add("effect-neon");
+      setTimeout(() => {
+        boardPanel.classList.remove("effect-neon");
+      }, 4500);
+    } else if (effect === "rain") {
+      boardPanel.classList.add("effect-rain");
+      setTimeout(() => {
+        boardPanel.classList.remove("effect-rain");
+      }, 4500);
+    } else if (effect === "blur") {
+      boardPanel.classList.add("effect-blur");
+      setTimeout(() => {
+        boardPanel.classList.remove("effect-blur");
+      }, 3000);
+    }
+  }
 })();
 

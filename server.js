@@ -65,7 +65,7 @@ function pickRandomWord(lengthOverride) {
   return word;
 }
 
-/** rooms: roomId -> { word, length, attempts, guesses, maxAttempts, players, currentPlayerIndex, status } */
+/** rooms: roomId -> { word, length, attempts, guesses, maxAttempts, players, currentPlayerIndex, status, revealedLetters } */
 const rooms = new Map();
 
 function createOrResetRoom(roomId, lengthOverride) {
@@ -79,7 +79,8 @@ function createOrResetRoom(roomId, lengthOverride) {
     guesses: [],
     players: [],
     currentPlayerIndex: 0,
-    status: "playing" // "playing" | "won" | "lost"
+    status: "playing", // "playing" | "won" | "lost"
+    revealedLetters: Array(word.length).fill(null)
   };
   rooms.set(roomId, room);
   return room;
@@ -110,8 +111,10 @@ function broadcastRoomState(room) {
     players: room.players.map((p) => ({
       id: p.id,
       pseudo: p.pseudo,
-      avatar: p.avatar
-    }))
+      avatar: p.avatar,
+      color: p.color
+    })),
+    revealedLetters: room.revealedLetters
   };
 
   const data = JSON.stringify(payload);
@@ -158,9 +161,148 @@ function makeClientId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+const AVATAR_EMOJIS = [
+  "🦶",
+  "🦄",
+  "🐉",
+  "🦖",
+  "🦕",
+  "🐙",
+  "🦑",
+  "🦈",
+  "🐬",
+  "🦭",
+  "🐳",
+  "🐋",
+  "🐊",
+  "🐍",
+  "🦂",
+  "🕷️",
+  "🦇",
+  "🦊",
+  "🐺",
+  "🐯",
+  "🦁",
+  "🐮",
+  "🐷",
+  "🐸",
+  "🐵",
+  "🦍",
+  "🦧",
+  "🐧",
+  "🐦",
+  "🦚",
+  "🦜",
+  "🦢",
+  "🦩",
+  "🐢",
+  "🦋",
+  "🐝",
+  "🪲",
+  "🪳",
+  "🦀",
+  "🦞",
+  "🦐",
+  "🐼",
+  "🐱",
+  "🐶",
+  "🐰",
+  "🦝",
+  "🦓",
+  "🦒",
+  "🦘",
+  "🦥",
+  "🦦",
+  "🦨",
+  "🐲",
+  "👾",
+  "🤖",
+  "👻",
+  "💀",
+  "🎃",
+  "😺",
+  "😈",
+  "🥷",
+  "🧙‍♂️",
+  "🧙‍♀️",
+  "🧛‍♂️",
+  "🧛‍♀️",
+  "🧟‍♂️",
+  "🧟‍♀️",
+  "🧞‍♂️",
+  "🧞‍♀️",
+  "🧚‍♂️",
+  "🧚‍♀️",
+  "🧜‍♂️",
+  "🧜‍♀️",
+  "🧠",
+  "💎",
+  "🔥",
+  "⚡",
+  "🌙",
+  "⭐",
+  "🌈",
+  "🍕",
+  "🍣",
+  "🍩",
+  "🍪",
+  "🧁",
+  "🥨",
+  "🧋",
+  "☕",
+  "🎧",
+  "🎮",
+  "🕹️",
+  "🎲",
+  "🧩",
+  "🛸",
+  "🚀",
+  "🏎️",
+  "🧨",
+  "🎆"
+];
+
+const NAME_COLORS = {
+  violet: "#a855f7",
+  indigo: "#818cf8",
+  cyan: "#22d3ee",
+  emerald: "#34d399",
+  lime: "#a3e635",
+  amber: "#fbbf24",
+  orange: "#fb923c",
+  rose: "#fb7185",
+  fuchsia: "#e879f9",
+  red: "#f87171",
+  blue: "#60a5fa",
+  teal: "#2dd4bf",
+  slate: "#e5e7eb"
+};
+
 function randomAvatar() {
-  const emojis = ["🦶", "🦄", "🐼", "🐙", "🐧", "🦊", "🐱", "🐯", "🐢", "🐸"];
-  return emojis[Math.floor(Math.random() * emojis.length)];
+  return AVATAR_EMOJIS[Math.floor(Math.random() * AVATAR_EMOJIS.length)];
+}
+
+function randomNameColor() {
+  const values = Object.values(NAME_COLORS);
+  return values[Math.floor(Math.random() * values.length)];
+}
+
+function revealRandomLetter(room) {
+  if (!room || !room.word) return null;
+  const available = [];
+  for (let i = 0; i < room.length; i++) {
+    if (!room.revealedLetters || !room.revealedLetters[i]) {
+      available.push(i);
+    }
+  }
+  if (available.length === 0) return null;
+  const index = available[Math.floor(Math.random() * available.length)];
+  const letter = room.word[index];
+  if (!room.revealedLetters) {
+    room.revealedLetters = Array(room.length).fill(null);
+  }
+  room.revealedLetters[index] = letter;
+  return { index, letter };
 }
 
 wss.on("connection", (ws) => {
@@ -176,7 +318,7 @@ wss.on("connection", (ws) => {
     }
 
     if (msg.type === "join") {
-      const { roomId, pseudo, desiredLength } = msg;
+      const { roomId, pseudo, desiredLength, avatar, colorId } = msg;
       if (!roomId || typeof pseudo !== "string" || !pseudo.trim()) return;
 
       currentRoomId = roomId;
@@ -189,11 +331,20 @@ wss.on("connection", (ws) => {
       }
 
       if (!room.players.find((p) => p.id === clientId)) {
+        const chosenAvatar =
+          typeof avatar === "string" && AVATAR_EMOJIS.includes(avatar)
+            ? avatar
+            : randomAvatar();
+        const chosenColor =
+          typeof colorId === "string" && colorId !== "random" && NAME_COLORS[colorId]
+            ? NAME_COLORS[colorId]
+            : randomNameColor();
         room.players.push({
           id: clientId,
           ws,
           pseudo: pseudo.trim().slice(0, 16),
-          avatar: randomAvatar()
+          avatar: chosenAvatar,
+          color: chosenColor
         });
       }
 
@@ -207,7 +358,8 @@ wss.on("connection", (ws) => {
           players: room.players.map((p) => ({
             id: p.id,
             pseudo: p.pseudo,
-            avatar: p.avatar
+            avatar: p.avatar,
+            color: p.color
           }))
         })
       );
@@ -301,6 +453,110 @@ wss.on("connection", (ws) => {
           }
         });
       }
+      return;
+    }
+
+    if (msg.type === "chat") {
+      if (!currentRoomId) return;
+      const room = rooms.get(currentRoomId);
+      if (!room) return;
+      const sender = room.players.find((p) => p.id === clientId);
+      const textRaw = typeof msg.text === "string" ? msg.text : "";
+      const text = textRaw.trim().slice(0, 200);
+      if (!text) return;
+      const payload = {
+        type: "chat",
+        from: clientId,
+        pseudo: sender?.pseudo || "Joueur",
+        avatar: sender?.avatar || "🙂",
+        color: sender?.color || null,
+        text,
+        ts: Date.now()
+      };
+      const data = JSON.stringify(payload);
+      room.players.forEach((p) => {
+        if (p.ws.readyState === WebSocket.OPEN) {
+          p.ws.send(data);
+        }
+      });
+      return;
+    }
+
+    if (msg.type === "typing") {
+      if (!currentRoomId) return;
+      const room = rooms.get(currentRoomId);
+      if (!room || room.status !== "playing") return;
+      const sender = room.players.find((p) => p.id === clientId);
+      if (!sender) return;
+      if (
+        room.players.length > 0 &&
+        room.players[room.currentPlayerIndex % room.players.length]?.id !==
+          clientId
+      ) {
+        return;
+      }
+      const textRaw = typeof msg.text === "string" ? msg.text : "";
+      const text = textRaw.trim().slice(0, room.length);
+      const payload = {
+        type: "typing",
+        from: clientId,
+        pseudo: sender.pseudo,
+        text
+      };
+      const data = JSON.stringify(payload);
+      room.players.forEach((p) => {
+        if (p.ws.readyState === WebSocket.OPEN) {
+          p.ws.send(data);
+        }
+      });
+      return;
+    }
+
+    if (msg.type === "shop") {
+      if (!currentRoomId) return;
+      const room = rooms.get(currentRoomId);
+      if (!room || room.status !== "playing") return;
+      const { item } = msg;
+      if (item === "letter") {
+        const revealed = revealRandomLetter(room);
+        if (!revealed) {
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Toutes les lettres sont déjà révélées."
+            })
+          );
+          return;
+        }
+        const data = JSON.stringify({
+          type: "revealLetter",
+          index: revealed.index,
+          letter: revealed.letter
+        });
+        room.players.forEach((p) => {
+          if (p.ws.readyState === WebSocket.OPEN) {
+            p.ws.send(data);
+          }
+        });
+      }
+      return;
+    }
+
+    if (msg.type === "effect") {
+      if (!currentRoomId) return;
+      const room = rooms.get(currentRoomId);
+      if (!room) return;
+      const effect = typeof msg.effect === "string" ? msg.effect : "";
+      if (!effect) return;
+      const data = JSON.stringify({
+        type: "effect",
+        effect
+      });
+      room.players.forEach((p) => {
+        if (p.ws.readyState === WebSocket.OPEN) {
+          p.ws.send(data);
+        }
+      });
       return;
     }
   });

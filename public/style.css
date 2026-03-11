@@ -6,14 +6,9 @@
   padding: 0;
 }
 
-html,
 body {
-  height: 100%;
-}
-
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
   background: radial-gradient(circle at top, #4c1d95 0, #020617 55%, #000 100%);
   color: #e5e7eb;
   display: flex;
@@ -51,7 +46,7 @@ body {
 
 .title-card {
   max-width: 480px;
-  padding: 32px 28px;
+  padding: 32px 24px;
   text-align: center;
 }
 
@@ -68,7 +63,7 @@ body {
 }
 
 h1 {
-  font-size: clamp(2.4rem, 5vw, 3.2rem);
+  font-size: clamp(2.3rem, 7vw, 3.1rem);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -104,6 +99,7 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .btn.primary {
@@ -167,6 +163,17 @@ h1 {
   margin-bottom: 14px;
 }
 
+.field-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.field-half {
+  flex: 1;
+  min-width: 0;
+}
+
 .field-group label {
   font-size: 0.85rem;
   color: #9ca3af;
@@ -181,6 +188,24 @@ h1 {
   padding: 8px 14px;
   font-size: 0.95rem;
   outline: none;
+}
+
+.field-group select option {
+  background: #0b1020;
+}
+
+.field-group select {
+  appearance: none;
+  background-image: linear-gradient(
+      45deg,
+      transparent 50%,
+      rgba(139, 92, 246, 0.9) 50%
+    ),
+    linear-gradient(135deg, rgba(139, 92, 246, 0.9) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
 }
 
 .field-group input:focus,
@@ -239,13 +264,14 @@ h1 {
 
 .game-layout {
   display: grid;
-  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.6fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 2.1fr) minmax(0, 1.6fr);
   gap: 18px;
-  padding: 0 22px 22px;
+  padding: 0 16px 16px;
 }
 
 .board-panel,
-.side-panel {
+.side-panel,
+.chat-panel {
   padding: 18px 18px 20px;
 }
 
@@ -262,18 +288,18 @@ h1 {
 
 .board {
   display: grid;
-  gap: 6px;
+  gap: 4px;
   justify-content: center;
 }
 
 .board-row {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .cell {
-  width: 32px;
-  height: 40px;
+  width: 34px;
+  height: 42px;
   border-radius: 10px;
   border: 1px solid rgba(55, 65, 81, 0.9);
   display: flex;
@@ -304,6 +330,13 @@ h1 {
   color: #6b7280;
 }
 
+.cell.revealed-letter {
+  border-style: dashed;
+  border-color: rgba(129, 140, 248, 0.9);
+  color: #a5b4fc;
+  opacity: 0.9;
+}
+
 .side-panel {
   display: flex;
   flex-direction: column;
@@ -313,6 +346,16 @@ h1 {
 .status-line {
   font-size: 0.88rem;
   color: #a5b4fc;
+}
+
+input[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .input-row {
@@ -434,7 +477,8 @@ input[type="text"]:focus {
 
 .participant.current {
   border-color: rgba(250, 204, 21, 0.9);
-  box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.6);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.8);
+  background: radial-gradient(circle at left, #facc15 0, #0f172a 55%);
 }
 
 .idle-panel {
@@ -508,6 +552,86 @@ input[type="text"]:focus {
   flex: 1;
 }
 
+.idle-shop {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(55, 65, 81, 0.8);
+}
+
+.idle-shop h4 {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.idle-effects-grid {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-messages {
+  flex: 1;
+  min-height: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  padding: 8px;
+  overflow-y: auto;
+  font-size: 0.82rem;
+  background: radial-gradient(circle at top left, #111827 0, #020617 60%);
+}
+
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.chat-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.chat-content {
+  flex: 1;
+}
+
+.chat-meta {
+  display: flex;
+  gap: 4px;
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+.chat-text {
+  font-size: 0.82rem;
+}
+
+.chat-message.you .chat-text {
+  color: #e5e7eb;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input-row input {
+  flex: 1;
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -551,9 +675,95 @@ input[type="text"]:focus {
   }
 }
 
+.board-panel.effect-flames {
+  box-shadow: 0 0 25px rgba(248, 113, 113, 0.8),
+    0 0 60px rgba(239, 68, 68, 0.8);
+  border-color: rgba(248, 113, 113, 0.9);
+}
+
+.screen-game.effect-shake {
+  animation: shake-screen 0.4s ease-in-out infinite;
+}
+
+@keyframes shake-screen {
+  0% {
+    transform: translate(1px, 1px);
+  }
+  25% {
+    transform: translate(-1px, -1px);
+  }
+  50% {
+    transform: translate(1px, -1px);
+  }
+  75% {
+    transform: translate(-1px, 1px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.board-panel.effect-neon {
+  box-shadow: 0 0 25px rgba(129, 140, 248, 0.9),
+    0 0 70px rgba(168, 85, 247, 0.9);
+}
+
+.board-panel.effect-rain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(129, 140, 248, 0.2),
+    transparent
+  );
+  background-size: 100% 40px;
+  animation: rain 0.6s linear infinite;
+}
+
+@keyframes rain {
+  from {
+    background-position-y: -40px;
+  }
+  to {
+    background-position-y: 0;
+  }
+}
+
+.board-panel.effect-blur {
+  filter: blur(1.2px);
+}
+
 @media (max-width: 840px) {
   .game-layout {
     grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 0 10px 12px;
+  }
+
+  .board-panel,
+  .side-panel,
+  .chat-panel {
+    padding: 14px 12px 16px;
+  }
+
+  .chat-panel {
+    order: 3;
+  }
+
+  .board {
+    gap: 4px;
+  }
+
+  .board-row {
+    gap: 4px;
+  }
+
+  .cell {
+    width: 32px;
+    height: 38px;
+    font-size: 0.95rem;
   }
 }
 
@@ -577,12 +787,13 @@ input[type="text"]:focus {
 
   .board-panel,
   .side-panel {
-    padding-inline: 14px;
+    padding-inline: 10px;
   }
 
   .cell {
     width: 30px;
-    height: 38px;
+    height: 34px;
+    font-size: 0.9rem;
   }
 }
 
