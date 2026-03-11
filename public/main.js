@@ -398,7 +398,14 @@
     });
 
     ws.addEventListener("message", (event) => {
-      const msg = JSON.parse(event.data);
+      let msg;
+      try {
+        msg = JSON.parse(event.data);
+      } catch (error) {
+        console.error("Erreur de parsing WebSocket:", error);
+        return;
+      }
+      
       if (msg.type === "joined") {
         playerId = msg.playerId;
         currentRoomId = msg.roomId;
@@ -501,6 +508,13 @@
         ? explicitLength
         : null;
     connectWebSocket(currentRoomId, pseudo || "Joueur", lengthValue);
+    
+    // Start monkey after a short delay
+    setTimeout(() => {
+      if (typeof startMonkey === "function") {
+        startMonkey();
+      }
+    }, 2000);
   }
 
   function prepareShareLink() {
@@ -550,6 +564,9 @@
   btnBackToMode.addEventListener("click", () => {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.close();
+    }
+    if (typeof stopMonkey === "function") {
+      stopMonkey();
     }
     showScreen(screenMode);
   });
@@ -733,21 +750,30 @@
     }
   });
 
-  // typing preview sending
+  // typing preview sending with debounce
+  let typingTimeout = null;
   inputGuess.addEventListener("input", () => {
     if (!ws || ws.readyState !== WebSocket.OPEN) return;
     if (status !== "playing") return;
     if (currentMode === "coop" && currentPlayerId && currentPlayerId !== playerId)
       return;
+    
     previewGuess = inputGuess.value;
     previewAuthorId = playerId;
     renderBoard();
-    ws.send(
-      JSON.stringify({
-        type: "typing",
-        text: previewGuess
-      })
-    );
+    
+    // Debounce WebSocket send
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(
+          JSON.stringify({
+            type: "typing",
+            text: previewGuess
+          })
+        );
+      }
+    }, 100);
   });
 
   // shop logic
@@ -780,34 +806,23 @@
   btnEffectRain.addEventListener("click", () => triggerEffect("rain"));
   btnEffectBlur.addEventListener("click", () => triggerEffect("blur"));
 
+  const EFFECT_CONFIG = {
+    flames: { element: boardPanel, duration: 4500 },
+    shake: { element: screenGameEl, duration: 1200 },
+    neon: { element: boardPanel, duration: 4500 },
+    rain: { element: boardPanel, duration: 4500 },
+    blur: { element: boardPanel, duration: 3000 }
+  };
+
   function applyEffect(effect) {
-    if (!effect) return;
-    if (effect === "flames") {
-      boardPanel.classList.add("effect-flames");
-      setTimeout(() => {
-        boardPanel.classList.remove("effect-flames");
-      }, 4500);
-    } else if (effect === "shake") {
-      screenGameEl.classList.add("effect-shake");
-      setTimeout(() => {
-        screenGameEl.classList.remove("effect-shake");
-      }, 1200);
-    } else if (effect === "neon") {
-      boardPanel.classList.add("effect-neon");
-      setTimeout(() => {
-        boardPanel.classList.remove("effect-neon");
-      }, 4500);
-    } else if (effect === "rain") {
-      boardPanel.classList.add("effect-rain");
-      setTimeout(() => {
-        boardPanel.classList.remove("effect-rain");
-      }, 4500);
-    } else if (effect === "blur") {
-      boardPanel.classList.add("effect-blur");
-      setTimeout(() => {
-        boardPanel.classList.remove("effect-blur");
-      }, 3000);
-    }
+    const config = EFFECT_CONFIG[effect];
+    if (!config) return;
+    
+    const className = `effect-${effect}`;
+    config.element.classList.add(className);
+    setTimeout(() => {
+      config.element.classList.remove(className);
+    }, config.duration);
   }
 
   // Monkey logic
@@ -850,22 +865,27 @@
     }, 4000);
   }
 
+  function scheduleNextMonkeyPhrase() {
+    if (monkeyInterval) clearTimeout(monkeyInterval);
+    const delay = Math.random() * 15000 + 15000; // 15-30 secondes
+    monkeyInterval = setTimeout(() => {
+      if (status === "playing" && Math.random() > 0.3) {
+        showMonkeyPhrase();
+      }
+      scheduleNextMonkeyPhrase(); // Schedule next one
+    }, delay);
+  }
+
   function startMonkey() {
     if (monkeyContainer) {
       monkeyContainer.classList.remove("hidden");
-      if (monkeyInterval) clearInterval(monkeyInterval);
+      stopMonkey(); // Clear any existing timers
       
       // Première phrase après 5-10 secondes
       setTimeout(() => {
         showMonkeyPhrase();
+        scheduleNextMonkeyPhrase(); // Start recurring schedule
       }, Math.random() * 5000 + 5000);
-      
-      // Puis toutes les 15-30 secondes
-      monkeyInterval = setInterval(() => {
-        if (status === "playing" && Math.random() > 0.3) {
-          showMonkeyPhrase();
-        }
-      }, Math.random() * 15000 + 15000);
     }
   }
 
@@ -873,7 +893,7 @@
     if (monkeyContainer) {
       monkeyContainer.classList.add("hidden");
       if (monkeyInterval) {
-        clearInterval(monkeyInterval);
+        clearTimeout(monkeyInterval);
         monkeyInterval = null;
       }
       if (monkeyBubble) {
@@ -881,19 +901,5 @@
       }
     }
   }
-
-  // Start monkey when game starts
-  const originalStartMode = startMode;
-  startMode = function(mode, existingRoomId, pseudo, explicitLength) {
-    originalStartMode(mode, existingRoomId, pseudo, explicitLength);
-    setTimeout(() => {
-      startMonkey();
-    }, 2000);
-  };
-
-  // Stop monkey when leaving game
-  btnBackToMode.addEventListener("click", () => {
-    stopMonkey();
-  });
 })();
 

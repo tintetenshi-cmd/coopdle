@@ -118,10 +118,13 @@ function broadcastRoomState(room) {
   };
 
   const data = JSON.stringify(payload);
-  room.players.forEach((p) => {
+  // Filter out closed connections before broadcasting
+  room.players = room.players.filter((p) => {
     if (p.ws.readyState === WebSocket.OPEN) {
       p.ws.send(data);
+      return true;
     }
+    return false;
   });
 }
 
@@ -307,13 +310,14 @@ function revealRandomLetter(room) {
 
 wss.on("connection", (ws) => {
   let currentRoomId = null;
-  let clientId = makeClientId();
+  const clientId = makeClientId();
 
   ws.on("message", (raw) => {
     let msg;
     try {
       msg = JSON.parse(raw.toString());
-    } catch {
+    } catch (error) {
+      console.error("Invalid JSON received:", error);
       return;
     }
 
@@ -465,7 +469,8 @@ wss.on("connection", (ws) => {
       const textRaw = typeof msg.text === "string" ? msg.text : "";
       const text = textRaw.trim().slice(0, 200);
       if (!text) return;
-      const payload = {
+      
+      const payload = JSON.stringify({
         type: "chat",
         from: clientId,
         pseudo: sender?.pseudo || "Joueur",
@@ -473,11 +478,11 @@ wss.on("connection", (ws) => {
         color: sender?.color || null,
         text,
         ts: Date.now()
-      };
-      const data = JSON.stringify(payload);
+      });
+      
       room.players.forEach((p) => {
         if (p.ws.readyState === WebSocket.OPEN) {
-          p.ws.send(data);
+          p.ws.send(payload);
         }
       });
       return;
@@ -498,16 +503,17 @@ wss.on("connection", (ws) => {
       }
       const textRaw = typeof msg.text === "string" ? msg.text : "";
       const text = textRaw.trim().slice(0, room.length);
-      const payload = {
+      
+      const payload = JSON.stringify({
         type: "typing",
         from: clientId,
         pseudo: sender.pseudo,
         text
-      };
-      const data = JSON.stringify(payload);
+      });
+      
       room.players.forEach((p) => {
-        if (p.ws.readyState === WebSocket.OPEN) {
-          p.ws.send(data);
+        if (p.ws.readyState === WebSocket.OPEN && p.id !== clientId) {
+          p.ws.send(payload);
         }
       });
       return;
@@ -549,13 +555,15 @@ wss.on("connection", (ws) => {
       if (!room) return;
       const effect = typeof msg.effect === "string" ? msg.effect : "";
       if (!effect) return;
-      const data = JSON.stringify({
+      
+      const payload = JSON.stringify({
         type: "effect",
         effect
       });
+      
       room.players.forEach((p) => {
         if (p.ws.readyState === WebSocket.OPEN) {
-          p.ws.send(data);
+          p.ws.send(payload);
         }
       });
       return;
