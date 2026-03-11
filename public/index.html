@@ -21,12 +21,49 @@
 
       <div class="screen screen-mode hidden" id="screen-mode">
         <div class="mode-card glass">
-          <h2>Choix du mode</h2>
-          <p>Un mot aléatoire entre 2 et 10 lettres.</p>
-          <div class="mode-buttons">
-            <button id="btn-solo" class="btn primary">Solo</button>
-            <button id="btn-coop" class="btn outline">Coop</button>
+          <h2 id="mode-title">Choix du mode</h2>
+          <p id="mode-description">
+            Un mot aléatoire entre 2 et 10 lettres.
+          </p>
+
+          <div class="field-group">
+            <label for="input-pseudo">Pseudo</label>
+            <input
+              id="input-pseudo"
+              type="text"
+              maxlength="16"
+              autocomplete="off"
+              placeholder="Entrez votre pseudo"
+            />
           </div>
+
+          <div class="field-group" id="field-length">
+            <label for="select-length">Nombre de lettres à deviner</label>
+            <select id="select-length">
+              <option value="0">Aléatoire (2-10)</option>
+              <option value="2">2 lettres</option>
+              <option value="3">3 lettres</option>
+              <option value="4">4 lettres</option>
+              <option value="5">5 lettres</option>
+              <option value="6">6 lettres</option>
+              <option value="7">7 lettres</option>
+              <option value="8">8 lettres</option>
+              <option value="9">9 lettres</option>
+              <option value="10">10 lettres</option>
+            </select>
+          </div>
+
+          <div class="mode-buttons" id="mode-buttons-main">
+            <button id="btn-solo" class="btn primary">Solo</button>
+            <button id="btn-coop" class="btn outline">Créer une room coop</button>
+          </div>
+
+          <div class="mode-buttons hidden" id="mode-buttons-join">
+            <button id="btn-join-room" class="btn primary">
+              Rejoindre la room
+            </button>
+          </div>
+
           <button id="btn-back-to-title" class="btn ghost small">
             &larr; Retour
           </button>
@@ -87,6 +124,43 @@
               <button id="btn-copy-link" class="btn outline small">
                 Copier le lien
               </button>
+            </div>
+
+            <div class="participants-panel">
+              <h3>Participants</h3>
+              <ul id="participants-list" class="participants-list"></ul>
+            </div>
+
+            <div class="idle-panel">
+              <h3>Idle game</h3>
+              <p class="idle-caption">
+                Cliquez sur le pied pour accumuler des pas pendant la partie.
+              </p>
+              <div class="idle-main">
+                <button id="btn-foot-click" class="idle-foot-btn">🦶</button>
+                <div class="idle-stats">
+                  <div class="idle-stat-line">
+                    <span>Pas :</span>
+                    <span id="idle-steps">0</span>
+                  </div>
+                  <div class="idle-stat-line">
+                    <span>Par clic :</span>
+                    <span id="idle-per-click">1</span>
+                  </div>
+                  <div class="idle-stat-line">
+                    <span>Auto/s :</span>
+                    <span id="idle-auto-rate">0</span>
+                  </div>
+                </div>
+              </div>
+              <div class="idle-upgrades">
+                <button id="btn-upgrade-click" class="btn outline small">
+                  + Clic (coût <span id="cost-click">10</span>)
+                </button>
+                <button id="btn-upgrade-auto" class="btn outline small">
+                  + Auto (coût <span id="cost-auto">25</span>)
+                </button>
+              </div>
             </div>
           </section>
         </main>

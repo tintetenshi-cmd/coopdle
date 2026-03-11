@@ -6,6 +6,7 @@
   const btnPlay = document.getElementById("btn-play");
   const btnSolo = document.getElementById("btn-solo");
   const btnCoop = document.getElementById("btn-coop");
+  const btnJoinRoom = document.getElementById("btn-join-room");
   const btnBackToTitle = document.getElementById("btn-back-to-title");
   const btnBackToMode = document.getElementById("btn-back-to-mode");
   const btnNewGame = document.getElementById("btn-new-game");
@@ -14,6 +15,14 @@
 
   const badgeMode = document.getElementById("badge-mode");
   const badgeRoom = document.getElementById("badge-room");
+
+  const modeTitle = document.getElementById("mode-title");
+  const modeDescription = document.getElementById("mode-description");
+  const modeButtonsMain = document.getElementById("mode-buttons-main");
+  const modeButtonsJoin = document.getElementById("mode-buttons-join");
+  const fieldLength = document.getElementById("field-length");
+  const inputPseudo = document.getElementById("input-pseudo");
+  const selectLength = document.getElementById("select-length");
 
   const wordLengthSpan = document.getElementById("word-length");
   const attemptsSpan = document.getElementById("attempts");
@@ -26,6 +35,16 @@
   const statusCurrentPlayer = document.getElementById("status-current-player");
   const shareContainer = document.getElementById("share-container");
   const shareUrlEl = document.getElementById("share-url");
+  const participantsList = document.getElementById("participants-list");
+
+  const btnFootClick = document.getElementById("btn-foot-click");
+  const btnUpgradeClick = document.getElementById("btn-upgrade-click");
+  const btnUpgradeAuto = document.getElementById("btn-upgrade-auto");
+  const idleStepsEl = document.getElementById("idle-steps");
+  const idlePerClickEl = document.getElementById("idle-per-click");
+  const idleAutoRateEl = document.getElementById("idle-auto-rate");
+  const idleCostClickEl = document.getElementById("cost-click");
+  const idleCostAutoEl = document.getElementById("cost-auto");
 
   let ws = null;
   let currentRoomId = null;
@@ -37,6 +56,16 @@
   let attempts = 0;
   let status = "playing";
   let currentPlayerId = null;
+  let players = [];
+
+  let currentRoomFromUrl = null;
+
+  // idle game state
+  let idleSteps = 0;
+  let idlePerClick = 1;
+  let idleAutoRate = 0;
+  let idleCostClick = 10;
+  let idleCostAuto = 25;
 
   function showScreen(screen) {
     [screenTitle, screenMode, screenGame].forEach((s) => {
@@ -50,6 +79,32 @@
     errorEl.classList.add("hidden");
     infoEl.textContent = "";
     infoEl.classList.add("hidden");
+  }
+
+  function renderParticipants() {
+    participantsList.innerHTML = "";
+    players.forEach((p) => {
+      const li = document.createElement("li");
+      li.className = "participant";
+      if (p.id === playerId) {
+        li.classList.add("you");
+      }
+      if (p.id === currentPlayerId) {
+        li.classList.add("current");
+      }
+
+      const avatar = document.createElement("div");
+      avatar.className = "participant-avatar";
+      avatar.textContent = p.avatar || "🙂";
+
+      const name = document.createElement("span");
+      name.className = "participant-name";
+      name.textContent = p.pseudo || "Joueur";
+
+      li.appendChild(avatar);
+      li.appendChild(name);
+      participantsList.appendChild(li);
+    });
   }
 
   function showError(text) {
@@ -69,13 +124,17 @@
     }
     if (status === "won") {
       statusCurrentPlayer.textContent = "Bravo ! Vous avez trouvé le mot.";
+      btnNewGame.classList.add("pulse");
       return;
     }
     if (status === "lost") {
       statusCurrentPlayer.textContent =
         "Partie terminée. Lancez une nouvelle partie pour rejouer.";
+      btnNewGame.classList.add("pulse");
       return;
     }
+    btnNewGame.classList.remove("pulse");
+
     if (currentMode === "solo") {
       statusCurrentPlayer.textContent =
         "Mode solo : faites vos 6 essais pour trouver le mot.";
@@ -119,11 +178,15 @@
         rowEl.appendChild(cell);
       }
 
+      if (row === guesses.length - 1 && guess) {
+        rowEl.classList.add("pop");
+      }
+
       boardEl.appendChild(rowEl);
     }
   }
 
-  function connectWebSocket(roomId) {
+  function connectWebSocket(roomId, pseudo, desiredLength) {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.close();
     }
@@ -133,7 +196,14 @@
     ws = new WebSocket(wsUrl);
 
     ws.addEventListener("open", () => {
-      ws.send(JSON.stringify({ type: "join", roomId }));
+      ws.send(
+        JSON.stringify({
+          type: "join",
+          roomId,
+          pseudo,
+          desiredLength
+        })
+      );
       clearMessages();
     });
 
@@ -144,6 +214,7 @@
         currentRoomId = msg.roomId;
         length = msg.length;
         maxAttempts = msg.maxAttempts;
+        players = msg.players || [];
         maxAttemptsSpan.textContent = maxAttempts.toString();
         wordLengthSpan.textContent = length.toString();
         attemptsSpan.textContent = "0";
@@ -152,6 +223,7 @@
         status = "playing";
         currentPlayerId = null;
         renderBoard();
+        renderParticipants();
         updateStatusLine();
         if (currentMode === "coop") {
           prepareShareLink();
@@ -163,10 +235,12 @@
         maxAttempts = msg.maxAttempts || 6;
         status = msg.status || "playing";
         currentPlayerId = msg.currentPlayerId || null;
+        players = msg.players || players;
         wordLengthSpan.textContent = length.toString();
         attemptsSpan.textContent = attempts.toString();
         maxAttemptsSpan.textContent = maxAttempts.toString();
         renderBoard();
+        renderParticipants();
         updateStatusLine();
       } else if (msg.type === "error") {
         showError(msg.message || "Erreur.");
@@ -188,7 +262,7 @@
     return Math.random().toString(36).slice(2, 8);
   }
 
-  function startMode(mode, existingRoomId) {
+  function startMode(mode, existingRoomId, pseudo, explicitLength) {
     currentMode = mode;
     badgeMode.textContent = mode === "solo" ? "Mode solo" : "Mode coop";
     currentRoomId = existingRoomId || `${mode}-${randomRoomId()}`;
@@ -198,6 +272,7 @@
     guesses = [];
     attempts = 0;
     status = "playing";
+    players = [];
     clearMessages();
     updateStatusLine();
     renderBoard();
@@ -210,7 +285,11 @@
     }
 
     showScreen(screenGame);
-    connectWebSocket(currentRoomId);
+    const lengthValue =
+      typeof explicitLength === "number" && explicitLength > 0
+        ? explicitLength
+        : null;
+    connectWebSocket(currentRoomId, pseudo || "Joueur", lengthValue);
   }
 
   function prepareShareLink() {
@@ -225,6 +304,10 @@
     clearMessages();
     if (!ws || ws.readyState !== WebSocket.OPEN) {
       showError("Connexion au serveur en cours ou interrompue.");
+      return;
+    }
+    if (currentPlayerId && currentPlayerId !== playerId) {
+      showError("Ce n'est pas votre tour.");
       return;
     }
     if (!inputGuess.value.trim()) return;
@@ -259,11 +342,32 @@
   });
 
   btnSolo.addEventListener("click", () => {
-    startMode("solo");
+    startMode("solo", null, inputPseudo.value.trim() || "Solo", null);
   });
 
   btnCoop.addEventListener("click", () => {
-    startMode("coop");
+    const pseudo = inputPseudo.value.trim();
+    if (!pseudo) {
+      showError("Choisissez un pseudo avant de créer une room.");
+      return;
+    }
+    const rawLen = parseInt(selectLength.value, 10);
+    const explicitLength =
+      Number.isFinite(rawLen) && rawLen > 0 ? rawLen : null;
+    startMode("coop", null, pseudo, explicitLength);
+  });
+
+  btnJoinRoom.addEventListener("click", () => {
+    const pseudo = inputPseudo.value.trim();
+    if (!pseudo) {
+      showError("Entrez un pseudo pour rejoindre la room.");
+      return;
+    }
+    if (!currentRoomFromUrl) {
+      showError("Room invalide.");
+      return;
+    }
+    startMode("coop", currentRoomFromUrl, pseudo, null);
   });
 
   btnNewGame.addEventListener("click", () => {
@@ -295,13 +399,59 @@
     const params = new URLSearchParams(window.location.search);
     const room = params.get("room");
     if (room) {
-      currentMode = "coop";
-      badgeMode.textContent = "Mode coop";
-      startMode("coop", room);
+      currentRoomFromUrl = room;
+      modeTitle.textContent = "Rejoindre une room coop";
+      modeDescription.textContent =
+        "Entrez votre pseudo pour rejoindre la room existante.";
+      fieldLength.classList.add("hidden");
+      modeButtonsMain.classList.add("hidden");
+      modeButtonsJoin.classList.remove("hidden");
+      showScreen(screenMode);
     }
   }
 
-  showScreen(screenTitle);
   initFromUrl();
+  if (!currentRoomFromUrl) {
+    showScreen(screenTitle);
+  }
+
+  // Idle game logic
+  function updateIdleUI() {
+    idleStepsEl.textContent = idleSteps.toString();
+    idlePerClickEl.textContent = idlePerClick.toString();
+    idleAutoRateEl.textContent = idleAutoRate.toString();
+    idleCostClickEl.textContent = idleCostClick.toString();
+    idleCostAutoEl.textContent = idleCostAuto.toString();
+  }
+
+  btnFootClick.addEventListener("click", () => {
+    idleSteps += idlePerClick;
+    updateIdleUI();
+  });
+
+  btnUpgradeClick.addEventListener("click", () => {
+    if (idleSteps < idleCostClick) return;
+    idleSteps -= idleCostClick;
+    idlePerClick += 1;
+    idleCostClick = Math.round(idleCostClick * 1.6);
+    updateIdleUI();
+  });
+
+  btnUpgradeAuto.addEventListener("click", () => {
+    if (idleSteps < idleCostAuto) return;
+    idleSteps -= idleCostAuto;
+    idleAutoRate += 1;
+    idleCostAuto = Math.round(idleCostAuto * 1.8);
+    updateIdleUI();
+  });
+
+  setInterval(() => {
+    if (idleAutoRate > 0) {
+      idleSteps += idleAutoRate;
+      updateIdleUI();
+    }
+  }, 1000);
+
+  updateIdleUI();
 })();
 

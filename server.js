@@ -48,19 +48,28 @@ function wordsOfLength(len) {
   return DICTIONARY.filter((w) => w.length === len);
 }
 
-function pickRandomWord() {
-  const length = Math.floor(Math.random() * (MAX_LEN - MIN_LEN + 1)) + MIN_LEN;
+function pickRandomWord(lengthOverride) {
+  let length = lengthOverride;
+  if (
+    typeof length !== "number" ||
+    Number.isNaN(length) ||
+    length < MIN_LEN ||
+    length > MAX_LEN
+  ) {
+    length = Math.floor(Math.random() * (MAX_LEN - MIN_LEN + 1)) + MIN_LEN;
+  }
+
   const candidates = wordsOfLength(length);
   const pool = candidates.length > 0 ? candidates : DICTIONARY;
   const word = pool[Math.floor(Math.random() * pool.length)];
   return word;
 }
 
-/** rooms: roomId -> { word, length, attempts, guesses, maxAttempts, players, currentPlayerIndex } */
+/** rooms: roomId -> { word, length, attempts, guesses, maxAttempts, players, currentPlayerIndex, status } */
 const rooms = new Map();
 
-function createOrResetRoom(roomId) {
-  const word = pickRandomWord();
+function createOrResetRoom(roomId, lengthOverride) {
+  const word = pickRandomWord(lengthOverride);
   const room = {
     id: roomId,
     word,
@@ -97,7 +106,12 @@ function broadcastRoomState(room) {
     currentPlayerId:
       room.players.length > 0
         ? room.players[room.currentPlayerIndex % room.players.length]?.id
-        : null
+        : null,
+    players: room.players.map((p) => ({
+      id: p.id,
+      pseudo: p.pseudo,
+      avatar: p.avatar
+    }))
   };
 
   const data = JSON.stringify(payload);
@@ -144,6 +158,11 @@ function makeClientId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+function randomAvatar() {
+  const emojis = ["🦶", "🦄", "🐼", "🐙", "🐧", "🦊", "🐱", "🐯", "🐢", "🐸"];
+  return emojis[Math.floor(Math.random() * emojis.length)];
+}
+
 wss.on("connection", (ws) => {
   let currentRoomId = null;
   let clientId = makeClientId();
@@ -157,17 +176,25 @@ wss.on("connection", (ws) => {
     }
 
     if (msg.type === "join") {
-      const { roomId } = msg;
-      if (!roomId) return;
+      const { roomId, pseudo, desiredLength } = msg;
+      if (!roomId || typeof pseudo !== "string" || !pseudo.trim()) return;
 
       currentRoomId = roomId;
       let room = rooms.get(roomId);
       if (!room) {
-        room = createOrResetRoom(roomId);
+        const lengthOverride = Number.isFinite(desiredLength)
+          ? desiredLength
+          : undefined;
+        room = createOrResetRoom(roomId, lengthOverride);
       }
 
       if (!room.players.find((p) => p.id === clientId)) {
-        room.players.push({ id: clientId, ws });
+        room.players.push({
+          id: clientId,
+          ws,
+          pseudo: pseudo.trim().slice(0, 16),
+          avatar: randomAvatar()
+        });
       }
 
       ws.send(
@@ -176,7 +203,12 @@ wss.on("connection", (ws) => {
           roomId: room.id,
           playerId: clientId,
           length: room.length,
-          maxAttempts: room.maxAttempts
+          maxAttempts: room.maxAttempts,
+          players: room.players.map((p) => ({
+            id: p.id,
+            pseudo: p.pseudo,
+            avatar: p.avatar
+          }))
         })
       );
       broadcastRoomState(room);
@@ -185,7 +217,13 @@ wss.on("connection", (ws) => {
 
     if (msg.type === "newGame") {
       if (!currentRoomId) return;
-      const room = createOrResetRoom(currentRoomId);
+      const existing = rooms.get(currentRoomId);
+      const baseLength = existing ? existing.length : undefined;
+      const room = createOrResetRoom(currentRoomId, baseLength);
+      if (existing) {
+        room.players = existing.players;
+        room.currentPlayerIndex = existing.currentPlayerIndex || 0;
+      }
       broadcastRoomState(room);
       return;
     }
@@ -196,6 +234,20 @@ wss.on("connection", (ws) => {
       const room = rooms.get(currentRoomId);
       if (!room || room.status !== "playing") return;
       if (typeof guess !== "string") return;
+
+      if (
+        room.players.length > 0 &&
+        room.players[room.currentPlayerIndex % room.players.length]?.id !==
+          clientId
+      ) {
+        ws.send(
+          JSON.stringify({
+            type: "error",
+            message: "Ce n'est pas votre tour."
+          })
+        );
+        return;
+      }
 
       const normalized = guess.trim().toLowerCase();
       if (!normalized || normalized.length !== room.length) {
