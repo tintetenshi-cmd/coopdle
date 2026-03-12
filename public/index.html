@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <title>Coopdle</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
         * {
             margin: 0;
@@ -12,18 +16,15 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            color: #e2e8f0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow-x: hidden;
         }
         
         #app {
-            width: 100%;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -35,117 +36,657 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
         
         .hidden {
             display: none !important;
         }
         
+        /* === ÉCRAN TITRE === */
         .title-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            border-radius: 20px;
+            background: rgba(15, 15, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 60px 40px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 100%;
         }
         
         h1 {
-            font-size: 3rem;
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a855f7, #ec4899, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: -0.02em;
         }
         
         .subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            line-height: 1.6;
         }
         
         .btn {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 16px 32px;
             font-size: 1.1rem;
-            border-radius: 50px;
+            font-weight: 600;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            margin: 8px;
         }
         
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .mode-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            max-width: 400px;
-            width: 90%;
-        }
-        
-        .field-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-        }
-        
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .mode-buttons {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .mode-buttons .btn {
-            flex: 1;
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.6);
         }
         
         .btn.outline {
             background: transparent;
-            border: 2px solid #ff6b6b;
+            border: 2px solid #8b5cf6;
+            box-shadow: none;
+        }
+        
+        .btn.outline:hover {
+            background: rgba(139, 92, 246, 0.1);
         }
         
         .btn.ghost {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            font-size: 0.9rem;
-            padding: 8px 16px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            color: #94a3b8;
+            font-size: 0.95rem;
+            padding: 12px 24px;
+            box-shadow: none;
+        }
+        
+        .btn.ghost:hover {
+            background: rgba(148, 163, 184, 0.1);
+            color: #e2e8f0;
+        }
+        
+        /* === ÉCRAN MODE === */
+        .mode-card {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mode-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 12px;
+        }
+        
+        .mode-card p {
+            color: #94a3b8;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        
+        .field-group {
+            margin-bottom: 24px;
         }
         
         .field-row {
-            display: flex;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
         }
         
-        .field-half {
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 10px;
+            background: rgba(15, 15, 35, 0.8);
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        
+        input::placeholder {
+            color: #64748b;
+        }
+        
+        .mode-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 32px 0;
+        }
+        
+        /* === ÉCRAN JEU === */
+        .game-container {
+            width: 100%;
+            max-width: 1400px;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .game-header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 16px 24px;
+        }
+        
+        .game-info {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .badge {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge.secondary {
+            background: rgba(148, 163, 184, 0.2);
+            color: #cbd5e1;
+        }
+        
+        /* === CHAT === */
+        .chat-panel {
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chat-messages {
             flex: 1;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding-right: 8px;
+        }
+        
+        .chat-message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+        
+        .chat-avatar {
+            font-size: 1.5rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-content {
+            flex: 1;
+        }
+        
+        .chat-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .chat-author {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .chat-time {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        
+        .chat-text {
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .chat-input .btn {
+            padding: 12px 16px;
+            font-size: 0.9rem;
+        }
+        
+        /* === GRILLE WORDLE === */
+        .board-panel {
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .word-info {
+            color: #94a3b8;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+        
+        .board {
+            display: grid;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+        
+        .board-row {
+            display: grid;
+            gap: 6px;
+        }
+        
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(15, 15, 35, 0.6);
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .cell.correct {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .cell.present {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-color: #f59e0b;
+            color: white;
+        }
+        
+        .cell.absent {
+            background: rgba(71, 85, 105, 0.8);
+            border-color: #475569;
+            color: #94a3b8;
+        }
+        
+        .cell.revealed {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+        }
+        
+        .guess-input {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .guess-input input {
+            flex: 1;
+            padding: 14px;
+            font-size: 1.1rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .status-message {
+            margin: 16px 0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+        }
+        
+        .status-message.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #93c5fd;
+        }
+        
+        /* === PANNEAU JOUEURS === */
+        .players-panel {
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .players-list {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+        
+        .player-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .player-item.current {
+            border: 2px solid #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+        
+        .player-item.you {
+            border: 2px solid #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        
+        .player-avatar {
+            font-size: 1.5rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-name {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        /* === IDLE GAME === */
+        .idle-game {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .idle-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .idle-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+        
+        .idle-stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .idle-stat-value {
+            font-weight: 700;
+            color: #f59e0b;
+            font-size: 1.1rem;
+        }
+        
+        .idle-clicker {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .foot-button {
+            font-size: 4rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 16px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.2);
+        }
+        
+        .foot-button:hover {
+            transform: scale(1.1);
+            background: rgba(139, 92, 246, 0.3);
+        }
+        
+        .foot-button:active {
+            transform: scale(0.95);
+        }
+        
+        .idle-upgrades {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .upgrade-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            color: #c4b5fd;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upgrade-btn:hover {
+            background: rgba(139, 92, 246, 0.3);
+        }
+        
+        .upgrade-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .shop-section {
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            padding-top: 16px;
+        }
+        
+        .shop-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .hint-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .hint-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+        
+        .hint-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* === RESPONSIVE === */
+        @media (max-width: 1200px) {
+            .game-container {
+                grid-template-columns: 250px 1fr 250px;
+                gap: 16px;
+                padding: 16px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .game-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr auto;
+                gap: 16px;
+                padding: 12px;
+            }
+            
+            .chat-panel, .players-panel {
+                height: auto;
+                max-height: 300px;
+            }
+            
+            .cell {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .title-card, .mode-card {
+                padding: 30px 20px;
+                margin: 0 10px;
+            }
+            
+            .field-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .mode-buttons {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .cell {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .foot-button {
+                font-size: 3rem;
+            }
+        }
+        
+        /* === ANIMATIONS === */
+        @keyframes cellPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .cell.pop {
+            animation: cellPop 0.3s ease;
+        }
+        
+        @keyframes coinEarn {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-30px) scale(1.2); opacity: 0; }
+        }
+        
+        .coin-animation {
+            position: absolute;
+            color: #f59e0b;
+            font-weight: bold;
+            pointer-events: none;
+            animation: coinEarn 1s ease-out forwards;
         }
     </style>
 </head>
@@ -154,9 +695,9 @@
         <!-- Écran de titre -->
         <div class="screen screen-title" id="screen-title">
             <div class="title-card">
-                <h1>🎮 Coopdle</h1>
-                <p class="subtitle">Devinez le même mot à plusieurs, en 6 essais.</p>
-                <button id="btn-play" class="btn primary">🚀 Jouer</button>
+                <h1>Coopdle</h1>
+                <p class="subtitle">Devinez le même mot à plusieurs, en 6 essais maximum</p>
+                <button id="btn-play" class="btn">🚀 Commencer à jouer</button>
             </div>
         </div>
 
@@ -164,21 +705,21 @@
         <div class="screen screen-mode hidden" id="screen-mode">
             <div class="mode-card">
                 <h2 id="mode-title">🎯 Choix du mode</h2>
-                <p id="mode-description">Un mot aléatoire entre 2 et 10 lettres.</p>
+                <p id="mode-description">Choisissez votre mode de jeu et personnalisez votre profil</p>
 
                 <div class="field-group">
-                    <label for="input-pseudo">👤 Pseudo</label>
+                    <label for="input-pseudo">👤 Votre pseudo</label>
                     <input id="input-pseudo" type="text" maxlength="16" placeholder="Entrez votre pseudo" />
                 </div>
 
                 <div class="field-row">
-                    <div class="field-group field-half">
-                        <label for="select-avatar">🎭 Icône</label>
+                    <div class="field-group">
+                        <label for="select-avatar">🎭 Avatar</label>
                         <select id="select-avatar">
                             <option value="random">🎲 Aléatoire</option>
                         </select>
                     </div>
-                    <div class="field-group field-half">
+                    <div class="field-group">
                         <label for="select-name-color">🎨 Couleur</label>
                         <select id="select-name-color">
                             <option value="random">🎲 Aléatoire</option>
@@ -187,9 +728,9 @@
                 </div>
 
                 <div class="field-group" id="field-length">
-                    <label for="select-length">📏 Nombre de lettres</label>
+                    <label for="select-length">📏 Longueur du mot</label>
                     <select id="select-length">
-                        <option value="0">🎲 Aléatoire (2-10)</option>
+                        <option value="0">🎲 Aléatoire (2-10 lettres)</option>
                         <option value="2">2 lettres</option>
                         <option value="3">3 lettres</option>
                         <option value="4">4 lettres</option>
@@ -203,78 +744,116 @@
                 </div>
 
                 <div class="mode-buttons" id="mode-buttons-main">
-                    <button id="btn-solo" class="btn primary">🎯 Solo</button>
-                    <button id="btn-coop" class="btn outline">👥 Créer Coop</button>
+                    <button id="btn-solo" class="btn">🎯 Solo</button>
+                    <button id="btn-coop" class="btn outline">👥 Coop</button>
                 </div>
 
                 <div class="mode-buttons hidden" id="mode-buttons-join">
-                    <button id="btn-join-room" class="btn primary">🚪 Rejoindre</button>
+                    <button id="btn-join-room" class="btn">🚪 Rejoindre</button>
                 </div>
 
                 <button id="btn-back-to-title" class="btn ghost">← Retour</button>
             </div>
         </div>
 
-        <!-- Écran de jeu simplifié -->
+        <!-- Écran de jeu -->
         <div class="screen screen-game hidden" id="screen-game">
-            <div class="mode-card" style="max-width: 600px;">
-                <h2>🎮 Jeu en cours...</h2>
-                <div style="margin: 20px 0;">
-                    <span id="badge-mode" style="background: #ff6b6b; padding: 5px 10px; border-radius: 15px; margin-right: 10px;">Mode</span>
-                    <span id="badge-room" style="background: #667eea; padding: 5px 10px; border-radius: 15px;">Room</span>
-                </div>
-                
-                <p>Longueur : <span id="word-length">-</span> lettres • Essais : <span id="attempts">0</span>/<span id="max-attempts">6</span></p>
-                
-                <div id="board" style="margin: 20px 0; min-height: 100px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; text-align: center;">
-                    Grille de jeu ici
-                </div>
-                
-                <div style="margin: 20px 0;">
-                    <input id="input-guess" type="text" placeholder="Tapez votre mot..." style="margin-right: 10px; width: 70%;" />
-                    <button id="btn-submit" class="btn" style="width: 25%;">✅ Valider</button>
-                </div>
-                
-                <div id="error" class="hidden" style="color: #ff6b6b; margin: 10px 0;"></div>
-                <div id="info" class="hidden" style="color: #4ecdc4; margin: 10px 0;"></div>
-                
-                <div id="status-current-player" style="margin: 15px 0; font-style: italic;"></div>
-                
-                <button id="btn-back-to-mode" class="btn ghost">← Retour aux modes</button>
-                <button id="btn-new-game" class="btn ghost" style="margin-left: 10px;">🔄 Nouvelle partie</button>
-                
-                <!-- Éléments cachés mais nécessaires -->
-                <div style="display: none;">
-                    <div id="share-container" class="hidden">
-                        <p id="share-url"></p>
-                        <button id="btn-copy-link">Copier</button>
+            <div class="game-container">
+                <!-- Header -->
+                <div class="game-header">
+                    <button id="btn-back-to-mode" class="btn ghost">← Modes</button>
+                    <div class="game-info">
+                        <span class="badge" id="badge-mode">Mode</span>
+                        <span class="badge secondary" id="badge-room">Room</span>
                     </div>
-                    <ul id="participants-list"></ul>
-                    <div id="chat-messages"></div>
-                    <input id="input-chat" />
-                    <button id="btn-send-chat">Envoyer</button>
-                    <button id="btn-foot-click">🦶</button>
-                    <button id="btn-upgrade-click">Upgrade</button>
-                    <button id="btn-upgrade-auto">Auto</button>
-                    <span id="idle-steps">0</span>
-                    <span id="idle-per-click">1</span>
-                    <span id="idle-auto-rate">0</span>
-                    <span id="cost-click">10</span>
-                    <span id="cost-auto">25</span>
-                    <span id="cost-letter">500</span>
-                    <button id="btn-shop-letter">Lettre</button>
+                    <button id="btn-new-game" class="btn ghost">🔄 Nouvelle partie</button>
+                </div>
+
+                <!-- Chat (gauche) -->
+                <div class="chat-panel">
+                    <div class="panel-title">💬 Chat</div>
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="chat-input">
+                        <input id="input-chat" type="text" placeholder="Tapez votre message..." maxlength="200" />
+                        <button id="btn-send-chat" class="btn">Envoyer</button>
+                    </div>
+                </div>
+
+                <!-- Grille de jeu (centre) -->
+                <div class="board-panel">
+                    <div class="panel-title">🎯 Mot mystère</div>
+                    <div class="word-info">
+                        Longueur : <span id="word-length">-</span> lettres • 
+                        Essais : <span id="attempts">0</span>/<span id="max-attempts">6</span>
+                    </div>
+                    <div id="board" class="board"></div>
+                    <div class="guess-input">
+                        <input id="input-guess" type="text" placeholder="Votre mot..." maxlength="10" />
+                        <button id="btn-submit" class="btn">✅ Valider</button>
+                    </div>
+                    <div id="error" class="status-message error hidden"></div>
+                    <div id="info" class="status-message info hidden"></div>
+                    <div id="status-current-player" style="margin-top: 16px; text-align: center; color: #94a3b8;"></div>
+                </div>
+
+                <!-- Panneau joueurs + Idle game (droite) -->
+                <div class="players-panel">
+                    <div class="panel-title">👥 Joueurs</div>
+                    <ul class="players-list" id="participants-list"></ul>
+                    
+                    <!-- Idle Game -->
+                    <div class="idle-game">
+                        <div class="idle-title">🦶 Idle Clicker</div>
+                        <div class="idle-stats">
+                            <div class="idle-stat">
+                                <div>Pièces</div>
+                                <div class="idle-stat-value" id="idle-coins">0</div>
+                            </div>
+                            <div class="idle-stat">
+                                <div>Par clic</div>
+                                <div class="idle-stat-value" id="idle-per-click">1</div>
+                            </div>
+                            <div class="idle-stat">
+                                <div>Auto/sec</div>
+                                <div class="idle-stat-value" id="idle-auto-rate">0</div>
+                            </div>
+                            <div class="idle-stat">
+                                <div>Total</div>
+                                <div class="idle-stat-value" id="idle-total">0</div>
+                            </div>
+                        </div>
+                        <div class="idle-clicker">
+                            <button class="foot-button" id="btn-foot-click">🦶</button>
+                        </div>
+                        <div class="idle-upgrades">
+                            <button class="upgrade-btn" id="btn-upgrade-click">
+                                💪 Force +1 (Coût: <span id="cost-click">10</span>)
+                            </button>
+                            <button class="upgrade-btn" id="btn-upgrade-auto">
+                                ⚡ Auto +1/s (Coût: <span id="cost-auto">50</span>)
+                            </button>
+                        </div>
+                        <div class="shop-section">
+                            <div class="shop-title">🛒 Boutique</div>
+                            <button class="hint-btn" id="btn-buy-hint">
+                                💡 Révéler une lettre<br>
+                                <small>Coût: <span id="cost-hint">1000</span> pièces</small>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Éléments cachés mais nécessaires -->
+    <!-- Éléments cachés nécessaires -->
     <div style="display: none;">
-        <div id="monkey-container" class="hidden">
-            <div id="monkey-bubble"></div>
+        <div id="share-container" class="hidden">
+            <p id="share-url"></p>
+            <button id="btn-copy-link">Copier</button>
         </div>
     </div>
 
-    <script src="main-simple.js"></script>
+    <script src="main-complete.js"></script>
 </body>
 </html>

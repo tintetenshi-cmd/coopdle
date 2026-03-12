@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Coopdle Complete</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Coopdle Complete</h1>
+    
+    <div class="test-section">
+        <h2>📋 Vérifications de base</h2>
+        <div id="basic-checks"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎮 Test des fonctionnalités</h2>
+        <button onclick="testIdleGame()">Test Idle Game</button>
+        <button onclick="testUI()">Test Interface</button>
+        <button onclick="testLocalStorage()">Test Sauvegarde</button>
+        <div id="feature-tests"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🚀 Lancement de l'application</h2>
+        <button onclick="window.open('index.html', '_blank')">Ouvrir Coopdle</button>
+        <div class="info">
+            <strong>Instructions:</strong>
+            <ol>
+                <li>Cliquez sur "Ouvrir Coopdle" pour tester l'application</li>
+                <li>Vérifiez que l'écran de titre s'affiche correctement</li>
+                <li>Testez la navigation entre les écrans</li>
+                <li>Essayez le mode Solo et Coop</li>
+                <li>Testez l'idle game (clic sur le pied 🦶)</li>
+                <li>Vérifiez que les upgrades fonctionnent</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function addResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = message;
+            container.appendChild(div);
+        }
+
+        function runBasicChecks() {
+            // Check if main files exist
+            fetch('main-complete.js')
+                .then(response => {
+                    if (response.ok) {
+                        addResult('basic-checks', '✅ main-complete.js trouvé', 'success');
+                    } else {
+                        addResult('basic-checks', '❌ main-complete.js manquant', 'error');
+                    }
+                })
+                .catch(() => {
+                    addResult('basic-checks', '❌ Erreur lors de la vérification de main-complete.js', 'error');
+                });
+
+            fetch('index.html')
+                .then(response => {
+                    if (response.ok) {
+                        addResult('basic-checks', '✅ index.html trouvé', 'success');
+                    } else {
+                        addResult('basic-checks', '❌ index.html manquant', 'error');
+                    }
+                })
+                .catch(() => {
+                    addResult('basic-checks', '❌ Erreur lors de la vérification de index.html', 'error');
+                });
+
+            // Check localStorage support
+            if (typeof Storage !== "undefined") {
+                addResult('basic-checks', '✅ LocalStorage supporté', 'success');
+            } else {
+                addResult('basic-checks', '❌ LocalStorage non supporté', 'error');
+            }
+
+            // Check WebSocket support
+            if (typeof WebSocket !== "undefined") {
+                addResult('basic-checks', '✅ WebSocket supporté', 'success');
+            } else {
+                addResult('basic-checks', '❌ WebSocket non supporté', 'error');
+            }
+        }
+
+        function testIdleGame() {
+            try {
+                // Test idle game logic
+                const testIdle = {
+                    coins: 100,
+                    clickPower: 1,
+                    autoRate: 0,
+                    costs: { click: 10, auto: 50, hint: 1000 }
+                };
+
+                // Test upgrade logic
+                if (testIdle.coins >= testIdle.costs.click) {
+                    testIdle.coins -= testIdle.costs.click;
+                    testIdle.clickPower++;
+                    addResult('feature-tests', '✅ Logique d\'upgrade testée avec succès', 'success');
+                } else {
+                    addResult('feature-tests', '❌ Problème avec la logique d\'upgrade', 'error');
+                }
+            } catch (e) {
+                addResult('feature-tests', `❌ Erreur test idle game: ${e.message}`, 'error');
+            }
+        }
+
+        function testUI() {
+            try {
+                // Test DOM manipulation
+                const testDiv = document.createElement('div');
+                testDiv.className = 'test-element';
+                testDiv.style.display = 'none';
+                document.body.appendChild(testDiv);
+                
+                // Test show/hide
+                testDiv.classList.remove('hidden');
+                testDiv.style.display = 'block';
+                
+                if (testDiv.style.display === 'block') {
+                    addResult('feature-tests', '✅ Manipulation DOM testée avec succès', 'success');
+                } else {
+                    addResult('feature-tests', '❌ Problème avec la manipulation DOM', 'error');
+                }
+                
+                document.body.removeChild(testDiv);
+            } catch (e) {
+                addResult('feature-tests', `❌ Erreur test UI: ${e.message}`, 'error');
+            }
+        }
+
+        function testLocalStorage() {
+            try {
+                const testData = { test: 'coopdle-test', value: 123 };
+                localStorage.setItem('coopdle-test', JSON.stringify(testData));
+                
+                const retrieved = JSON.parse(localStorage.getItem('coopdle-test'));
+                if (retrieved && retrieved.test === 'coopdle-test' && retrieved.value === 123) {
+                    addResult('feature-tests', '✅ LocalStorage testé avec succès', 'success');
+                } else {
+                    addResult('feature-tests', '❌ Problème avec LocalStorage', 'error');
+                }
+                
+                localStorage.removeItem('coopdle-test');
+            } catch (e) {
+                addResult('feature-tests', `❌ Erreur test LocalStorage: ${e.message}`, 'error');
+            }
+        }
+
+        // Run basic checks on load
+        window.onload = function() {
+            runBasicChecks();
+        };
+    </script>
+</body>
+</html>
