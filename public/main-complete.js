@@ -126,8 +126,15 @@ document.addEventListener('DOMContentLoaded', function() {
         cementixPanel: document.getElementById("cementix-panel"),
         cementixInput: document.getElementById("cementix-input"),
         cementixSubmit: document.getElementById("cementix-submit"),
-        cementixAttempts: document.getElementById("cementix-attempts")
+        cementixAttempts: document.getElementById("cementix-attempts"),
+        
+        // Alphabet elements
+        alphabetGrid: document.getElementById("alphabet-grid")
     };
+    
+    // Cementix state
+    let cementixAttempts = [];
+    let alphabetState = {};
     
     console.log('📋 All required elements found, initializing...');
     
@@ -255,6 +262,68 @@ document.addEventListener('DOMContentLoaded', function() {
         location.reload();
     };
     
+    // === ALPHABET FUNCTIONS ===
+    
+    function initAlphabet() {
+        if (!elements.alphabetGrid) return;
+        
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        elements.alphabetGrid.innerHTML = '';
+        
+        letters.forEach(letter => {
+            const letterEl = document.createElement('div');
+            letterEl.className = 'alphabet-letter unused';
+            letterEl.textContent = letter;
+            letterEl.dataset.letter = letter.toLowerCase();
+            elements.alphabetGrid.appendChild(letterEl);
+        });
+        
+        // Initialize alphabet state
+        alphabetState = {};
+        letters.forEach(letter => {
+            alphabetState[letter.toLowerCase()] = 'unused';
+        });
+    }
+    
+    function updateAlphabetFromWordle() {
+        if (!elements.board) return;
+        
+        // Get all cells with feedback
+        const cells = elements.board.querySelectorAll('.cell');
+        cells.forEach(cell => {
+            const letter = cell.textContent.toLowerCase();
+            if (letter && cell.classList.contains('correct')) {
+                updateAlphabetLetter(letter, 'correct');
+            } else if (letter && (cell.classList.contains('absent') || cell.classList.contains('present'))) {
+                if (alphabetState[letter] !== 'correct') {
+                    updateAlphabetLetter(letter, 'absent');
+                }
+            }
+        });
+    }
+    
+    function updateAlphabetFromCementix(word) {
+        // Mark letters from Cementix attempts as used (if not already correct)
+        word.toLowerCase().split('').forEach(letter => {
+            if (alphabetState[letter] === 'unused') {
+                updateAlphabetLetter(letter, 'absent');
+            }
+        });
+    }
+    
+    function updateAlphabetLetter(letter, state) {
+        if (!elements.alphabetGrid) return;
+        
+        const letterEl = elements.alphabetGrid.querySelector(`[data-letter="${letter}"]`);
+        if (!letterEl) return;
+        
+        // Update state (correct takes priority over absent)
+        if (state === 'correct' || alphabetState[letter] !== 'correct') {
+            alphabetState[letter] = state;
+            letterEl.className = `alphabet-letter ${state}`;
+        }
+    }
+    
     // === CEMENTIX FUNCTIONS ===
     
     function getHeatEmoji(score) {
@@ -274,36 +343,67 @@ document.addEventListener('DOMContentLoaded', function() {
         return 'score-burning';
     }
     
-    function addCementixAttempt(pseudo, word, score, timestamp) {
+    function sortCementixAttempts() {
+        // Trier par score décroissant, puis par timestamp décroissant (plus récent en premier)
+        cementixAttempts.sort((a, b) => {
+            if (a.score !== b.score) {
+                return b.score - a.score; // Score décroissant
+            }
+            return b.timestamp - a.timestamp; // Plus récent en premier
+        });
+    }
+    
+    function renderCementixAttempts() {
         if (!elements.cementixAttempts) return;
         
-        const attemptEl = document.createElement('div');
-        attemptEl.className = 'cementix-attempt';
+        elements.cementixAttempts.innerHTML = '';
         
-        const emoji = getHeatEmoji(score);
-        const scoreClass = getScoreClass(score);
-        
-        attemptEl.innerHTML = `
-            <div class="cementix-attempt-player">${pseudo}</div>
-            <div class="cementix-attempt-word">${word}</div>
-            <div class="cementix-attempt-score ${scoreClass}">${score}/100</div>
-            <div class="cementix-attempt-emoji">${emoji}</div>
-        `;
-        
-        // Insert at the beginning (most recent first)
-        elements.cementixAttempts.insertBefore(attemptEl, elements.cementixAttempts.firstChild);
-        
-        // Remove empty message if it exists
-        const emptyMsg = elements.cementixAttempts.querySelector('.cementix-empty');
-        if (emptyMsg) {
-            emptyMsg.remove();
+        if (cementixAttempts.length === 0) {
+            const emptyMsg = document.createElement('div');
+            emptyMsg.className = 'cementix-empty';
+            emptyMsg.textContent = 'Aucune tentative pour le moment...';
+            elements.cementixAttempts.appendChild(emptyMsg);
+            return;
         }
         
-        // Limit to 50 attempts max
-        const attempts = elements.cementixAttempts.querySelectorAll('.cementix-attempt');
-        if (attempts.length > 50) {
-            attempts[attempts.length - 1].remove();
+        cementixAttempts.forEach(attempt => {
+            const attemptEl = document.createElement('div');
+            attemptEl.className = 'cementix-attempt';
+            
+            const emoji = getHeatEmoji(attempt.score);
+            const scoreClass = getScoreClass(attempt.score);
+            
+            attemptEl.innerHTML = `
+                <div class="cementix-attempt-player">${attempt.pseudo}</div>
+                <div class="cementix-attempt-word">${attempt.word}</div>
+                <div class="cementix-attempt-score ${scoreClass}">${attempt.score}/100</div>
+                <div class="cementix-attempt-emoji">${emoji}</div>
+            `;
+            
+            elements.cementixAttempts.appendChild(attemptEl);
+        });
+    }
+    
+    function addCementixAttempt(pseudo, word, score, timestamp) {
+        // Ajouter à la liste
+        cementixAttempts.push({
+            pseudo,
+            word,
+            score,
+            timestamp
+        });
+        
+        // Limiter à 100 tentatives max
+        if (cementixAttempts.length > 100) {
+            cementixAttempts = cementixAttempts.slice(0, 100);
         }
+        
+        // Trier et re-render
+        sortCementixAttempts();
+        renderCementixAttempts();
+        
+        // Mettre à jour l'alphabet
+        updateAlphabetFromCementix(word);
     }
     
     function submitCementixWord() {
@@ -488,6 +588,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+        
+        // Update alphabet from Wordle results
+        updateAlphabetFromWordle();
     }
     
     // === GESTION DU CHAT ===
@@ -707,6 +810,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Initialize empty state for Cementix
         initCementixEmpty();
+        
+        // Initialize alphabet
+        initAlphabet();
     }
     
     function copyRoomLink() {

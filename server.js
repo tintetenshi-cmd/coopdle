@@ -16,71 +16,198 @@ app.use(express.static(publicDir));
 // ----- Word / room logic -----
 
 function calculateSemanticProximity(word, targetWord) {
-  // Fonction simplifiée de calcul de proximité sémantique
-  // Dans un vrai projet, on utiliserait une API comme Word2Vec, FastText, ou une API de NLP
-  
-  const w1 = word.toLowerCase();
-  const w2 = targetWord.toLowerCase();
+  // Algorithme de proximité sémantique amélioré
+  const w1 = word.toLowerCase().trim();
+  const w2 = targetWord.toLowerCase().trim();
   
   // Si c'est le même mot, score maximum
   if (w1 === w2) return 100;
   
-  // Calcul basé sur la similarité des lettres et longueur
+  // Base de données sémantique étendue avec scores calibrés
+  const semanticDatabase = {
+    // Animaux
+    'chat': {
+      'animal': 85, 'félin': 95, 'miaou': 90, 'ronron': 88, 'souris': 75, 
+      'chien': 70, 'mammifère': 80, 'domestique': 82, 'poil': 65, 'griffes': 78
+    },
+    'chien': {
+      'animal': 85, 'canin': 95, 'aboie': 90, 'fidèle': 88, 'os': 85,
+      'chat': 70, 'mammifère': 80, 'domestique': 82, 'queue': 75, 'loyal': 87
+    },
+    'oiseau': {
+      'animal': 85, 'voler': 92, 'plume': 90, 'nid': 88, 'chanter': 85,
+      'aile': 90, 'bec': 88, 'ciel': 75, 'arbre': 70, 'œuf': 82
+    },
+    
+    // Maison et habitat
+    'maison': {
+      'toit': 88, 'porte': 85, 'fenêtre': 85, 'habiter': 90, 'foyer': 92,
+      'mur': 80, 'chambre': 82, 'cuisine': 78, 'salon': 78, 'famille': 75
+    },
+    'appartement': {
+      'maison': 85, 'logement': 90, 'habiter': 88, 'immeuble': 85, 'loyer': 80,
+      'chambre': 82, 'cuisine': 78, 'balcon': 75, 'voisin': 70
+    },
+    
+    // Éléments naturels
+    'eau': {
+      'liquide': 95, 'boire': 88, 'mer': 85, 'rivière': 90, 'pluie': 85,
+      'océan': 88, 'lac': 87, 'source': 85, 'humide': 80, 'transparent': 70
+    },
+    'feu': {
+      'flamme': 95, 'chaud': 90, 'brûler': 92, 'rouge': 75, 'chaleur': 88,
+      'incendie': 85, 'allumette': 80, 'fumée': 82, 'cendre': 78, 'danger': 70
+    },
+    'terre': {
+      'sol': 90, 'planète': 85, 'jardin': 80, 'plante': 75, 'agriculture': 82,
+      'boue': 78, 'sable': 75, 'pierre': 70, 'racine': 77, 'creuser': 80
+    },
+    
+    // Objets du quotidien
+    'livre': {
+      'lire': 95, 'page': 90, 'histoire': 85, 'auteur': 88, 'papier': 82,
+      'roman': 87, 'bibliothèque': 85, 'mot': 80, 'écrire': 83, 'savoir': 78
+    },
+    'voiture': {
+      'rouler': 90, 'route': 85, 'essence': 88, 'volant': 92, 'roue': 90,
+      'conduire': 88, 'transport': 85, 'garage': 80, 'vitesse': 82, 'frein': 85
+    },
+    'téléphone': {
+      'appeler': 95, 'communication': 88, 'portable': 85, 'sonner': 90, 'numéro': 85,
+      'conversation': 82, 'message': 80, 'contact': 83, 'écran': 75, 'batterie': 70
+    },
+    
+    // Nourriture
+    'pain': {
+      'manger': 85, 'boulangerie': 90, 'farine': 88, 'croûte': 85, 'mie': 87,
+      'beurre': 80, 'sandwich': 82, 'petit-déjeuner': 78, 'four': 75, 'blé': 83
+    },
+    'pomme': {
+      'fruit': 95, 'rouge': 80, 'arbre': 85, 'manger': 82, 'sucré': 78,
+      'poire': 85, 'verger': 88, 'vitamine': 75, 'croquer': 83, 'jus': 80
+    },
+    
+    // Couleurs
+    'rouge': {
+      'couleur': 95, 'sang': 85, 'feu': 80, 'rose': 82, 'orange': 78,
+      'cerise': 85, 'tomate': 80, 'passion': 75, 'danger': 70, 'amour': 72
+    },
+    'bleu': {
+      'couleur': 95, 'ciel': 88, 'mer': 85, 'eau': 80, 'froid': 75,
+      'vert': 78, 'océan': 87, 'calme': 70, 'paix': 72, 'nuit': 68
+    },
+    
+    // Émotions et concepts abstraits
+    'amour': {
+      'cœur': 90, 'sentiment': 88, 'passion': 85, 'tendresse': 87, 'affection': 90,
+      'famille': 80, 'couple': 85, 'bonheur': 82, 'joie': 78, 'haine': 25
+    },
+    'joie': {
+      'bonheur': 92, 'rire': 88, 'sourire': 85, 'plaisir': 83, 'fête': 80,
+      'content': 87, 'gai': 85, 'tristesse': 15, 'mélancolie': 20, 'euphorie': 88
+    }
+  };
+  
+  // Vérification directe dans la base sémantique
+  if (semanticDatabase[w2] && semanticDatabase[w2][w1]) {
+    return semanticDatabase[w2][w1];
+  }
+  if (semanticDatabase[w1] && semanticDatabase[w1][w2]) {
+    return semanticDatabase[w1][w2];
+  }
+  
+  // Calcul de similarité orthographique comme fallback
   let score = 0;
   
-  // Bonus pour les lettres communes
+  // Bonus pour les lettres communes (pondéré)
   const letters1 = w1.split('');
   const letters2 = w2.split('');
   const commonLetters = letters1.filter(letter => letters2.includes(letter));
-  score += (commonLetters.length / Math.max(letters1.length, letters2.length)) * 30;
+  const letterSimilarity = (commonLetters.length / Math.max(letters1.length, letters2.length)) * 25;
+  score += letterSimilarity;
   
   // Bonus pour la longueur similaire
   const lengthDiff = Math.abs(w1.length - w2.length);
-  score += Math.max(0, 20 - lengthDiff * 3);
+  const lengthBonus = Math.max(0, 15 - lengthDiff * 2);
+  score += lengthBonus;
   
-  // Bonus pour les préfixes/suffixes communs
+  // Bonus pour les préfixes communs (plus important)
   let prefixMatch = 0;
   for (let i = 0; i < Math.min(w1.length, w2.length); i++) {
     if (w1[i] === w2[i]) prefixMatch++;
     else break;
   }
-  score += prefixMatch * 5;
+  score += prefixMatch * 4;
   
+  // Bonus pour les suffixes communs
   let suffixMatch = 0;
   for (let i = 1; i <= Math.min(w1.length, w2.length); i++) {
     if (w1[w1.length - i] === w2[w2.length - i]) suffixMatch++;
     else break;
   }
-  score += suffixMatch * 5;
+  score += suffixMatch * 3;
   
-  // Mots sémantiquement proches (exemples hardcodés pour la démo)
-  const semanticGroups = {
-    'chat': ['animal', 'félin', 'miaou', 'ronron', 'souris'],
-    'chien': ['animal', 'aboie', 'fidèle', 'os', 'queue'],
-    'maison': ['toit', 'porte', 'fenêtre', 'habiter', 'foyer'],
-    'eau': ['liquide', 'boire', 'mer', 'rivière', 'pluie'],
-    'feu': ['flamme', 'chaud', 'brûler', 'rouge', 'chaleur'],
-    'livre': ['lire', 'page', 'histoire', 'auteur', 'papier'],
-    'voiture': ['rouler', 'route', 'essence', 'volant', 'roue']
-  };
+  // Détection de racines communes (français)
+  const commonRoots = [
+    ['mang', 'aliment', 'nourr'], // alimentation
+    ['boir', 'liquid', 'eau'], // boisson
+    ['march', 'cours', 'all'], // mouvement
+    ['parl', 'dit', 'mot'], // parole
+    ['regard', 'voir', 'œil'], // vision
+    ['écout', 'entend', 'oreill'], // audition
+  ];
   
-  // Vérifier les groupes sémantiques
-  for (const [key, related] of Object.entries(semanticGroups)) {
-    if (w2 === key && related.includes(w1)) {
-      score += 40;
-      break;
-    }
-    if (w1 === key && related.includes(w2)) {
-      score += 40;
+  for (const roots of commonRoots) {
+    const hasRoot1 = roots.some(root => w1.includes(root));
+    const hasRoot2 = roots.some(root => w2.includes(root));
+    if (hasRoot1 && hasRoot2) {
+      score += 20;
       break;
     }
   }
   
-  // Ajouter un peu de randomness pour rendre le jeu plus intéressant
-  score += Math.random() * 10;
+  // Pénalité pour les mots très différents
+  if (letterSimilarity < 10 && lengthDiff > 3) {
+    score *= 0.7;
+  }
   
+  // Assurer que le score reste dans la plage 1-100
   return Math.min(100, Math.max(1, Math.round(score)));
 }
+
+// Tests de calibration
+function testSemanticProximity() {
+  const tests = [
+    // Très proches (80-100)
+    ['chat', 'félin', 95],
+    ['chien', 'canin', 95],
+    ['eau', 'liquide', 95],
+    ['livre', 'lire', 95],
+    
+    // Proches (60-80)
+    ['chat', 'animal', 85],
+    ['maison', 'toit', 88],
+    ['voiture', 'rouler', 90],
+    
+    // Moyennement proches (40-60)
+    ['chat', 'chien', 70],
+    ['eau', 'feu', 30],
+    
+    // Éloignés (1-40)
+    ['chat', 'voiture', 15],
+    ['livre', 'eau', 10]
+  ];
+  
+  console.log('=== Tests de proximité sémantique ===');
+  tests.forEach(([w1, w2, expected]) => {
+    const score = calculateSemanticProximity(w1, w2);
+    const diff = Math.abs(score - expected);
+    console.log(`${w1} ↔ ${w2}: ${score}/100 (attendu: ${expected}, diff: ${diff})`);
+  });
+}
+
+// Lancer les tests au démarrage du serveur
+testSemanticProximity();
 
 const MIN_LEN = 2;
 const MAX_LEN = 10;

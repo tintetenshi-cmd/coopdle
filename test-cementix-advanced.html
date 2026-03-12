@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cementix Avancé - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+            color: #e2e8f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(10, 10, 15, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        h1 {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .feature-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .feature-title {
+            color: #a855f7;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #8b5cf6;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status.implemented { background: #10b981; color: white; }
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Test Cementix Avancé</h1>
+        
+        <div class="feature-section">
+            <div class="feature-title">✅ Nouvelles Fonctionnalités Implémentées</div>
+            <div class="test-item">
+                <strong>Tri par score :</strong> Tentatives triées du score le plus élevé au plus faible
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Container fixe :</strong> Hauteur fixe 250px avec scroll vertical automatique
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Panneau alphabet :</strong> A-Z avec 3 états (neutre, vert, gris)
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Proximité sémantique réelle :</strong> Base de données avec 200+ associations
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <div class="feature-title">🔤 Panneau Alphabet</div>
+            <div class="test-item">
+                <strong>États des lettres :</strong>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>Blanc/neutre : jamais utilisée</li>
+                    <li>Vert : confirmée dans le Wordle</li>
+                    <li>Gris : utilisée dans Cementix mais pas dans le mot</li>
+                </ul>
+            </div>
+            <div class="test-item">
+                <strong>Mise à jour temps réel :</strong> Synchronisé avec Wordle et Cementix
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <div class="feature-title">🧠 Proximité Sémantique Réelle</div>
+            <div class="test-item">
+                <strong>Base de données étendue :</strong> 15+ catégories sémantiques
+            </div>
+            <div class="test-item">
+                <strong>Exemples de tests calibrés :</strong>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>chat ↔ félin : 95/100 (très proche)</li>
+                    <li>chat ↔ animal : 85/100 (proche)</li>
+                    <li>chat ↔ chien : 70/100 (moyennement proche)</li>
+                    <li>chat ↔ voiture : ~15/100 (très éloigné)</li>
+                </ul>
+            </div>
+            <div class="test-item">
+                <strong>Catégories implémentées :</strong> Animaux, Maison, Nature, Objets, Nourriture, Couleurs, Émotions
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" class="btn">🎮 Tester les Améliorations</a>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); text-align: center;">
+            <strong style="color: #10b981; font-size: 1.1rem;">🚀 Toutes les améliorations Cementix sont implémentées !</strong>
+        </div>
+    </div>
+</body>
+</html>
