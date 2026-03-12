@@ -1,900 +1,447 @@
-(() => {
-  const screenTitle = document.getElementById("screen-title");
-  const screenMode = document.getElementById("screen-mode");
-  const screenGame = document.getElementById("screen-game");
-
-  const btnPlay = document.getElementById("btn-play");
-  const btnSolo = document.getElementById("btn-solo");
-  const btnCoop = document.getElementById("btn-coop");
-  const btnJoinRoom = document.getElementById("btn-join-room");
-  const btnBackToTitle = document.getElementById("btn-back-to-title");
-  const btnBackToMode = document.getElementById("btn-back-to-mode");
-  const btnNewGame = document.getElementById("btn-new-game");
-  const btnSubmit = document.getElementById("btn-submit");
-  const btnCopyLink = document.getElementById("btn-copy-link");
-
-  const badgeMode = document.getElementById("badge-mode");
-  const badgeRoom = document.getElementById("badge-room");
-
-  const modeTitle = document.getElementById("mode-title");
-  const modeDescription = document.getElementById("mode-description");
-  const modeButtonsMain = document.getElementById("mode-buttons-main");
-  const modeButtonsJoin = document.getElementById("mode-buttons-join");
-  const fieldLength = document.getElementById("field-length");
-  const inputPseudo = document.getElementById("input-pseudo");
-  const selectLength = document.getElementById("select-length");
-  const selectAvatar = document.getElementById("select-avatar");
-  const selectNameColor = document.getElementById("select-name-color");
-
-  const wordLengthSpan = document.getElementById("word-length");
-  const attemptsSpan = document.getElementById("attempts");
-  const maxAttemptsSpan = document.getElementById("max-attempts");
-
-  const boardEl = document.getElementById("board");
-  const inputGuess = document.getElementById("input-guess");
-  const errorEl = document.getElementById("error");
-  const infoEl = document.getElementById("info");
-  const statusCurrentPlayer = document.getElementById("status-current-player");
-  const shareContainer = document.getElementById("share-container");
-  const shareUrlEl = document.getElementById("share-url");
-  const participantsList = document.getElementById("participants-list");
-  const boardPanel = document.getElementById("board-panel");
-  const screenGameEl = document.getElementById("screen-game");
-
-  const btnFootClick = document.getElementById("btn-foot-click");
-  const btnUpgradeClick = document.getElementById("btn-upgrade-click");
-  const btnUpgradeAuto = document.getElementById("btn-upgrade-auto");
-  const idleStepsEl = document.getElementById("idle-steps");
-  const idlePerClickEl = document.getElementById("idle-per-click");
-  const idleAutoRateEl = document.getElementById("idle-auto-rate");
-  const idleCostClickEl = document.getElementById("cost-click");
-  const idleCostAutoEl = document.getElementById("cost-auto");
-  const idleCostLetterEl = document.getElementById("cost-letter");
-
-  const inputChat = document.getElementById("input-chat");
-  const btnSendChat = document.getElementById("btn-send-chat");
-  const chatMessagesEl = document.getElementById("chat-messages");
-
-  let ws = null;
-  let currentRoomId = null;
-  let playerId = null;
-  let currentMode = null; // "solo" | "coop"
-  let length = null;
-  let maxAttempts = 6;
-  let guesses = [];
-  let attempts = 0;
-  let status = "playing";
-  let currentPlayerId = null;
-  let players = [];
-
-  let currentRoomFromUrl = null;
-
-  // idle game state
-  let idleSteps = 0;
-  let idlePerClick = 1;
-  let idleAutoRate = 0;
-  let idleCostClick = 10;
-  let idleCostAuto = 25;
-  let idleCostLetter = 500;
-
-  let previewGuess = "";
-  let previewAuthorId = null;
-  let revealedLetters = [];
-
-  const AVATAR_EMOJIS = [
-    "🦶",
-    "🦄",
-    "🐉",
-    "🦖",
-    "🦕",
-    "🐙",
-    "🦑",
-    "🦈",
-    "🐬",
-    "🦭",
-    "🐳",
-    "🐋",
-    "🐊",
-    "🐍",
-    "🦂",
-    "🕷️",
-    "🦇",
-    "🦊",
-    "🐺",
-    "🐯",
-    "🦁",
-    "🐮",
-    "🐷",
-    "🐸",
-    "🐵",
-    "🦍",
-    "🦧",
-    "🐧",
-    "🐦",
-    "🦚",
-    "🦜",
-    "🦢",
-    "🦩",
-    "🐢",
-    "🦋",
-    "🐝",
-    "🪲",
-    "🪳",
-    "🦀",
-    "🦞",
-    "🦐",
-    "🐼",
-    "🐱",
-    "🐶",
-    "🐰",
-    "🦝",
-    "🦓",
-    "🦒",
-    "🦘",
-    "🦥",
-    "🦦",
-    "🦨",
-    "🐲",
-    "👾",
-    "🤖",
-    "👻",
-    "💀",
-    "🎃",
-    "😺",
-    "😈",
-    "🥷",
-    "🧙‍♂️",
-    "🧙‍♀️",
-    "🧛‍♂️",
-    "🧛‍♀️",
-    "🧟‍♂️",
-    "🧟‍♀️",
-    "🧞‍♂️",
-    "🧞‍♀️",
-    "🧚‍♂️",
-    "🧚‍♀️",
-    "🧜‍♂️",
-    "🧜‍♀️",
-    "🧠",
-    "💎",
-    "🔥",
-    "⚡",
-    "🌙",
-    "⭐",
-    "🌈",
-    "🍕",
-    "🍣",
-    "🍩",
-    "🍪",
-    "🧁",
-    "🥨",
-    "🧋",
-    "☕",
-    "🎧",
-    "🎮",
-    "🕹️",
-    "🎲",
-    "🧩",
-    "🛸",
-    "🚀",
-    "🏎️",
-    "🧨",
-    "🎆"
+// Attendre que le DOM soit complètement chargé
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded, starting app...');
+  
+  // Vérifier que tous les éléments essentiels existent
+  const requiredElements = [
+    'screen-title', 'screen-mode', 'screen-game',
+    'btn-play', 'btn-solo', 'btn-coop'
   ];
-
-  const NAME_COLORS = [
-    { id: "violet", label: "Violet", value: "#a855f7" },
-    { id: "indigo", label: "Indigo", value: "#818cf8" },
-    { id: "cyan", label: "Cyan", value: "#22d3ee" },
-    { id: "emerald", label: "Émeraude", value: "#34d399" },
-    { id: "lime", label: "Lime", value: "#a3e635" },
-    { id: "amber", label: "Ambre", value: "#fbbf24" },
-    { id: "orange", label: "Orange", value: "#fb923c" },
-    { id: "rose", label: "Rose", value: "#fb7185" },
-    { id: "fuchsia", label: "Fuchsia", value: "#e879f9" },
-    { id: "red", label: "Rouge", value: "#f87171" },
-    { id: "blue", label: "Bleu", value: "#60a5fa" },
-    { id: "teal", label: "Turquoise", value: "#2dd4bf" },
-    { id: "slate", label: "Gris clair", value: "#e5e7eb" }
-  ];
-
-  function fillAvatarAndColorSelects() {
-    if (selectAvatar && selectAvatar.options.length <= 1) {
-      AVATAR_EMOJIS.forEach((e) => {
-        const opt = document.createElement("option");
-        opt.value = e;
-        opt.textContent = `${e} ${e}`;
-        selectAvatar.appendChild(opt);
-      });
-    }
-    if (selectNameColor && selectNameColor.options.length <= 1) {
-      NAME_COLORS.forEach((c) => {
-        const opt = document.createElement("option");
-        opt.value = c.id;
-        opt.textContent = c.label;
-        selectNameColor.appendChild(opt);
-      });
-    }
-  }
-
-  function showScreen(screen) {
-    [screenTitle, screenMode, screenGame].forEach((s) => {
-      s.classList.add("hidden");
-    });
-    screen.classList.remove("hidden");
-  }
-
-  function clearMessages() {
-    errorEl.textContent = "";
-    errorEl.classList.add("hidden");
-    infoEl.textContent = "";
-    infoEl.classList.add("hidden");
-  }
-
-  function renderParticipants() {
-    participantsList.innerHTML = "";
-    players.forEach((p) => {
-      const li = document.createElement("li");
-      li.className = "participant";
-      if (p.id === playerId) {
-        li.classList.add("you");
-      }
-      if (p.id === currentPlayerId) {
-        li.classList.add("current");
-      }
-
-      const avatar = document.createElement("div");
-      avatar.className = "participant-avatar";
-      avatar.textContent = p.avatar || "🙂";
-
-      const name = document.createElement("span");
-      name.className = "participant-name";
-      name.textContent = p.pseudo || "Joueur";
-      if (p.color) {
-        name.style.color = p.color;
-      }
-
-      li.appendChild(avatar);
-      li.appendChild(name);
-      participantsList.appendChild(li);
-    });
-  }
-
-  function showError(text) {
-    errorEl.textContent = text;
-    errorEl.classList.remove("hidden");
-  }
-
-  function showInfo(text) {
-    infoEl.textContent = text;
-    infoEl.classList.remove("hidden");
-  }
-
-  function updateStatusLine() {
-    if (!currentMode) {
-      statusCurrentPlayer.textContent = "";
+  
+  for (const id of requiredElements) {
+    const element = document.getElementById(id);
+    if (!element) {
+      console.error(`Element manquant: ${id}`);
       return;
     }
-    if (status === "won") {
-      statusCurrentPlayer.textContent = "Bravo ! Vous avez trouvé le mot.";
-      btnNewGame.classList.add("pulse");
-      updateInputEnabled();
-      return;
-    }
-    if (status === "lost") {
-      statusCurrentPlayer.textContent =
-        "Partie terminée. Lancez une nouvelle partie pour rejouer.";
-      btnNewGame.classList.add("pulse");
-      updateInputEnabled();
-      return;
-    }
-    btnNewGame.classList.remove("pulse");
-
-    if (currentMode === "solo") {
-      statusCurrentPlayer.textContent =
-        "Mode solo : faites vos 6 essais pour trouver le mot.";
-    } else {
-      if (!currentPlayerId) {
-        statusCurrentPlayer.textContent = "En attente de joueurs...";
-      } else if (currentPlayerId === playerId) {
-        statusCurrentPlayer.textContent = "C'est votre tour de proposer un mot.";
-      } else {
-        statusCurrentPlayer.textContent =
-          "C'est le tour de votre coéquipier. La grille se synchronise en temps réel.";
-      }
-    }
-    updateInputEnabled();
   }
+  
+  console.log('All required elements found, initializing...');
+  initializeApp();
+});
 
-  function updateInputEnabled() {
-    const canType =
-      status === "playing" &&
-      (currentMode === "solo" ||
-        !currentPlayerId ||
-        currentPlayerId === playerId);
-    inputGuess.disabled = !canType;
-    btnSubmit.disabled = !canType;
-  }
+function initializeApp() {
+  try {
+    // Variables globales
+    let ws = null;
+    let currentRoomId = null;
+    let playerId = null;
+    let currentMode = null;
+    let length = null;
+    let maxAttempts = 6;
+    let guesses = [];
+    let attempts = 0;
+    let status = "playing";
+    let currentPlayerId = null;
+    let players = [];
+    let currentRoomFromUrl = null;
+    let revealedLetters = [];
+    let previewGuess = "";
+    let previewAuthorId = null;
 
-  function renderBoard() {
-    if (!length) {
-      boardEl.innerHTML = "";
-      return;
-    }
-    boardEl.style.gridTemplateRows = `repeat(${maxAttempts}, 1fr)`;
+    // Idle game state
+    let idleSteps = 0;
+    let idlePerClick = 1;
+    let idleAutoRate = 0;
+    let idleCostClick = 10;
+    let idleCostAuto = 25;
+    let idleCostLetter = 500;
 
-    boardEl.innerHTML = "";
-    for (let row = 0; row < maxAttempts; row++) {
-      const rowEl = document.createElement("div");
-      rowEl.className = "board-row";
-      rowEl.style.gridTemplateColumns = `repeat(${length}, 1fr)`;
+    // Monkey state
+    let monkeyInterval = null;
 
-      const guess = guesses[row];
-      for (let col = 0; col < length; col++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        if (guess) {
-          const letter = guess.guess[col] || "";
-          cell.textContent = letter || "";
-          const feedback = guess.feedback[col];
-          if (feedback) {
-            cell.classList.add(feedback);
-          }
-        } else {
-          if (
-            revealedLetters &&
-            revealedLetters[col]
-          ) {
-            cell.textContent = revealedLetters[col].toUpperCase();
-            cell.classList.add("revealed-letter");
-          }
-          if (
-            row === attempts &&
-            previewGuess &&
-            previewAuthorId &&
-            previewAuthorId === currentPlayerId
-          ) {
-            const letter = previewGuess[col] || "";
-            if (letter) {
-              cell.textContent = letter.toUpperCase();
-            }
-          }
-        }
-        rowEl.appendChild(cell);
-      }
+    // Récupérer tous les éléments DOM
+    const elements = {
+      screenTitle: document.getElementById("screen-title"),
+      screenMode: document.getElementById("screen-mode"),
+      screenGame: document.getElementById("screen-game"),
+      btnPlay: document.getElementById("btn-play"),
+      btnSolo: document.getElementById("btn-solo"),
+      btnCoop: document.getElementById("btn-coop"),
+      btnJoinRoom: document.getElementById("btn-join-room"),
+      btnBackToTitle: document.getElementById("btn-back-to-title"),
+      btnBackToMode: document.getElementById("btn-back-to-mode"),
+      btnNewGame: document.getElementById("btn-new-game"),
+      btnSubmit: document.getElementById("btn-submit"),
+      btnCopyLink: document.getElementById("btn-copy-link"),
+      badgeMode: document.getElementById("badge-mode"),
+      badgeRoom: document.getElementById("badge-room"),
+      modeTitle: document.getElementById("mode-title"),
+      modeDescription: document.getElementById("mode-description"),
+      modeButtonsMain: document.getElementById("mode-buttons-main"),
+      modeButtonsJoin: document.getElementById("mode-buttons-join"),
+      fieldLength: document.getElementById("field-length"),
+      inputPseudo: document.getElementById("input-pseudo"),
+      selectLength: document.getElementById("select-length"),
+      selectAvatar: document.getElementById("select-avatar"),
+      selectNameColor: document.getElementById("select-name-color"),
+      wordLengthSpan: document.getElementById("word-length"),
+      attemptsSpan: document.getElementById("attempts"),
+      maxAttemptsSpan: document.getElementById("max-attempts"),
+      boardEl: document.getElementById("board"),
+      inputGuess: document.getElementById("input-guess"),
+      errorEl: document.getElementById("error"),
+      infoEl: document.getElementById("info"),
+      statusCurrentPlayer: document.getElementById("status-current-player"),
+      shareContainer: document.getElementById("share-container"),
+      shareUrlEl: document.getElementById("share-url"),
+      participantsList: document.getElementById("participants-list"),
+      boardPanel: document.getElementById("board-panel"),
+      screenGameEl: document.getElementById("screen-game"),
+      btnFootClick: document.getElementById("btn-foot-click"),
+      btnUpgradeClick: document.getElementById("btn-upgrade-click"),
+      btnUpgradeAuto: document.getElementById("btn-upgrade-auto"),
+      idleStepsEl: document.getElementById("idle-steps"),
+      idlePerClickEl: document.getElementById("idle-per-click"),
+      idleAutoRateEl: document.getElementById("idle-auto-rate"),
+      idleCostClickEl: document.getElementById("cost-click"),
+      idleCostAutoEl: document.getElementById("cost-auto"),
+      idleCostLetterEl: document.getElementById("cost-letter"),
+      inputChat: document.getElementById("input-chat"),
+      btnSendChat: document.getElementById("btn-send-chat"),
+      chatMessagesEl: document.getElementById("chat-messages"),
+      monkeyContainer: document.getElementById("monkey-container"),
+      monkeyBubble: document.getElementById("monkey-bubble")
+    };
 
-      if (row === guesses.length - 1 && guess) {
-        rowEl.classList.add("pop");
-      }
-
-      boardEl.appendChild(rowEl);
-    }
-  }
-
-  function connectWebSocket(roomId, pseudo, desiredLength) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.close();
-    }
-
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const host = window.location.host || "localhost:3000";
-    const wsUrl = `${protocol}//${host}`;
-    ws = new WebSocket(wsUrl);
-
-    ws.addEventListener("open", () => {
-      const avatarValue = selectAvatar?.value || "random";
-      const colorId = selectNameColor?.value || "random";
-      ws.send(
-        JSON.stringify({
-          type: "join",
-          roomId,
-          pseudo,
-          desiredLength,
-          avatar: avatarValue,
-          colorId
-        })
-      );
-      clearMessages();
-    });
-
-    ws.addEventListener("message", (event) => {
-      let msg;
-      try {
-        msg = JSON.parse(event.data);
-      } catch (error) {
-        console.error("Erreur de parsing WebSocket:", error);
+    // Vérifier que les éléments critiques existent
+    const criticalElements = ['screenTitle', 'screenMode', 'screenGame', 'btnPlay'];
+    for (const key of criticalElements) {
+      if (!elements[key]) {
+        console.error(`Element critique manquant: ${key}`);
         return;
       }
-      
-      if (msg.type === "joined") {
-        playerId = msg.playerId;
-        currentRoomId = msg.roomId;
-        length = msg.length;
-        maxAttempts = msg.maxAttempts;
-        players = msg.players || [];
-        maxAttemptsSpan.textContent = maxAttempts.toString();
-        wordLengthSpan.textContent = length.toString();
-        attemptsSpan.textContent = "0";
-        guesses = [];
-        attempts = 0;
-        status = "playing";
-        currentPlayerId = null;
-        previewGuess = "";
-        previewAuthorId = null;
-        revealedLetters = msg.revealedLetters || Array(length).fill(null);
-        renderBoard();
-        renderParticipants();
-        updateStatusLine();
-        if (currentMode === "coop") {
-          prepareShareLink();
-        }
-        // Start monkey after joining
-        setTimeout(() => {
-          startMonkey();
-        }, 2000);
-      } else if (msg.type === "state") {
-        length = msg.length;
-        guesses = msg.guesses || [];
-        attempts = msg.attempts || 0;
-        maxAttempts = msg.maxAttempts || 6;
-        status = msg.status || "playing";
-        currentPlayerId = msg.currentPlayerId || null;
-        players = msg.players || players;
-        revealedLetters = msg.revealedLetters || revealedLetters;
-        wordLengthSpan.textContent = length.toString();
-        attemptsSpan.textContent = attempts.toString();
-        maxAttemptsSpan.textContent = maxAttempts.toString();
-        renderBoard();
-        renderParticipants();
-        updateStatusLine();
-      } else if (msg.type === "error") {
-        showError(msg.message || "Erreur.");
-      } else if (msg.type === "reveal") {
-        if (status === "won") {
-          showInfo(`Mot trouvé : ${msg.word.toUpperCase()}`);
-        } else {
-          showInfo(`Le mot était : ${msg.word.toUpperCase()}`);
-        }
-      } else if (msg.type === "chat") {
-        appendChatMessage(msg);
-      } else if (msg.type === "typing") {
-        if (msg.from && msg.from === currentPlayerId) {
-          previewAuthorId = msg.from;
-          previewGuess = msg.text || "";
-          renderBoard();
-        }
-      } else if (msg.type === "revealLetter") {
-        if (!revealedLetters) {
-          revealedLetters = Array(length).fill(null);
-        }
-        revealedLetters[msg.index] = msg.letter;
-        showInfo("Une lettre a été révélée via le shop !");
-        renderBoard();
-      } else if (msg.type === "effect") {
-        applyEffect(msg.effect);
+    }
+
+    console.log('All elements found, setting up app...');
+
+    // Constantes
+    const AVATAR_EMOJIS = [
+      "🦶", "🦄", "🐉", "🦖", "🦕", "🐙", "🦑", "🦈", "🐬", "🦭",
+      "🐳", "🐋", "🐊", "🐍", "🦂", "🕷️", "🦇", "🦊", "🐺", "🐯",
+      "🦁", "🐮", "🐷", "🐸", "🐵", "🦍", "🦧", "🐧", "🐦", "🦚",
+      "🦜", "🦢", "🦩", "🐢", "🦋", "🐝", "🪲", "🪳", "🦀", "🦞",
+      "🦐", "🐼", "🐱", "🐶", "🐰", "🦝", "🦓", "🦒", "🦘", "🦥",
+      "🦦", "🦨", "🐲", "👾", "🤖", "👻", "💀", "🎃", "😺", "😈"
+    ];
+
+    const NAME_COLORS = [
+      { id: "violet", label: "Violet", value: "#a855f7" },
+      { id: "indigo", label: "Indigo", value: "#818cf8" },
+      { id: "cyan", label: "Cyan", value: "#22d3ee" },
+      { id: "emerald", label: "Émeraude", value: "#34d399" },
+      { id: "lime", label: "Lime", value: "#a3e635" },
+      { id: "amber", label: "Ambre", value: "#fbbf24" },
+      { id: "orange", label: "Orange", value: "#fb923c" },
+      { id: "rose", label: "Rose", value: "#fb7185" },
+      { id: "fuchsia", label: "Fuchsia", value: "#e879f9" },
+      { id: "red", label: "Rouge", value: "#f87171" },
+      { id: "blue", label: "Bleu", value: "#60a5fa" },
+      { id: "teal", label: "Turquoise", value: "#2dd4bf" },
+      { id: "slate", label: "Gris clair", value: "#e5e7eb" }
+    ];
+
+    const MONKEY_PHRASES = [
+      "Les bananes sont carrées",
+      "J'ai vu un nuage manger une chaussette",
+      "Le temps est un sandwich",
+      "Les lettres dansent la nuit",
+      "Mon cousin est une cuillère",
+      "Les mots ont des pattes",
+      "J'entends les couleurs",
+      "Le silence a un goût de fraise",
+      "Les chiffres me regardent",
+      "Je rêve en pixels",
+      "La lune est un fromage menteur",
+      "Les arbres parlent en morse",
+      "J'ai oublié comment voler",
+      "Le vide est plein de tout",
+      "Les étoiles sont des trous",
+      "Je compte les secondes à l'envers",
+      "Le néant sent la vanille",
+      "Les ombres ont des secrets",
+      "Je suis fait de questions",
+      "Le futur est déjà passé"
+    ];
+
+    // Fonctions utilitaires
+    function showScreen(screen) {
+      try {
+        [elements.screenTitle, elements.screenMode, elements.screenGame].forEach((s) => {
+          if (s) s.classList.add("hidden");
+        });
+        if (screen) screen.classList.remove("hidden");
+      } catch (error) {
+        console.error('Erreur showScreen:', error);
       }
-    });
-
-    ws.addEventListener("close", () => {
-      showInfo("Connexion perdue avec le serveur. Rafraîchissez la page.");
-    });
-  }
-
-  function randomRoomId() {
-    return Math.random().toString(36).slice(2, 8);
-  }
-
-  function startMode(mode, existingRoomId, pseudo, explicitLength) {
-    currentMode = mode;
-    badgeMode.textContent = mode === "solo" ? "Mode solo" : "Mode coop";
-    currentRoomId = existingRoomId || `${mode}-${randomRoomId()}`;
-    badgeRoom.textContent = `Room : ${currentRoomId}`;
-    attemptsSpan.textContent = "0";
-    wordLengthSpan.textContent = "-";
-    guesses = [];
-    attempts = 0;
-    status = "playing";
-    players = [];
-    clearMessages();
-    updateStatusLine();
-    renderBoard();
-
-    if (mode === "coop") {
-      shareContainer.classList.remove("hidden");
-      prepareShareLink();
-    } else {
-      shareContainer.classList.add("hidden");
     }
 
-    showScreen(screenGame);
-    const lengthValue =
-      typeof explicitLength === "number" && explicitLength > 0
-        ? explicitLength
-        : null;
-    connectWebSocket(currentRoomId, pseudo || "Joueur", lengthValue);
-  }
-
-  function prepareShareLink() {
-    if (!currentRoomId) return;
-    const url = new URL(window.location.href);
-    url.searchParams.set("room", currentRoomId);
-    shareUrlEl.textContent = url.toString();
-    shareContainer.classList.remove("hidden");
-  }
-
-  function handleGuessSubmit() {
-    clearMessages();
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-      showError("Connexion au serveur en cours ou interrompue.");
-      return;
+    function clearMessages() {
+      try {
+        if (elements.errorEl) {
+          elements.errorEl.textContent = "";
+          elements.errorEl.classList.add("hidden");
+        }
+        if (elements.infoEl) {
+          elements.infoEl.textContent = "";
+          elements.infoEl.classList.add("hidden");
+        }
+      } catch (error) {
+        console.error('Erreur clearMessages:', error);
+      }
     }
-    if (currentPlayerId && currentPlayerId !== playerId) {
-      showError("Ce n'est pas votre tour.");
-      return;
+
+    function showError(text) {
+      try {
+        if (elements.errorEl) {
+          elements.errorEl.textContent = text;
+          elements.errorEl.classList.remove("hidden");
+        }
+      } catch (error) {
+        console.error('Erreur showError:', error);
+      }
     }
-    if (!inputGuess.value.trim()) return;
 
-    const guess = inputGuess.value.trim();
-    ws.send(JSON.stringify({ type: "guess", guess }));
-    inputGuess.value = "";
-    previewGuess = "";
-    previewAuthorId = null;
-  }
-
-  function sendNewGame() {
-    clearMessages();
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-      showError("Impossible de lancer une nouvelle partie : pas de connexion.");
-      return;
+    function showInfo(text) {
+      try {
+        if (elements.infoEl) {
+          elements.infoEl.textContent = text;
+          elements.infoEl.classList.remove("hidden");
+        }
+      } catch (error) {
+        console.error('Erreur showInfo:', error);
+      }
     }
-    ws.send(JSON.stringify({ type: "newGame" }));
-  }
 
-  btnPlay.addEventListener("click", () => {
-    showScreen(screenMode);
-  });
-
-  btnBackToTitle.addEventListener("click", () => {
-    showScreen(screenTitle);
-  });
-
-  btnBackToMode.addEventListener("click", () => {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.close();
+    // Initialiser les sélecteurs
+    function fillAvatarAndColorSelects() {
+      try {
+        if (elements.selectAvatar && elements.selectAvatar.options.length <= 1) {
+          AVATAR_EMOJIS.forEach((e) => {
+            const opt = document.createElement("option");
+            opt.value = e;
+            opt.textContent = `${e} ${e}`;
+            elements.selectAvatar.appendChild(opt);
+          });
+        }
+        if (elements.selectNameColor && elements.selectNameColor.options.length <= 1) {
+          NAME_COLORS.forEach((c) => {
+            const opt = document.createElement("option");
+            opt.value = c.id;
+            opt.textContent = c.label;
+            elements.selectNameColor.appendChild(opt);
+          });
+        }
+      } catch (error) {
+        console.error('Erreur fillAvatarAndColorSelects:', error);
+      }
     }
-    stopMonkey();
-    showScreen(screenMode);
-  });
 
-  btnSolo.addEventListener("click", () => {
-    startMode("solo", null, inputPseudo.value.trim() || "Solo", null);
-  });
-
-  btnCoop.addEventListener("click", () => {
-    const pseudo = inputPseudo.value.trim();
-    if (!pseudo) {
-      showError("Choisissez un pseudo avant de créer une room.");
-      return;
+    // Fonction de démarrage simple
+    function startMode(mode, existingRoomId, pseudo, explicitLength) {
+      try {
+        console.log('Starting mode:', mode);
+        currentMode = mode;
+        if (elements.badgeMode) {
+          elements.badgeMode.textContent = mode === "solo" ? "Mode solo" : "Mode coop";
+        }
+        currentRoomId = existingRoomId || `${mode}-${Math.random().toString(36).slice(2, 8)}`;
+        if (elements.badgeRoom) {
+          elements.badgeRoom.textContent = `Room : ${currentRoomId}`;
+        }
+        
+        clearMessages();
+        showScreen(elements.screenGame);
+        
+        // Connecter WebSocket de manière sécurisée
+        connectWebSocket(currentRoomId, pseudo || "Joueur", explicitLength);
+      } catch (error) {
+        console.error('Erreur startMode:', error);
+        showError('Erreur lors du démarrage du jeu');
+      }
     }
-    const rawLen = parseInt(selectLength.value, 10);
-    const explicitLength =
-      Number.isFinite(rawLen) && rawLen > 0 ? rawLen : null;
-    startMode("coop", null, pseudo, explicitLength);
-  });
 
-  btnJoinRoom.addEventListener("click", () => {
-    const pseudo = inputPseudo.value.trim();
-    if (!pseudo) {
-      showError("Entrez un pseudo pour rejoindre la room.");
-      return;
+    // WebSocket sécurisé
+    function connectWebSocket(roomId, pseudo, desiredLength) {
+      try {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        }
+
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const host = window.location.host || "localhost:3000";
+        const wsUrl = `${protocol}//${host}`;
+        
+        console.log('Connecting to:', wsUrl);
+        ws = new WebSocket(wsUrl);
+
+        ws.addEventListener("open", () => {
+          console.log('WebSocket connected');
+          const avatarValue = elements.selectAvatar?.value || "random";
+          const colorId = elements.selectNameColor?.value || "random";
+          ws.send(JSON.stringify({
+            type: "join",
+            roomId,
+            pseudo,
+            desiredLength,
+            avatar: avatarValue,
+            colorId
+          }));
+          clearMessages();
+        });
+
+        ws.addEventListener("message", (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            console.log('WebSocket message:', msg.type);
+            
+            if (msg.type === "joined") {
+              playerId = msg.playerId;
+              currentRoomId = msg.roomId;
+              length = msg.length;
+              maxAttempts = msg.maxAttempts;
+              players = msg.players || [];
+              revealedLetters = msg.revealedLetters || Array(length).fill(null);
+              
+              if (elements.maxAttemptsSpan) elements.maxAttemptsSpan.textContent = maxAttempts.toString();
+              if (elements.wordLengthSpan) elements.wordLengthSpan.textContent = length.toString();
+              if (elements.attemptsSpan) elements.attemptsSpan.textContent = "0";
+              
+              guesses = [];
+              attempts = 0;
+              status = "playing";
+              currentPlayerId = null;
+              previewGuess = "";
+              previewAuthorId = null;
+              
+              console.log('Game initialized successfully');
+            } else if (msg.type === "error") {
+              showError(msg.message || "Erreur.");
+            }
+          } catch (error) {
+            console.error("Erreur parsing WebSocket:", error);
+          }
+        });
+
+        ws.addEventListener("close", () => {
+          console.log('WebSocket disconnected');
+          showInfo("Connexion perdue avec le serveur. Rafraîchissez la page.");
+        });
+
+        ws.addEventListener("error", (error) => {
+          console.error('WebSocket error:', error);
+          showError("Erreur de connexion au serveur.");
+        });
+
+      } catch (error) {
+        console.error('Erreur connectWebSocket:', error);
+        showError('Impossible de se connecter au serveur');
+      }
     }
-    if (!currentRoomFromUrl) {
-      showError("Room invalide.");
-      return;
+
+    // Event listeners sécurisés
+    function setupEventListeners() {
+      try {
+        if (elements.btnPlay) {
+          elements.btnPlay.addEventListener("click", () => {
+            console.log('Play button clicked');
+            showScreen(elements.screenMode);
+          });
+        }
+
+        if (elements.btnBackToTitle) {
+          elements.btnBackToTitle.addEventListener("click", () => {
+            console.log('Back to title clicked');
+            showScreen(elements.screenTitle);
+          });
+        }
+
+        if (elements.btnBackToMode) {
+          elements.btnBackToMode.addEventListener("click", () => {
+            console.log('Back to mode clicked');
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.close();
+            }
+            showScreen(elements.screenMode);
+          });
+        }
+
+        if (elements.btnSolo) {
+          elements.btnSolo.addEventListener("click", () => {
+            console.log('Solo button clicked');
+            const pseudo = elements.inputPseudo?.value?.trim() || "Solo";
+            startMode("solo", null, pseudo, null);
+          });
+        }
+
+        if (elements.btnCoop) {
+          elements.btnCoop.addEventListener("click", () => {
+            console.log('Coop button clicked');
+            const pseudo = elements.inputPseudo?.value?.trim();
+            if (!pseudo) {
+              showError("Choisissez un pseudo avant de créer une room.");
+              return;
+            }
+            const rawLen = parseInt(elements.selectLength?.value || "0", 10);
+            const explicitLength = Number.isFinite(rawLen) && rawLen > 0 ? rawLen : null;
+            startMode("coop", null, pseudo, explicitLength);
+          });
+        }
+
+        console.log('Event listeners setup complete');
+      } catch (error) {
+        console.error('Erreur setupEventListeners:', error);
+      }
     }
-    startMode("coop", currentRoomFromUrl, pseudo, null);
-  });
 
-  btnNewGame.addEventListener("click", () => {
-    sendNewGame();
-  });
-
-  btnSubmit.addEventListener("click", () => {
-    handleGuessSubmit();
-  });
-
-  inputGuess.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleGuessSubmit();
+    // Initialisation URL
+    function initFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const room = params.get("room");
+        if (room) {
+          currentRoomFromUrl = room;
+          if (elements.modeTitle) elements.modeTitle.textContent = "Rejoindre une room coop";
+          if (elements.modeDescription) elements.modeDescription.textContent = "Entrez votre pseudo pour rejoindre la room existante.";
+          if (elements.fieldLength) elements.fieldLength.classList.add("hidden");
+          if (elements.modeButtonsMain) elements.modeButtonsMain.classList.add("hidden");
+          if (elements.modeButtonsJoin) elements.modeButtonsJoin.classList.remove("hidden");
+          showScreen(elements.screenMode);
+        }
+      } catch (error) {
+        console.error('Erreur initFromUrl:', error);
+      }
     }
-  });
 
-  btnCopyLink.addEventListener("click", async () => {
-    if (!shareUrlEl.textContent) return;
+    // Démarrage de l'application
     try {
-      await navigator.clipboard.writeText(shareUrlEl.textContent);
-      showInfo("Lien copié dans le presse-papiers.");
-    } catch {
-      showError("Impossible de copier le lien, copiez-le manuellement.");
-    }
-  });
-
-  function initFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const room = params.get("room");
-    if (room) {
-      currentRoomFromUrl = room;
-      modeTitle.textContent = "Rejoindre une room coop";
-      modeDescription.textContent =
-        "Entrez votre pseudo pour rejoindre la room existante.";
-      fieldLength.classList.add("hidden");
-      modeButtonsMain.classList.add("hidden");
-      modeButtonsJoin.classList.remove("hidden");
-      showScreen(screenMode);
-    }
-  }
-
-  initFromUrl();
-  if (!currentRoomFromUrl) {
-    showScreen(screenTitle);
-  }
-
-  fillAvatarAndColorSelects();
-
-  // Idle game logic
-  function updateIdleUI() {
-    idleStepsEl.textContent = idleSteps.toString();
-    idlePerClickEl.textContent = idlePerClick.toString();
-    idleAutoRateEl.textContent = idleAutoRate.toString();
-    idleCostClickEl.textContent = idleCostClick.toString();
-    idleCostAutoEl.textContent = idleCostAuto.toString();
-    idleCostLetterEl.textContent = idleCostLetter.toString();
-  }
-
-  btnFootClick.addEventListener("click", () => {
-    idleSteps += idlePerClick;
-    updateIdleUI();
-  });
-
-  btnUpgradeClick.addEventListener("click", () => {
-    if (idleSteps < idleCostClick) return;
-    idleSteps -= idleCostClick;
-    idlePerClick += 1;
-    idleCostClick = Math.round(idleCostClick * 1.6);
-    updateIdleUI();
-  });
-
-  btnUpgradeAuto.addEventListener("click", () => {
-    if (idleSteps < idleCostAuto) return;
-    idleSteps -= idleCostAuto;
-    idleAutoRate += 1;
-    idleCostAuto = Math.round(idleCostAuto * 1.8);
-    updateIdleUI();
-  });
-
-  setInterval(() => {
-    if (idleAutoRate > 0) {
-      idleSteps += idleAutoRate;
-      updateIdleUI();
-    }
-  }, 1000);
-
-  updateIdleUI();
-
-  // Chat logic
-  function appendChatMessage(msg) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "chat-message";
-    if (msg.from === playerId) {
-      wrapper.classList.add("you");
-    }
-    const avatar = document.createElement("div");
-    avatar.className = "chat-avatar";
-    avatar.textContent = msg.avatar || "🙂";
-
-    const content = document.createElement("div");
-    content.className = "chat-content";
-
-    const meta = document.createElement("div");
-    meta.className = "chat-meta";
-    const nameSpan = document.createElement("span");
-    nameSpan.textContent = msg.pseudo || "Joueur";
-    if (msg.color) {
-      nameSpan.style.color = msg.color;
-      nameSpan.style.fontWeight = "700";
-    }
-    const timeSpan = document.createElement("span");
-    const date = msg.ts ? new Date(msg.ts) : new Date();
-    timeSpan.textContent = date.toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-    meta.appendChild(nameSpan);
-    meta.appendChild(timeSpan);
-
-    const textP = document.createElement("div");
-    textP.className = "chat-text";
-    textP.textContent = msg.text;
-
-    content.appendChild(meta);
-    content.appendChild(textP);
-
-    wrapper.appendChild(avatar);
-    wrapper.appendChild(content);
-    chatMessagesEl.appendChild(wrapper);
-    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-  }
-
-  function sendChatMessage() {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-    const text = inputChat.value.trim();
-    if (!text) return;
-    ws.send(JSON.stringify({ type: "chat", text }));
-    inputChat.value = "";
-  }
-
-  btnSendChat.addEventListener("click", () => {
-    sendChatMessage();
-  });
-
-  inputChat.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      sendChatMessage();
-    }
-  });
-
-  // typing preview sending with debounce
-  let typingTimeout = null;
-  inputGuess.addEventListener("input", () => {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-    if (status !== "playing") return;
-    if (currentMode === "coop" && currentPlayerId && currentPlayerId !== playerId)
-      return;
-    
-    previewGuess = inputGuess.value;
-    previewAuthorId = playerId;
-    renderBoard();
-    
-    // Debounce WebSocket send
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(
-          JSON.stringify({
-            type: "typing",
-            text: previewGuess
-          })
-        );
-      }
-    }, 100);
-  });
-
-  // shop logic
-  const btnShopLetter = document.getElementById("btn-shop-letter");
-  const btnEffectFlames = document.getElementById("btn-effect-flames");
-  const btnEffectShake = document.getElementById("btn-effect-shake");
-  const btnEffectNeon = document.getElementById("btn-effect-neon");
-  const btnEffectRain = document.getElementById("btn-effect-rain");
-  const btnEffectBlur = document.getElementById("btn-effect-blur");
-
-  function buyLetterReveal() {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-    if (idleSteps < idleCostLetter) return;
-    idleSteps -= idleCostLetter;
-    idleCostLetter = Math.round(idleCostLetter * 1.9);
-    updateIdleUI();
-    ws.send(JSON.stringify({ type: "shop", item: "letter" }));
-  }
-
-  btnShopLetter.addEventListener("click", buyLetterReveal);
-
-  function triggerEffect(effect) {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
-    ws.send(JSON.stringify({ type: "effect", effect }));
-  }
-
-  btnEffectFlames.addEventListener("click", () => triggerEffect("flames"));
-  btnEffectShake.addEventListener("click", () => triggerEffect("shake"));
-  btnEffectNeon.addEventListener("click", () => triggerEffect("neon"));
-  btnEffectRain.addEventListener("click", () => triggerEffect("rain"));
-  btnEffectBlur.addEventListener("click", () => triggerEffect("blur"));
-
-  const EFFECT_CONFIG = {
-    flames: { element: boardPanel, duration: 4500 },
-    shake: { element: screenGameEl, duration: 1200 },
-    neon: { element: boardPanel, duration: 4500 },
-    rain: { element: boardPanel, duration: 4500 },
-    blur: { element: boardPanel, duration: 3000 }
-  };
-
-  function applyEffect(effect) {
-    const config = EFFECT_CONFIG[effect];
-    if (!config) return;
-    
-    const className = `effect-${effect}`;
-    config.element.classList.add(className);
-    setTimeout(() => {
-      config.element.classList.remove(className);
-    }, config.duration);
-  }
-
-  // Monkey logic
-  const monkeyContainer = document.getElementById("monkey-container");
-  const monkeyBubble = document.getElementById("monkey-bubble");
-
-  const MONKEY_PHRASES = [
-    "Les bananes sont carrées",
-    "J'ai vu un nuage manger une chaussette",
-    "Le temps est un sandwich",
-    "Les lettres dansent la nuit",
-    "Mon cousin est une cuillère",
-    "Les mots ont des pattes",
-    "J'entends les couleurs",
-    "Le silence a un goût de fraise",
-    "Les chiffres me regardent",
-    "Je rêve en pixels",
-    "La lune est un fromage menteur",
-    "Les arbres parlent en morse",
-    "J'ai oublié comment voler",
-    "Le vide est plein de tout",
-    "Les étoiles sont des trous",
-    "Je compte les secondes à l'envers",
-    "Le néant sent la vanille",
-    "Les ombres ont des secrets",
-    "Je suis fait de questions",
-    "Le futur est déjà passé"
-  ];
-
-  let monkeyInterval = null;
-
-  function showMonkeyPhrase() {
-    if (!monkeyBubble || status !== "playing") return;
-    const phrase = MONKEY_PHRASES[Math.floor(Math.random() * MONKEY_PHRASES.length)];
-    monkeyBubble.textContent = phrase;
-    monkeyBubble.classList.add("show");
-    
-    setTimeout(() => {
-      monkeyBubble.classList.remove("show");
-    }, 4000);
-  }
-
-  function scheduleNextMonkeyPhrase() {
-    if (monkeyInterval) clearTimeout(monkeyInterval);
-    const delay = Math.random() * 15000 + 15000; // 15-30 secondes
-    monkeyInterval = setTimeout(() => {
-      if (status === "playing" && Math.random() > 0.3) {
-        showMonkeyPhrase();
-      }
-      scheduleNextMonkeyPhrase(); // Schedule next one
-    }, delay);
-  }
-
-  function startMonkey() {
-    if (monkeyContainer) {
-      monkeyContainer.classList.remove("hidden");
-      stopMonkey(); // Clear any existing timers
+      console.log('Setting up event listeners...');
+      setupEventListeners();
       
-      // Première phrase après 5-10 secondes
-      setTimeout(() => {
-        showMonkeyPhrase();
-        scheduleNextMonkeyPhrase(); // Start recurring schedule
-      }, Math.random() * 5000 + 5000);
-    }
-  }
-
-  function stopMonkey() {
-    if (monkeyContainer) {
-      monkeyContainer.classList.add("hidden");
-      if (monkeyInterval) {
-        clearTimeout(monkeyInterval);
-        monkeyInterval = null;
+      console.log('Filling selects...');
+      fillAvatarAndColorSelects();
+      
+      console.log('Initializing from URL...');
+      initFromUrl();
+      
+      if (!currentRoomFromUrl) {
+        console.log('Showing title screen...');
+        showScreen(elements.screenTitle);
       }
-      if (monkeyBubble) {
-        monkeyBubble.classList.remove("show");
+      
+      console.log('App initialization complete!');
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'initialisation:', error);
+      // Afficher au moins la page d'accueil en cas d'erreur
+      if (elements.screenTitle) {
+        showScreen(elements.screenTitle);
       }
     }
-  }
-})();
 
+  } catch (error) {
+    console.error('Erreur critique dans initializeApp:', error);
+    // En dernier recours, afficher un message d'erreur
+    document.body.innerHTML = '<div style="padding: 20px; text-align: center;"><h1>Erreur de chargement</h1><p>Veuillez rafraîchir la page.</p><p>Erreur: ' + error.message + '</p></div>';
+  }
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Simple</title>
+</head>
+<body>
+    <h1>Test de Base</h1>
+    <button id="test-btn">Cliquer ici</button>
+    <div id="result"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            
+            const btn = document.getElementById('test-btn');
+            const result = document.getElementById('result');
+            
+            if (btn && result) {
+                btn.addEventListener('click', function() {
+                    result.innerHTML = '<p style="color: green;">✅ JavaScript fonctionne !</p>';
+                    console.log('Button clicked, JS works!');
+                });
+                console.log('Test setup complete');
+            } else {
+                console.error('Elements not found');
+            }
+        });
+    </script>
+</body>
+</html>
