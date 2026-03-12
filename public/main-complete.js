@@ -26,15 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
         coins: 0,
         totalCoins: 0,
         clickPower: 1,
-        autoRate: 0, // Pas d'auto-farm de base
+        autoRate: 0, // Commence à 0, pas d'auto-farm de base
         upgrades: {
             clickLevel: 0,
             autoLevel: 0
         },
         costs: {
-            click: 10,
-            auto: 50,
-            hint: 1000
+            click: 15,    // Coût de base plus raisonnable
+            auto: 75,     // Coût de base plus raisonnable
+            hint: 500,    // Coût de base plus raisonnable
+            // Nouveaux effets visuels
+            flames: 200,
+            shake: 300,
+            neon: 400,
+            rain: 500,
+            blur: 600
         }
     };
     
@@ -120,7 +126,19 @@ document.addEventListener('DOMContentLoaded', function() {
         btnBuyHint: document.getElementById("btn-buy-hint"),
         costClick: document.getElementById("cost-click"),
         costAuto: document.getElementById("cost-auto"),
-        costHint: document.getElementById("cost-hint")
+        costHint: document.getElementById("cost-hint"),
+        
+        // Effets visuels
+        btnEffectFlames: document.getElementById("btn-effect-flames"),
+        btnEffectShake: document.getElementById("btn-effect-shake"),
+        btnEffectNeon: document.getElementById("btn-effect-neon"),
+        btnEffectRain: document.getElementById("btn-effect-rain"),
+        btnEffectBlur: document.getElementById("btn-effect-blur"),
+        costFlames: document.getElementById("cost-flames"),
+        costShake: document.getElementById("cost-shake"),
+        costNeon: document.getElementById("cost-neon"),
+        costRain: document.getElementById("cost-rain"),
+        costBlur: document.getElementById("cost-blur")
     };
     
     console.log('📋 All required elements found, initializing...');
@@ -128,25 +146,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // === MESSAGES DE BIENVENUE ===
     
     const welcomeMessages = [
-        "les pixels dansent dans le vide quantique",
-        "protocole 7-alpha activé, les lettres murmurent",
-        "dimension parallèle détectée, synchronisation en cours",
-        "les algorithmes rêvent de moutons électriques",
-        "fréquence 432Hz captée, résonance harmonique établie",
-        "matrice lexicale initialisée, entropie stabilisée",
-        "signal fantôme reçu depuis la zone 51",
-        "les mots s'échappent du dictionnaire cosmique",
-        "anomalie temporelle détectée, boucle infinie évitée",
-        "connexion établie avec l'intelligence artificielle des chaussettes",
-        "les voyelles complotent contre les consonnes",
-        "transmission reçue depuis la planète des crayons perdus",
-        "les bits se transforment en papillons numériques",
-        "écho quantique détecté dans la base de données",
-        "les serveurs chantent des berceuses binaires"
+        "les cuillères chantent l'hymne des cornichons perdus",
+        "alerte rouge : les chaussettes ont pris le contrôle du grille-pain",
+        "transmission interceptée depuis la dimension des parapluies violets",
+        "les pixels se rebellent contre la tyrannie des écrans plats",
+        "protocole banane activé : les singes cosmiques approchent",
+        "erreur 404 : la logique s'est échappée par la fenêtre du 12ème étage",
+        "les lettres de l'alphabet complotent avec les chiffres impairs",
+        "détection d'une invasion de fourmis quantiques dans le processeur",
+        "les nuages digitaux pleuvent des codes binaires en chocolat",
+        "alerte : les cactus virtuels ont développé une conscience collective",
+        "signal reçu depuis la planète des chaussures qui parlent",
+        "les électrons dansent la salsa avec les protons en colère",
+        "anomalie détectée : les mots se transforment en papillons radioactifs",
+        "les serveurs rêvent de moutons électriques qui mangent des câbles",
+        "transmission urgente : les pixels ont formé un syndicat révolutionnaire"
     ];
     
     function getRandomWelcomeMessage() {
         return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    }
+    
+    function addSystemMessage(text, timestamp) {
+        if (!elements.chatMessages) return;
+        
+        const messageEl = document.createElement('div');
+        messageEl.className = 'chat-message welcome-message';
+        
+        const time = new Date(timestamp).toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        messageEl.innerHTML = `
+            <div class="chat-avatar">🔥</div>
+            <div class="chat-content">
+                <div class="chat-meta">
+                    <span class="chat-author system-author">🔥 Système</span>
+                    <span class="chat-time">${time}</span>
+                </div>
+                <div class="chat-text welcome-text">${text} 🔥</div>
+            </div>
+        `;
+        
+        elements.chatMessages.appendChild(messageEl);
+        elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
     }
     
     function addWelcomeMessage(pseudo, avatar, color) {
@@ -196,6 +240,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.costAuto) elements.costAuto.textContent = idleGame.costs.auto;
         if (elements.costHint) elements.costHint.textContent = idleGame.costs.hint;
         
+        // Update effect costs
+        if (elements.costFlames) elements.costFlames.textContent = idleGame.costs.flames;
+        if (elements.costShake) elements.costShake.textContent = idleGame.costs.shake;
+        if (elements.costNeon) elements.costNeon.textContent = idleGame.costs.neon;
+        if (elements.costRain) elements.costRain.textContent = idleGame.costs.rain;
+        if (elements.costBlur) elements.costBlur.textContent = idleGame.costs.blur;
+        
         // Update button states
         if (elements.btnUpgradeClick) {
             elements.btnUpgradeClick.disabled = idleGame.coins < idleGame.costs.click;
@@ -205,6 +256,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (elements.btnBuyHint) {
             elements.btnBuyHint.disabled = idleGame.coins < idleGame.costs.hint || gameState.status !== 'playing';
+        }
+        
+        // Update effect button states
+        if (elements.btnEffectFlames) {
+            elements.btnEffectFlames.disabled = idleGame.coins < idleGame.costs.flames;
+        }
+        if (elements.btnEffectShake) {
+            elements.btnEffectShake.disabled = idleGame.coins < idleGame.costs.shake;
+        }
+        if (elements.btnEffectNeon) {
+            elements.btnEffectNeon.disabled = idleGame.coins < idleGame.costs.neon;
+        }
+        if (elements.btnEffectRain) {
+            elements.btnEffectRain.disabled = idleGame.coins < idleGame.costs.rain;
+        }
+        if (elements.btnEffectBlur) {
+            elements.btnEffectBlur.disabled = idleGame.coins < idleGame.costs.blur;
         }
     }
     
@@ -222,6 +290,35 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.removeItem('coopdle-idle');
         location.reload();
     };
+    
+    function triggerVisualEffect(effectType) {
+        console.log(`🎨 Triggering visual effect: ${effectType}`);
+        
+        const gameContainer = document.querySelector('.game-container');
+        if (!gameContainer) return;
+        
+        // Remove any existing effect classes
+        gameContainer.classList.remove('effect-flames', 'effect-shake', 'effect-neon', 'effect-rain', 'effect-blur');
+        
+        // Add the new effect class
+        gameContainer.classList.add(`effect-${effectType}`);
+        
+        // Remove the effect after animation duration
+        setTimeout(() => {
+            gameContainer.classList.remove(`effect-${effectType}`);
+        }, 3000); // 3 seconds duration
+        
+        // Show info message
+        const effectNames = {
+            flames: '🔥 Effet Flammes déclenché !',
+            shake: '📳 Effet Tremblement déclenché !',
+            neon: '✨ Effet Néon déclenché !',
+            rain: '🌧️ Effet Pluie déclenché !',
+            blur: '🌀 Effet Flou déclenché !'
+        };
+        
+        showInfo(effectNames[effectType] || `Effet ${effectType} déclenché !`);
+    }
     
     function showGameResult(won, word) {
         // Use integrated result instead of modal
@@ -494,12 +591,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 createBoard();
                 updatePlayersList();
                 showInfo('Connecté à la partie !');
-                
-                // Add welcome message for the current player
-                const currentPlayer = gameState.players.find(p => p.id === playerId);
-                if (currentPlayer && currentMode === 'coop') {
-                    addWelcomeMessage(currentPlayer.pseudo, currentPlayer.avatar, currentPlayer.color);
-                }
                 break;
                 
             case 'state':
@@ -524,6 +615,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 addChatMessage(data.from, data.pseudo, data.avatar, data.color, data.text, data.ts);
                 break;
                 
+            case 'systemMessage':
+                addSystemMessage(data.text, data.ts);
+                break;
+                
             case 'reveal':
                 hideGameResult(); // Hide any existing result
                 if (gameState.status === 'won') {
@@ -538,6 +633,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 gameState.revealedLetters[data.index] = data.letter;
                 updateBoard();
                 showInfo(`Lettre révélée : ${data.letter.toUpperCase()} à la position ${data.index + 1}`);
+                break;
+                
+            case 'effect':
+                triggerVisualEffect(data.effect);
                 break;
                 
             case 'error':
@@ -743,7 +842,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     idleGame.coins -= idleGame.costs.click;
                     idleGame.upgrades.clickLevel++;
                     idleGame.clickPower++;
-                    idleGame.costs.click = Math.floor(idleGame.costs.click * 1.5);
+                    idleGame.costs.click = Math.floor(idleGame.costs.click * 1.25); // Reduced from 1.5 to 1.25
                     updateIdleUI();
                     saveIdleGame();
                     console.log('✅ Click upgrade purchased!');
@@ -762,7 +861,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     idleGame.coins -= idleGame.costs.auto;
                     idleGame.upgrades.autoLevel++;
                     idleGame.autoRate++;
-                    idleGame.costs.auto = Math.floor(idleGame.costs.auto * 2);
+                    idleGame.costs.auto = Math.floor(idleGame.costs.auto * 1.5); // Reduced from 2 to 1.5
                     updateIdleUI();
                     saveIdleGame();
                     console.log('✅ Auto upgrade purchased!');
@@ -793,6 +892,107 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             console.error('❌ Hint button not found!');
+        }
+        
+        // Visual Effects Event Listeners
+        if (elements.btnEffectFlames) {
+            console.log('✅ Flames effect button found');
+            elements.btnEffectFlames.addEventListener('click', () => {
+                console.log(`🔥 Flames effect: coins=${idleGame.coins}, cost=${idleGame.costs.flames}`);
+                if (idleGame.coins >= idleGame.costs.flames && ws) {
+                    idleGame.coins -= idleGame.costs.flames;
+                    idleGame.costs.flames = Math.floor(idleGame.costs.flames * 1.3);
+                    
+                    ws.send(JSON.stringify({
+                        type: 'effect',
+                        effect: 'flames'
+                    }));
+                    
+                    updateIdleUI();
+                    saveIdleGame();
+                    console.log('✅ Flames effect triggered!');
+                }
+            });
+        }
+        
+        if (elements.btnEffectShake) {
+            console.log('✅ Shake effect button found');
+            elements.btnEffectShake.addEventListener('click', () => {
+                console.log(`📳 Shake effect: coins=${idleGame.coins}, cost=${idleGame.costs.shake}`);
+                if (idleGame.coins >= idleGame.costs.shake && ws) {
+                    idleGame.coins -= idleGame.costs.shake;
+                    idleGame.costs.shake = Math.floor(idleGame.costs.shake * 1.3);
+                    
+                    ws.send(JSON.stringify({
+                        type: 'effect',
+                        effect: 'shake'
+                    }));
+                    
+                    updateIdleUI();
+                    saveIdleGame();
+                    console.log('✅ Shake effect triggered!');
+                }
+            });
+        }
+        
+        if (elements.btnEffectNeon) {
+            console.log('✅ Neon effect button found');
+            elements.btnEffectNeon.addEventListener('click', () => {
+                console.log(`✨ Neon effect: coins=${idleGame.coins}, cost=${idleGame.costs.neon}`);
+                if (idleGame.coins >= idleGame.costs.neon && ws) {
+                    idleGame.coins -= idleGame.costs.neon;
+                    idleGame.costs.neon = Math.floor(idleGame.costs.neon * 1.3);
+                    
+                    ws.send(JSON.stringify({
+                        type: 'effect',
+                        effect: 'neon'
+                    }));
+                    
+                    updateIdleUI();
+                    saveIdleGame();
+                    console.log('✅ Neon effect triggered!');
+                }
+            });
+        }
+        
+        if (elements.btnEffectRain) {
+            console.log('✅ Rain effect button found');
+            elements.btnEffectRain.addEventListener('click', () => {
+                console.log(`🌧️ Rain effect: coins=${idleGame.coins}, cost=${idleGame.costs.rain}`);
+                if (idleGame.coins >= idleGame.costs.rain && ws) {
+                    idleGame.coins -= idleGame.costs.rain;
+                    idleGame.costs.rain = Math.floor(idleGame.costs.rain * 1.3);
+                    
+                    ws.send(JSON.stringify({
+                        type: 'effect',
+                        effect: 'rain'
+                    }));
+                    
+                    updateIdleUI();
+                    saveIdleGame();
+                    console.log('✅ Rain effect triggered!');
+                }
+            });
+        }
+        
+        if (elements.btnEffectBlur) {
+            console.log('✅ Blur effect button found');
+            elements.btnEffectBlur.addEventListener('click', () => {
+                console.log(`🌀 Blur effect: coins=${idleGame.coins}, cost=${idleGame.costs.blur}`);
+                if (idleGame.coins >= idleGame.costs.blur && ws) {
+                    idleGame.coins -= idleGame.costs.blur;
+                    idleGame.costs.blur = Math.floor(idleGame.costs.blur * 1.3);
+                    
+                    ws.send(JSON.stringify({
+                        type: 'effect',
+                        effect: 'blur'
+                    }));
+                    
+                    updateIdleUI();
+                    saveIdleGame();
+                    console.log('✅ Blur effect triggered!');
+                }
+            });
         }
         
         console.log('🎮 Idle game initialization complete!');

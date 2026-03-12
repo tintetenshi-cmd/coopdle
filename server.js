@@ -368,6 +368,41 @@ wss.on("connection", (ws) => {
           }))
         })
       );
+      
+      // Send system message to all players when someone joins
+      const systemMessages = [
+        "les cuillères chantent l'hymne des cornichons perdus",
+        "alerte rouge : les chaussettes ont pris le contrôle du grille-pain",
+        "transmission interceptée depuis la dimension des parapluies violets",
+        "les pixels se rebellent contre la tyrannie des écrans plats",
+        "protocole banane activé : les singes cosmiques approchent",
+        "erreur 404 : la logique s'est échappée par la fenêtre du 12ème étage",
+        "les lettres de l'alphabet complotent avec les chiffres impairs",
+        "détection d'une invasion de fourmis quantiques dans le processeur",
+        "les nuages digitaux pleuvent des codes binaires en chocolat",
+        "alerte : les cactus virtuels ont développé une conscience collective",
+        "signal reçu depuis la planète des chaussures qui parlent",
+        "les électrons dansent la salsa avec les protons en colère",
+        "anomalie détectée : les mots se transforment en papillons radioactifs",
+        "les serveurs rêvent de moutons électriques qui mangent des câbles",
+        "transmission urgente : les pixels ont formé un syndicat révolutionnaire"
+      ];
+      
+      const randomMessage = systemMessages[Math.floor(Math.random() * systemMessages.length)];
+      const joinMessage = `${pseudo.trim().slice(0, 16)} a rejoint la partie ! ${randomMessage}`;
+      
+      const systemPayload = JSON.stringify({
+        type: "systemMessage",
+        text: joinMessage,
+        ts: Date.now()
+      });
+      
+      room.players.forEach((p) => {
+        if (p.ws.readyState === WebSocket.OPEN) {
+          p.ws.send(systemPayload);
+        }
+      });
+      
       broadcastRoomState(room);
       return;
     }

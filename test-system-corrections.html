@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Corrections Système - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        .warning { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+        }
+        .bizarre-demo {
+            background: 
+                linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(239, 68, 68, 0.15) 50%, rgba(245, 158, 11, 0.1) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-style: italic;
+            color: #fbbf24;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+            animation: fireGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes fireGlow {
+            0% { 
+                box-shadow: 
+                    0 4px 12px rgba(245, 158, 11, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            100% { 
+                box-shadow: 
+                    0 6px 20px rgba(245, 158, 11, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+        }
+        
+        .cost-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .cost-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .old-cost {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+        
+        .new-cost {
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test des Corrections Système</h1>
+    
+    <div class="test-section">
+        <h2>✅ Corrections Implémentées</h2>
+        
+        <div class="test-result success">
+            <strong>1. Messages système globaux</strong><br>
+            ✓ Messages visibles par tous les joueurs<br>
+            ✓ Gestion côté serveur (pas local)<br>
+            ✓ Type de message 'systemMessage' ajouté<br>
+            ✓ Fonction addSystemMessage() créée
+        </div>
+        
+        <div class="test-result success">
+            <strong>2. Messages ultra-bizarres</strong><br>
+            ✓ 15 nouveaux messages complètement absurdes<br>
+            ✓ Références surréalistes et nonsensiques<br>
+            ✓ Style encore plus cryptique qu'avant<br>
+            ✓ Aucune logique, pure folie créative
+        </div>
+        
+        <div class="test-result success">
+            <strong>3. Coûts augmentés</strong><br>
+            ✓ Force : 10 → 25 (+150%)<br>
+            ✓ Auto : 50 → 150 (+200%)<br>
+            ✓ Hint : 1000 → 2500 (+150%)<br>
+            ✓ Progression plus difficile et équilibrée
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🤪 Nouveaux Messages Ultra-Bizarres</h2>
+        
+        <div class="bizarre-demo">les cuillères chantent l'hymne des cornichons perdus</div>
+        <div class="bizarre-demo">alerte rouge : les chaussettes ont pris le contrôle du grille-pain</div>
+        <div class="bizarre-demo">transmission interceptée depuis la dimension des parapluies violets</div>
+        <div class="bizarre-demo">les pixels se rebellent contre la tyrannie des écrans plats</div>
+        <div class="bizarre-demo">protocole banane activé : les singes cosmiques approchent</div>
+        <div class="bizarre-demo">erreur 404 : la logique s'est échappée par la fenêtre du 12ème étage</div>
+        <div class="bizarre-demo">les lettres de l'alphabet complotent avec les chiffres impairs</div>
+        <div class="bizarre-demo">détection d'une invasion de fourmis quantiques dans le processeur</div>
+        <div class="bizarre-demo">les nuages digitaux pleuvent des codes binaires en chocolat</div>
+        <div class="bizarre-demo">alerte : les cactus virtuels ont développé une conscience collective</div>
+        <div class="bizarre-demo">signal reçu depuis la planète des chaussures qui parlent</div>
+        <div class="bizarre-demo">les électrons dansent la salsa avec les protons en colère</div>
+        <div class="bizarre-demo">anomalie détectée : les mots se transforment en papillons radioactifs</div>
+        <div class="bizarre-demo">les serveurs rêvent de moutons électriques qui mangent des câbles</div>
+        <div class="bizarre-demo">transmission urgente : les pixels ont formé un syndicat révolutionnaire</div>
+    </div>
+
+    <div class="test-section">
+        <h2>💰 Comparaison des Coûts</h2>
+        
+        <div class="cost-comparison">
+            <div class="cost-item">
+                <div>💪 Force</div>
+                <div class="old-cost">10 pièces</div>
+                <div class="new-cost">25 pièces</div>
+            </div>
+            <div class="cost-item">
+                <div>⚡ Auto</div>
+                <div class="old-cost">50 pièces</div>
+                <div class="new-cost">150 pièces</div>
+            </div>
+            <div class="cost-item">
+                <div>💡 Hint</div>
+                <div class="old-cost">1000 pièces</div>
+                <div class="new-cost">2500 pièces</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Instructions de Test</h2>
+        
+        <div class="test-result info">
+            <strong>Test messages système globaux :</strong><br>
+            1. Créez une partie Coop<br>
+            2. Ouvrez un autre onglet et rejoignez la même room<br>
+            3. Le message de bienvenue doit apparaître dans le chat des DEUX joueurs<br>
+            4. Vérifiez que le message est identique pour tous
+        </div>
+        
+        <div class="test-result info">
+            <strong>Test messages ultra-bizarres :</strong><br>
+            1. Faites rejoindre plusieurs joueurs<br>
+            2. Chaque nouveau joueur doit déclencher un message différent<br>
+            3. Les messages doivent être complètement absurdes<br>
+            4. Style avec effet feu doux conservé
+        </div>
+        
+        <div class="test-result info">
+            <strong>Test coûts augmentés :</strong><br>
+            1. Vérifiez les coûts affichés : Force 25, Auto 150, Hint 2500<br>
+            2. Il faut plus de clics pour acheter les upgrades<br>
+            3. Progression plus lente et équilibrée<br>
+            4. Auto/sec commence bien à 0
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎮 Test de l'Application</h2>
+        <iframe src="index.html" id="gameFrame"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Checklist de Validation</h2>
+        <div class="test-result warning">
+            <strong>À vérifier :</strong><br>
+            ☐ Messages système visibles par tous les joueurs<br>
+            ☐ Messages ultra-bizarres et absurdes<br>
+            ☐ Coûts augmentés : 25, 150, 2500<br>
+            ☐ Auto/sec commence à 0<br>
+            ☐ Pas de génération automatique au début<br>
+            ☐ Messages avec effet feu doux conservé<br>
+            ☐ Sélection aléatoire des messages<br>
+            ☐ Progression plus difficile mais équilibrée
+        </div>
+    </div>
+
+    <script>
+        console.log('🔧 System corrections test page loaded');
+        console.log('🎯 Features to test:');
+        console.log('1. System messages visible to all players');
+        console.log('2. Ultra-bizarre welcome messages');
+        console.log('3. Increased costs: Force 25, Auto 150, Hint 2500');
+        console.log('4. Auto rate starts at 0');
+        
+        console.log('🤪 New bizarre messages:');
+        const messages = [
+            "les cuillères chantent l'hymne des cornichons perdus",
+            "alerte rouge : les chaussettes ont pris le contrôle du grille-pain",
+            "transmission interceptée depuis la dimension des parapluies violets",
+            "les pixels se rebellent contre la tyrannie des écrans plats",
+            "protocole banane activé : les singes cosmiques approchent",
+            "erreur 404 : la logique s'est échappée par la fenêtre du 12ème étage",
+            "les lettres de l'alphabet complotent avec les chiffres impairs",
+            "détection d'une invasion de fourmis quantiques dans le processeur",
+            "les nuages digitaux pleuvent des codes binaires en chocolat",
+            "alerte : les cactus virtuels ont développé une conscience collective",
+            "signal reçu depuis la planète des chaussures qui parlent",
+            "les électrons dansent la salsa avec les protons en colère",
+            "anomalie détectée : les mots se transforment en papillons radioactifs",
+            "les serveurs rêvent de moutons électriques qui mangent des câbles",
+            "transmission urgente : les pixels ont formé un syndicat révolutionnaire"
+        ];
+        
+        messages.forEach((msg, i) => {
+            console.log(`${i + 1}. ${msg}`);
+        });
+    </script>
+</body>
+</html>

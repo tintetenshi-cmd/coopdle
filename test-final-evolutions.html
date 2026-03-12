@@ -3,210 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Évolutions Finales - Coopdle</title>
+    <title>Test Final Evolutions - Coopdle</title>
     <style>
         body {
-            font-family: 'Poppins', Arial, sans-serif;
-            margin: 20px;
-            background: #1a1a2e;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
             color: #e2e8f0;
+            padding: 20px;
+            line-height: 1.6;
         }
-        .test-section {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #8b5cf6;
-            border-radius: 8px;
-            background: rgba(139, 92, 246, 0.1);
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(10, 10, 15, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
-        .test-result {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
+        h1 {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 30px;
         }
-        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
-        .error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
-        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
-        .warning { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; }
-        iframe {
-            width: 100%;
-            height: 700px;
-            border: 1px solid #8b5cf6;
-            border-radius: 8px;
-        }
-        .test-controls {
-            margin: 15px 0;
-            padding: 10px;
+        .feature-section {
+            margin-bottom: 25px;
+            padding: 20px;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .test-btn {
-            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+        .feature-title {
+            color: #a855f7;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .test-item {
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #8b5cf6;
+        }
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .status.implemented { background: #10b981; color: white; }
+        .status.partial { background: #f59e0b; color: white; }
+        .status.pending { background: #6b7280; color: white; }
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 12px 24px;
+            border-radius: 12px;
             cursor: pointer;
-            margin: 5px;
-            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
         }
-        .test-btn:hover {
-            background: linear-gradient(135deg, #a855f7, #c084fc);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
         }
-        code {
+        .code {
             background: rgba(0, 0, 0, 0.5);
             padding: 2px 6px;
             border-radius: 4px;
             font-family: 'Courier New', monospace;
-        }
-        .feature-demo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
-        }
-        .demo-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            font-size: 0.9rem;
+            color: #c4b5fd;
         }
     </style>
 </head>
 <body>
-    <h1>🚀 Test des Évolutions Finales</h1>
-    
-    <div class="test-section">
-        <h2>✅ Nouvelles Fonctionnalités Implémentées</h2>
+    <div class="container">
+        <h1>🎮 Test Final Evolutions - Coopdle</h1>
         
-        <div class="feature-demo">
-            <div class="demo-card">
-                <div class="test-result success">
-                    <strong>1. Résultat intégré (plus de modale)</strong><br>
-                    ✓ Affichage sous le Wordle<br>
-                    ✓ Design clair et gros<br>
-                    ✓ Bouton "Nouvelle partie" en surbrillance<br>
-                    ✓ Animation de slide-in<br>
-                    ✓ Pas de blocage de l'interface
-                </div>
+        <div class="feature-section">
+            <div class="feature-title">1. 🎯 Fair Scaling pour Idle Game</div>
+            <div class="test-item">
+                ✅ Coûts de base réduits : Click <span class="code">15</span>, Auto <span class="code">75</span>, Hint <span class="code">500</span>
+                <span class="status implemented">✓ Implémenté</span>
             </div>
-            
-            <div class="demo-card">
-                <div class="test-result success">
-                    <strong>2. Nouvelle partie améliorée</strong><br>
-                    ✓ Mot aléatoire différent de l'ancien<br>
-                    ✓ Longueur aléatoire entre 2 et 10 lettres<br>
-                    ✓ Génération côté client<br>
-                    ✓ Logs de debug pour traçabilité
-                </div>
+            <div class="test-item">
+                ✅ Scaling plus équilibré : Click x1.25 (au lieu de x1.5), Auto x1.5 (au lieu de x2)
+                <span class="status implemented">✓ Implémenté</span>
             </div>
-            
-            <div class="demo-card">
-                <div class="test-result success">
-                    <strong>3. Idle game ultra-joli</strong><br>
-                    ✓ Bouton pied avec effets intenses<br>
-                    ✓ Animation de clic intensive<br>
-                    ✓ Effet de rotation au hover<br>
-                    ✓ Shake screen sur coup critique<br>
-                    ✓ Boutons upgrade avec shimmer<br>
-                    ✓ Gradients et ombres améliorés
-                </div>
+            <div class="test-item">
+                ✅ Auto-farm commence à 0 (pas d'auto-farm de base)
+                <span class="status implemented">✓ Implémenté</span>
             </div>
         </div>
-    </div>
 
-    <div class="test-section">
-        <h2>🧪 Instructions de Test</h2>
-        <div class="test-result info">
-            <strong>Test du résultat intégré :</strong><br>
-            1. Lancez une partie solo<br>
-            2. Perdez ou gagnez la partie<br>
-            3. Vérifiez que le résultat s'affiche sous le Wordle (pas en modale)<br>
-            4. Cliquez sur "Nouvelle partie" pour tester la génération aléatoire
+        <div class="feature-section">
+            <div class="feature-title">2. 🎨 Effets Visuels Aléatoires</div>
+            <div class="test-item">
+                ✅ 5 effets disponibles : Flammes 🔥, Tremblement 📳, Néon ✨, Pluie 🌧️, Flou 🌀
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Boutons d'achat dans l'idle game avec coûts : 200, 300, 400, 500, 600
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Effets se déclenchent pour TOUS les joueurs de la room via serveur
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Animations CSS complètes pour chaque effet (3 secondes)
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Scaling des coûts d'effets : x1.3 après chaque achat
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
         </div>
-        
-        <div class="test-result info">
-            <strong>Test de l'idle game :</strong><br>
-            1. Ajoutez des pièces : <code>addCoins(10000)</code><br>
-            2. Cliquez intensément sur le bouton pied 🦶<br>
-            3. Achetez des upgrades de critique pour voir les effets<br>
-            4. Observez les animations et effets visuels
+
+        <div class="feature-section">
+            <div class="feature-title">3. 💬 Améliorations Chat</div>
+            <div class="test-item">
+                ✅ Scroll vertical (pas horizontal) avec scrollbar personnalisée
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Word-wrap automatique pour les longs messages
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Taille de chat maintenue, responsive design
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
         </div>
-        
-        <div class="test-controls">
-            <strong>Commandes de test :</strong><br>
-            <button class="test-btn" onclick="testAddCoins()">Ajouter 10,000 pièces</button>
-            <button class="test-btn" onclick="testCritical()">Ajouter critique (5000)</button>
-            <button class="test-btn" onclick="testNewGame()">Forcer nouvelle partie</button>
-            <button class="test-btn" onclick="testConsoleLog()">Voir logs</button>
+
+        <div class="feature-section">
+            <div class="feature-title">4. 🔥 Messages Système Cryptiques</div>
+            <div class="test-item">
+                ✅ Messages de bienvenue cryptiques et bizarres (15 variantes)
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Messages visibles pour TOUS les joueurs (pas seulement local)
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                ✅ Style spécial avec effet feu et couleurs dorées
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <div class="feature-title">🧪 Tests à Effectuer</div>
+            <div class="test-item">
+                1. Créer une room coop et vérifier les coûts idle game réduits
+            </div>
+            <div class="test-item">
+                2. Acheter des effets visuels et vérifier qu'ils se déclenchent pour tous
+            </div>
+            <div class="test-item">
+                3. Tester le chat avec de longs messages pour vérifier le word-wrap
+            </div>
+            <div class="test-item">
+                4. Faire rejoindre un second joueur pour voir le message système cryptique
+            </div>
+            <div class="test-item">
+                5. Vérifier la progression des coûts (scaling plus équilibré)
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" class="btn">🎮 Tester l'Application</a>
+            <a href="/test-debug.html" class="btn">🔧 Debug Console</a>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
+            <strong style="color: #10b981;">✅ Toutes les évolutions demandées ont été implémentées avec succès !</strong>
+            <br><br>
+            <strong>Résumé des améliorations :</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>Scaling plus équilibré et coûts réduits pour l'idle game</li>
+                <li>Système d'effets visuels complet avec 5 animations</li>
+                <li>Chat amélioré avec word-wrap et scroll vertical</li>
+                <li>Messages système cryptiques visibles par tous</li>
+                <li>Toutes les fonctionnalités sont synchronisées via WebSocket</li>
+            </ul>
         </div>
     </div>
-
-    <div class="test-section">
-        <h2>🎮 Test de l'Application</h2>
-        <iframe src="index.html" id="gameFrame"></iframe>
-    </div>
-
-    <div class="test-section">
-        <h2>🔍 Checklist de Validation</h2>
-        <div class="test-result warning">
-            <strong>À vérifier :</strong><br>
-            ☐ Résultat de partie s'affiche sous le Wordle (pas en modale)<br>
-            ☐ Bouton "Nouvelle partie" bien visible et en surbrillance<br>
-            ☐ Nouvelle partie génère un mot de longueur aléatoire (2-10)<br>
-            ☐ Bouton pied a des effets visuels intenses<br>
-            ☐ Coups critiques déclenchent un shake screen<br>
-            ☐ Boutons upgrade ont des effets shimmer<br>
-            ☐ Layout reste responsive et fonctionnel<br>
-            ☐ Pas de régression sur les fonctionnalités existantes
-        </div>
-    </div>
-
-    <script>
-        function testAddCoins() {
-            const frame = document.getElementById('gameFrame');
-            if (frame.contentWindow && frame.contentWindow.addCoins) {
-                frame.contentWindow.addCoins(10000);
-                console.log('✅ Added 10,000 coins to test upgrades');
-            } else {
-                alert('Veuillez attendre que le jeu soit chargé');
-            }
-        }
-        
-        function testCritical() {
-            const frame = document.getElementById('gameFrame');
-            if (frame.contentWindow && frame.contentWindow.addCoins) {
-                frame.contentWindow.addCoins(5000);
-                console.log('✅ Added 5,000 coins for critical upgrade');
-                alert('Achetez maintenant l\'upgrade critique pour tester les effets !');
-            } else {
-                alert('Veuillez attendre que le jeu soit chargé');
-            }
-        }
-        
-        function testNewGame() {
-            const frame = document.getElementById('gameFrame');
-            if (frame.contentWindow && frame.contentWindow.console) {
-                console.log('🎲 Testing new game generation...');
-                alert('Cliquez sur "Nouvelle partie" dans le jeu pour tester la génération aléatoire');
-            }
-        }
-        
-        function testConsoleLog() {
-            console.log('🎮 Check the browser console for detailed logs');
-            console.log('📋 Look for:');
-            console.log('- 🎲 Starting new game with random length: X');
-            console.log('- 💰 Coin earnings and upgrades');
-            console.log('- 🍀 Critical hit effects');
-            alert('Vérifiez la console du navigateur (F12) pour les logs détaillés');
-        }
-        
-        console.log('🧪 Final evolutions test page loaded');
-        console.log('🎯 Features to test:');
-        console.log('1. Integrated game result (no modal)');
-        console.log('2. Random word generation (2-10 letters)');
-        console.log('3. Intensive click effects on foot button');
-        console.log('4. Screen shake on critical hits');
-        console.log('5. Enhanced upgrade button effects');
-    </script>
 </body>
 </html>
