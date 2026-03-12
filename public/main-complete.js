@@ -27,13 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
         totalCoins: 0,
         clickPower: 1,
         autoRate: 0,
+        multiplier: 1,
+        criticalChance: 0,
         upgrades: {
             clickLevel: 0,
-            autoLevel: 0
+            autoLevel: 0,
+            multiplierLevel: 0,
+            luckLevel: 0
         },
         costs: {
             click: 10,
             auto: 50,
+            multiplier: 200,
+            luck: 500,
             hint: 1000
         }
     };
@@ -73,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         selectAvatar: document.getElementById("select-avatar"),
         selectNameColor: document.getElementById("select-name-color"),
         fieldRoomCode: document.getElementById("field-room-code"),
+        fieldLength: document.getElementById("field-length"),
         modeButtonsMain: document.getElementById("mode-buttons-main"),
         modeButtonsJoin: document.getElementById("mode-buttons-join"),
         
@@ -89,6 +96,10 @@ document.addEventListener('DOMContentLoaded', function() {
         errorEl: document.getElementById("error"),
         infoEl: document.getElementById("info"),
         statusCurrentPlayer: document.getElementById("status-current-player"),
+        gameResult: document.getElementById("game-result"),
+        resultIcon: document.getElementById("result-icon"),
+        resultText: document.getElementById("result-text"),
+        btnNewGameHighlight: document.getElementById("btn-new-game-highlight"),
         
         // Chat
         chatPanel: document.getElementById("chat-panel"),
@@ -104,12 +115,18 @@ document.addEventListener('DOMContentLoaded', function() {
         idlePerClick: document.getElementById("idle-per-click"),
         idleAutoRate: document.getElementById("idle-auto-rate"),
         idleTotal: document.getElementById("idle-total"),
+        idleMultiplier: document.getElementById("idle-multiplier"),
+        idleLuck: document.getElementById("idle-luck"),
         btnFootClick: document.getElementById("btn-foot-click"),
         btnUpgradeClick: document.getElementById("btn-upgrade-click"),
         btnUpgradeAuto: document.getElementById("btn-upgrade-auto"),
+        btnUpgradeMultiplier: document.getElementById("btn-upgrade-multiplier"),
+        btnUpgradeLuck: document.getElementById("btn-upgrade-luck"),
         btnBuyHint: document.getElementById("btn-buy-hint"),
         costClick: document.getElementById("cost-click"),
         costAuto: document.getElementById("cost-auto"),
+        costMultiplier: document.getElementById("cost-multiplier"),
+        costLuck: document.getElementById("cost-luck"),
         costHint: document.getElementById("cost-hint")
     };
     
@@ -126,10 +143,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.idlePerClick) elements.idlePerClick.textContent = idleGame.clickPower;
         if (elements.idleAutoRate) elements.idleAutoRate.textContent = idleGame.autoRate;
         if (elements.idleTotal) elements.idleTotal.textContent = Math.floor(idleGame.totalCoins);
+        if (elements.idleMultiplier) elements.idleMultiplier.textContent = idleGame.multiplier;
+        if (elements.idleLuck) elements.idleLuck.textContent = Math.floor(idleGame.criticalChance) + '%';
         
         // Update costs
         if (elements.costClick) elements.costClick.textContent = idleGame.costs.click;
         if (elements.costAuto) elements.costAuto.textContent = idleGame.costs.auto;
+        if (elements.costMultiplier) elements.costMultiplier.textContent = idleGame.costs.multiplier;
+        if (elements.costLuck) elements.costLuck.textContent = idleGame.costs.luck;
         if (elements.costHint) elements.costHint.textContent = idleGame.costs.hint;
         
         // Update button states
@@ -139,9 +160,73 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.btnUpgradeAuto) {
             elements.btnUpgradeAuto.disabled = idleGame.coins < idleGame.costs.auto;
         }
+        if (elements.btnUpgradeMultiplier) {
+            elements.btnUpgradeMultiplier.disabled = idleGame.coins < idleGame.costs.multiplier;
+        }
+        if (elements.btnUpgradeLuck) {
+            elements.btnUpgradeLuck.disabled = idleGame.coins < idleGame.costs.luck;
+        }
         if (elements.btnBuyHint) {
             elements.btnBuyHint.disabled = idleGame.coins < idleGame.costs.hint || gameState.status !== 'playing';
         }
+    }
+    
+    function showGameResult(won, word) {
+        if (!elements.gameResult) return;
+        
+        if (won) {
+            if (elements.resultIcon) elements.resultIcon.textContent = '🎉';
+            if (elements.resultText) elements.resultText.textContent = 'Partie gagnée !';
+        } else {
+            if (elements.resultIcon) elements.resultIcon.textContent = '😞';
+            if (elements.resultText) elements.resultText.textContent = `Partie perdue ! Le mot était : ${word.toUpperCase()}`;
+        }
+        
+        elements.gameResult.classList.remove('hidden');
+    }
+    
+    function hideGameResult() {
+        if (elements.gameResult) {
+            elements.gameResult.classList.add('hidden');
+        }
+    }
+    
+    function calculateClickReward() {
+        let baseReward = idleGame.clickPower * idleGame.multiplier;
+        
+        // Critical hit chance
+        if (Math.random() * 100 < idleGame.criticalChance) {
+            baseReward *= 2;
+            // Show critical hit animation
+            showCriticalHit();
+        }
+        
+        return baseReward;
+    }
+    
+    function showCriticalHit() {
+        if (!elements.btnFootClick) return;
+        
+        const critEl = document.createElement('div');
+        critEl.textContent = 'CRITIQUE!';
+        critEl.style.position = 'absolute';
+        critEl.style.color = '#f59e0b';
+        critEl.style.fontWeight = 'bold';
+        critEl.style.fontSize = '1.2rem';
+        critEl.style.pointerEvents = 'none';
+        critEl.style.animation = 'coinEarn 1s ease-out forwards';
+        
+        const rect = elements.btnFootClick.getBoundingClientRect();
+        critEl.style.left = (rect.left + rect.width / 2) + 'px';
+        critEl.style.top = (rect.top - 20) + 'px';
+        
+        document.body.appendChild(critEl);
+        
+        setTimeout(() => {
+            if (critEl.parentNode) {
+                critEl.parentNode.removeChild(critEl);
+            }
+        }, 1000);
     }
     
     function showCoinAnimation(x, y, amount) {
@@ -407,7 +492,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
                 
             case 'reveal':
-                showInfo(`Le mot était : ${data.word.toUpperCase()}`);
+                hideGameResult(); // Hide any existing result
+                if (gameState.status === 'won') {
+                    showGameResult(true, data.word);
+                } else if (gameState.status === 'lost') {
+                    showGameResult(false, data.word);
+                }
                 break;
                 
             case 'revealLetter':
@@ -440,88 +530,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else {
             elements.statusCurrentPlayer.textContent = '';
-        }
-    }
-    
-    // === IDLE GAME ===
-    
-    function initIdleGame() {
-        updateIdleUI();
-        
-        // Auto-clicker
-        setInterval(() => {
-            if (idleGame.autoRate > 0) {
-                idleGame.coins += idleGame.autoRate;
-                idleGame.totalCoins += idleGame.autoRate;
-                updateIdleUI();
-                saveIdleGame();
-            }
-        }, 1000);
-        
-        // Foot click handler
-        if (elements.btnFootClick) {
-            elements.btnFootClick.addEventListener('click', (e) => {
-                const earned = idleGame.clickPower;
-                idleGame.coins += earned;
-                idleGame.totalCoins += earned;
-                
-                // Show animation
-                const rect = elements.btnFootClick.getBoundingClientRect();
-                showCoinAnimation(
-                    rect.left + rect.width / 2,
-                    rect.top,
-                    earned
-                );
-                
-                updateIdleUI();
-                saveIdleGame();
-            });
-        }
-        
-        // Upgrade click power
-        if (elements.btnUpgradeClick) {
-            elements.btnUpgradeClick.addEventListener('click', () => {
-                if (idleGame.coins >= idleGame.costs.click) {
-                    idleGame.coins -= idleGame.costs.click;
-                    idleGame.upgrades.clickLevel++;
-                    idleGame.clickPower++;
-                    idleGame.costs.click = Math.floor(idleGame.costs.click * 1.5);
-                    updateIdleUI();
-                    saveIdleGame();
-                }
-            });
-        }
-        
-        // Upgrade auto-clicker
-        if (elements.btnUpgradeAuto) {
-            elements.btnUpgradeAuto.addEventListener('click', () => {
-                if (idleGame.coins >= idleGame.costs.auto) {
-                    idleGame.coins -= idleGame.costs.auto;
-                    idleGame.upgrades.autoLevel++;
-                    idleGame.autoRate++;
-                    idleGame.costs.auto = Math.floor(idleGame.costs.auto * 2);
-                    updateIdleUI();
-                    saveIdleGame();
-                }
-            });
-        }
-        
-        // Buy hint
-        if (elements.btnBuyHint) {
-            elements.btnBuyHint.addEventListener('click', () => {
-                if (idleGame.coins >= idleGame.costs.hint && gameState.status === 'playing' && ws) {
-                    idleGame.coins -= idleGame.costs.hint;
-                    idleGame.costs.hint = Math.floor(idleGame.costs.hint * 1.2);
-                    
-                    ws.send(JSON.stringify({
-                        type: 'shop',
-                        item: 'letter'
-                    }));
-                    
-                    updateIdleUI();
-                    saveIdleGame();
-                }
-            });
         }
     }
     
@@ -611,6 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Clear chat when joining a new room
         clearChat();
+        hideGameResult();
         
         ws.send(JSON.stringify({
             type: 'join',
@@ -637,9 +646,122 @@ document.addEventListener('DOMContentLoaded', function() {
     function startNewGame() {
         if (!ws) return;
         
+        hideGameResult();
+        
         ws.send(JSON.stringify({
             type: 'newGame'
         }));
+    }
+    
+    // === IDLE GAME ===
+    
+    function initIdleGame() {
+        updateIdleUI();
+        
+        // Auto-clicker
+        setInterval(() => {
+            if (idleGame.autoRate > 0) {
+                const earned = idleGame.autoRate * idleGame.multiplier;
+                idleGame.coins += earned;
+                idleGame.totalCoins += earned;
+                updateIdleUI();
+                saveIdleGame();
+            }
+        }, 1000);
+        
+        // Foot click handler
+        if (elements.btnFootClick) {
+            elements.btnFootClick.addEventListener('click', (e) => {
+                const earned = calculateClickReward();
+                idleGame.coins += earned;
+                idleGame.totalCoins += earned;
+                
+                // Show animation
+                const rect = elements.btnFootClick.getBoundingClientRect();
+                showCoinAnimation(
+                    rect.left + rect.width / 2,
+                    rect.top,
+                    earned
+                );
+                
+                updateIdleUI();
+                saveIdleGame();
+            });
+        }
+        
+        // Upgrade click power
+        if (elements.btnUpgradeClick) {
+            elements.btnUpgradeClick.addEventListener('click', () => {
+                if (idleGame.coins >= idleGame.costs.click) {
+                    idleGame.coins -= idleGame.costs.click;
+                    idleGame.upgrades.clickLevel++;
+                    idleGame.clickPower++;
+                    idleGame.costs.click = Math.floor(idleGame.costs.click * 1.5);
+                    updateIdleUI();
+                    saveIdleGame();
+                }
+            });
+        }
+        
+        // Upgrade auto-clicker
+        if (elements.btnUpgradeAuto) {
+            elements.btnUpgradeAuto.addEventListener('click', () => {
+                if (idleGame.coins >= idleGame.costs.auto) {
+                    idleGame.coins -= idleGame.costs.auto;
+                    idleGame.upgrades.autoLevel++;
+                    idleGame.autoRate++;
+                    idleGame.costs.auto = Math.floor(idleGame.costs.auto * 2);
+                    updateIdleUI();
+                    saveIdleGame();
+                }
+            });
+        }
+        
+        // Upgrade multiplier
+        if (elements.btnUpgradeMultiplier) {
+            elements.btnUpgradeMultiplier.addEventListener('click', () => {
+                if (idleGame.coins >= idleGame.costs.multiplier) {
+                    idleGame.coins -= idleGame.costs.multiplier;
+                    idleGame.upgrades.multiplierLevel++;
+                    idleGame.multiplier *= 2;
+                    idleGame.costs.multiplier = Math.floor(idleGame.costs.multiplier * 3);
+                    updateIdleUI();
+                    saveIdleGame();
+                }
+            });
+        }
+        
+        // Upgrade luck
+        if (elements.btnUpgradeLuck) {
+            elements.btnUpgradeLuck.addEventListener('click', () => {
+                if (idleGame.coins >= idleGame.costs.luck) {
+                    idleGame.coins -= idleGame.costs.luck;
+                    idleGame.upgrades.luckLevel++;
+                    idleGame.criticalChance += 10;
+                    idleGame.costs.luck = Math.floor(idleGame.costs.luck * 2.5);
+                    updateIdleUI();
+                    saveIdleGame();
+                }
+            });
+        }
+        
+        // Buy hint
+        if (elements.btnBuyHint) {
+            elements.btnBuyHint.addEventListener('click', () => {
+                if (idleGame.coins >= idleGame.costs.hint && gameState.status === 'playing' && ws) {
+                    idleGame.coins -= idleGame.costs.hint;
+                    idleGame.costs.hint = Math.floor(idleGame.costs.hint * 1.2);
+                    
+                    ws.send(JSON.stringify({
+                        type: 'shop',
+                        item: 'letter'
+                    }));
+                    
+                    updateIdleUI();
+                    saveIdleGame();
+                }
+            });
+        }
     }
     
     // === INITIALISATION DES SELECTS ===
@@ -704,6 +826,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (elements.fieldRoomCode) {
                 elements.fieldRoomCode.style.display = 'block';
             }
+            if (elements.fieldLength) {
+                elements.fieldLength.style.display = 'none'; // Masquer les options de config
+            }
             if (elements.modeButtonsMain) {
                 elements.modeButtonsMain.classList.add('hidden');
             }
@@ -714,6 +839,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Aller directement à l'écran de mode
             showScreen(elements.screenMode);
             return true;
+        } else {
+            // Mode normal, afficher les options de configuration
+            if (elements.fieldLength) {
+                elements.fieldLength.style.display = 'block';
+            }
         }
         return false;
     }
@@ -788,6 +918,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (elements.btnNewGame) {
             elements.btnNewGame.addEventListener('click', startNewGame);
+        }
+        
+        if (elements.btnNewGameHighlight) {
+            elements.btnNewGameHighlight.addEventListener('click', () => {
+                hideGameResult();
+                startNewGame();
+            });
         }
         
         // Chat
