@@ -1114,13 +1114,465 @@
             text-align: center;
         }
         
-        /* === SECTION IDLE GAME (40% du bas) === */
-        .idle-section {
+        /* === SECTION GACHA (40% du bas) === */
+        .gacha-section {
             flex: 1;
             display: flex;
             flex-direction: column;
             min-height: 0;
             max-height: 40%;
+        }
+        
+        .gacha-panel-compact {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .gacha-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .gacha-money, .gacha-items {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+            padding: 6px 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .gacha-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        
+        .gacha-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            color: white;
+            border: none;
+            padding: 8px 6px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+        }
+        
+        .gacha-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+        
+        .hint-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+        
+        .hint-btn:hover {
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+        
+        .hint-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .gacha-inventory-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            color: white;
+            border: none;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+        
+        .gacha-inventory-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* === MODAL GACHA === */
+        .gacha-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .gacha-modal-content {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%),
+                rgba(10, 10, 15, 0.95);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 800px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+        
+        .gacha-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .gacha-modal-header h2 {
+            color: #a855f7;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .gacha-close {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .gacha-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .gacha-opening-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 15px;
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            margin-bottom: 20px;
+        }
+        
+        .gacha-opening-bar {
+            display: flex;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            gap: 10px;
+            padding: 20px;
+            transition: transform 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .gacha-item {
+            min-width: 120px;
+            height: 160px;
+            background: 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gacha-item-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .gacha-item-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .gacha-item-rarity {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        
+        .gacha-selector {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 180px;
+            background: linear-gradient(to bottom, transparent, #fff, transparent);
+            box-shadow: 0 0 20px #fff;
+            z-index: 10;
+        }
+        
+        .gacha-result {
+            text-align: center;
+            padding: 20px;
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+            border-radius: 15px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .gacha-result-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .gacha-result-icon {
+            font-size: 4rem;
+            animation: resultZoom 1s ease-out;
+        }
+        
+        .gacha-result-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+        
+        .gacha-result-rarity {
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .gacha-result-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #10b981;
+        }
+        
+        .gacha-sell-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .gacha-sell-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* === MODAL INVENTAIRE === */
+        .inventory-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .inventory-modal-content {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%),
+                rgba(10, 10, 15, 0.95);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 600px;
+            height: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .inventory-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .inventory-modal-header h2 {
+            color: #a855f7;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .inventory-close {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .inventory-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .inventory-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .inventory-money, .inventory-total {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .inventory-grid {
+            flex: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+        
+        .inventory-rarity-group {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .inventory-rarity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .inventory-rarity-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        
+        .inventory-rarity-count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .inventory-rarity-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .inventory-sell-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .inventory-sell-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .inventory-sell-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* === RARETÉS === */
+        .rarity-common { border-color: #808080; color: #808080; }
+        .rarity-uncommon { border-color: #00FF00; color: #00FF00; }
+        .rarity-rare { border-color: #0080FF; color: #0080FF; }
+        .rarity-epic { border-color: #AA00FF; color: #AA00FF; }
+        .rarity-legendary { border-color: #FFAA00; color: #FFAA00; }
+        .rarity-mythic { border-color: #FF0000; color: #FF0000; }
+        .rarity-exotic { 
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #0080FF, #00FF00) 1;
+            color: #00FFFF;
+        }
+        .rarity-radiant { 
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #AA00FF, #FF0000) 1;
+            color: #FFD700;
+        }
+        
+        /* === ANIMATIONS === */
+        @keyframes resultZoom {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px currentColor; }
+            50% { box-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
+        }
+        
+        .gacha-item.winning {
+            animation: glow 1s ease-in-out infinite;
         }
         
         .players-panel {
@@ -2308,7 +2760,7 @@
                     </div>
                 </div>
 
-                <!-- Panneau Cementix + Idle Game (4ème colonne) -->
+                <!-- Panneau Cementix + Gacha (4ème colonne) -->
                 <div class="cementix-idle-panel">
                     <!-- Section Cementix (60% du haut) -->
                     <div class="cementix-section">
@@ -2334,51 +2786,21 @@
                     <!-- Séparateur -->
                     <div class="panel-separator"></div>
                     
-                    <!-- Section Idle Game (40% du bas) -->
-                    <div class="idle-section">
-                        <div class="panel-title">🦶 Idle Clicker</div>
-                        <div class="idle-game-sidebar">
-                            <div class="idle-stats-sidebar">
-                                <div class="idle-stat-sidebar">
-                                    <div class="stat-emoji">💰</div>
-                                    <div class="stat-label">Pièces</div>
-                                    <div class="idle-stat-value" id="idle-coins">0</div>
-                                </div>
-                                <div class="idle-stat-sidebar">
-                                    <div class="stat-emoji">👊</div>
-                                    <div class="stat-label">Force</div>
-                                    <div class="idle-stat-value" id="idle-per-click">1</div>
-                                </div>
-                                <div class="idle-stat-sidebar">
-                                    <div class="stat-emoji">⚡</div>
-                                    <div class="stat-label">Auto</div>
-                                    <div class="idle-stat-value" id="idle-auto-rate">0</div>
-                                </div>
-                                <div class="idle-stat-sidebar">
-                                    <div class="stat-emoji">🎯</div>
-                                    <div class="stat-label">Total</div>
-                                    <div class="idle-stat-value" id="idle-total">0</div>
-                                </div>
+                    <!-- Section Gacha (40% du bas) -->
+                    <div class="gacha-section">
+                        <div class="panel-title">📦 Gacha</div>
+                        <div class="gacha-panel-compact">
+                            <div class="gacha-stats">
+                                <div class="gacha-money">💰 <span id="gacha-money">0</span>$</div>
+                                <div class="gacha-items">📦 <span id="gacha-total-items">0</span> items</div>
                             </div>
                             
-                            <div class="idle-clicker-sidebar">
-                                <button class="foot-button-sidebar" id="btn-foot-click">🦶</button>
+                            <div class="gacha-buttons">
+                                <button id="btn-open-case" class="btn gacha-btn">📦 Ouvrir Caisse</button>
+                                <button id="btn-buy-hint" class="btn hint-btn">💡 Indice (1000$)</button>
                             </div>
                             
-                            <div class="idle-upgrades-sidebar">
-                                <button class="upgrade-btn-sidebar" id="btn-upgrade-click">
-                                    <div class="upgrade-icon">💪</div>
-                                    <div class="upgrade-cost">💰 <span id="cost-click">15</span></div>
-                                </button>
-                                <button class="upgrade-btn-sidebar" id="btn-upgrade-auto">
-                                    <div class="upgrade-icon">⚡</div>
-                                    <div class="upgrade-cost">💰 <span id="cost-auto">75</span></div>
-                                </button>
-                                <button class="hint-btn-sidebar" id="btn-buy-hint">
-                                    <div class="upgrade-icon">💡</div>
-                                    <div class="upgrade-cost">💰 <span id="cost-hint">500</span></div>
-                                </button>
-                            </div>
+                            <button id="btn-show-inventory" class="btn gacha-inventory-btn">🎒 Inventaire</button>
                         </div>
                     </div>
                 </div>
@@ -2392,6 +2814,52 @@
                         <button id="btn-new-game-highlight" class="btn result-btn">🔄 Nouvelle partie</button>
                     </div>
                 </div>
+
+            <!-- Modal Gacha -->
+            <div id="gacha-modal" class="gacha-modal hidden">
+                <div class="gacha-modal-content">
+                    <div class="gacha-modal-header">
+                        <h2>📦 Ouverture de Caisse</h2>
+                        <button id="gacha-close" class="gacha-close">&times;</button>
+                    </div>
+                    
+                    <div class="gacha-opening-container">
+                        <div class="gacha-opening-bar" id="gacha-opening-bar">
+                            <!-- Items will be generated here -->
+                        </div>
+                        <div class="gacha-selector"></div>
+                    </div>
+                    
+                    <div class="gacha-result" id="gacha-result">
+                        <div class="gacha-result-item" id="gacha-result-item">
+                            <div class="gacha-result-icon"></div>
+                            <div class="gacha-result-name"></div>
+                            <div class="gacha-result-rarity"></div>
+                            <div class="gacha-result-value"></div>
+                        </div>
+                        <button id="gacha-sell-item" class="btn gacha-sell-btn hidden">💰 Vendre</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Inventaire -->
+            <div id="inventory-modal" class="inventory-modal hidden">
+                <div class="inventory-modal-content">
+                    <div class="inventory-modal-header">
+                        <h2>🎒 Inventaire</h2>
+                        <button id="inventory-close" class="inventory-close">&times;</button>
+                    </div>
+                    
+                    <div class="inventory-stats">
+                        <div class="inventory-money">💰 <span id="inventory-money">0</span>$</div>
+                        <div class="inventory-total">📦 <span id="inventory-total">0</span> items</div>
+                    </div>
+                    
+                    <div class="inventory-grid" id="inventory-grid">
+                        <!-- Inventory items will be generated here -->
+                    </div>
+                </div>
+            </div>
 
             </div>
         </div>

@@ -21,31 +21,92 @@ document.addEventListener('DOMContentLoaded', function() {
         revealedLetters: []
     };
     
-    // Idle Game State
-    let idleGame = {
-        coins: 0,
-        totalCoins: 0,
-        clickPower: 1,
-        autoRate: 0, // Commence à 0, pas d'auto-farm de base
-        upgrades: {
-            clickLevel: 0,
-            autoLevel: 0
+    // Gacha System State
+    let gachaSystem = {
+        money: 1000, // Start with some money
+        inventory: {
+            common: 0,
+            uncommon: 0,
+            rare: 0,
+            epic: 0,
+            legendary: 0,
+            mythic: 0,
+            exotic: 0,
+            radiant: 0
         },
-        costs: {
-            click: 15,    // Coût de base plus raisonnable
-            auto: 75,     // Coût de base plus raisonnable
-            hint: 500     // Coût de base plus raisonnable
+        totalItems: 0,
+        hintCost: 1000,
+        lastDailyBonus: 0 // Timestamp for daily bonus
+    };
+    
+    // Gacha rarities configuration
+    const gachaRarities = {
+        common: { 
+            probability: 80, 
+            color: '#808080', 
+            price: 3, 
+            icon: '⚪', 
+            variants: ['Épée Commune', 'Bouclier Basique', 'Casque Simple', 'Gants Usés', 'Bottes Trouées', 'Cape Déchirée', 'Anneau Terne', 'Collier Cassé', 'Bracelet Rouillé', 'Ceinture Usagée']
+        },
+        uncommon: { 
+            probability: 15, 
+            color: '#00FF00', 
+            price: 15, 
+            icon: '🟢', 
+            variants: ['Épée Verte', 'Bouclier Renforcé', 'Casque Brillant', 'Gants Solides', 'Bottes Neuves', 'Cape Verte', 'Anneau Vert', 'Collier Solide']
+        },
+        rare: { 
+            probability: 3, 
+            color: '#0080FF', 
+            price: 50, 
+            icon: '🔵', 
+            variants: ['Épée Bleue', 'Bouclier Magique', 'Casque Enchanté', 'Gants Magiques', 'Bottes Rapides', 'Cape Bleue']
+        },
+        epic: { 
+            probability: 1, 
+            color: '#AA00FF', 
+            price: 200, 
+            icon: '🟣', 
+            variants: ['Épée Violette', 'Bouclier Épique', 'Casque Royal', 'Gants Épiques', 'Bottes Volantes']
+        },
+        legendary: { 
+            probability: 0.6, 
+            color: '#FFAA00', 
+            price: 500, 
+            icon: '🟠', 
+            variants: ['Épée Légendaire', 'Bouclier Doré', 'Casque Divin', 'Gants Dorés']
+        },
+        mythic: { 
+            probability: 0.3, 
+            color: '#FF0000', 
+            price: 1000, 
+            icon: '🔴', 
+            variants: ['Épée Mythique', 'Bouclier Sanglant', 'Casque Démoniaque']
+        },
+        exotic: { 
+            probability: 0.09, 
+            color: 'linear-gradient(45deg, #0080FF, #00FF00)', 
+            price: 2500, 
+            icon: '🌈', 
+            variants: ['Épée Arc-en-ciel', 'Bouclier Prismatique']
+        },
+        radiant: { 
+            probability: 0.01, 
+            color: 'linear-gradient(45deg, #AA00FF, #FF0000)', 
+            price: 5000, 
+            icon: '✨', 
+            variants: ['Épée Radieuse', 'Bouclier Cosmique']
         }
     };
     
-    // Load idle game from localStorage
-    const savedIdle = localStorage.getItem('coopdle-idle');
-    if (savedIdle) {
+    // Load gacha system from localStorage
+    const savedGacha = localStorage.getItem('coopdle-gacha');
+    if (savedGacha) {
         try {
-            const parsed = JSON.parse(savedIdle);
-            idleGame = { ...idleGame, ...parsed };
+            const parsed = JSON.parse(savedGacha);
+            gachaSystem = { ...gachaSystem, ...parsed };
         } catch (e) {
-            console.log('Could not load idle game data');
+            console.log('Could not load gacha system data');
         }
     }
     
@@ -109,18 +170,27 @@ document.addEventListener('DOMContentLoaded', function() {
         // Players
         participantsList: document.getElementById("participants-list"),
         
-        // Idle Game
-        idleCoins: document.getElementById("idle-coins"),
-        idlePerClick: document.getElementById("idle-per-click"),
-        idleAutoRate: document.getElementById("idle-auto-rate"),
-        idleTotal: document.getElementById("idle-total"),
-        btnFootClick: document.getElementById("btn-foot-click"),
-        btnUpgradeClick: document.getElementById("btn-upgrade-click"),
-        btnUpgradeAuto: document.getElementById("btn-upgrade-auto"),
+        // Gacha System
+        gachaMoney: document.getElementById("gacha-money"),
+        gachaTotalItems: document.getElementById("gacha-total-items"),
+        btnOpenCase: document.getElementById("btn-open-case"),
         btnBuyHint: document.getElementById("btn-buy-hint"),
-        costClick: document.getElementById("cost-click"),
-        costAuto: document.getElementById("cost-auto"),
-        costHint: document.getElementById("cost-hint"),
+        btnShowInventory: document.getElementById("btn-show-inventory"),
+        
+        // Gacha Modal
+        gachaModal: document.getElementById("gacha-modal"),
+        gachaClose: document.getElementById("gacha-close"),
+        gachaOpeningBar: document.getElementById("gacha-opening-bar"),
+        gachaResult: document.getElementById("gacha-result"),
+        gachaResultItem: document.getElementById("gacha-result-item"),
+        gachaSellItem: document.getElementById("gacha-sell-item"),
+        
+        // Inventory Modal
+        inventoryModal: document.getElementById("inventory-modal"),
+        inventoryClose: document.getElementById("inventory-close"),
+        inventoryMoney: document.getElementById("inventory-money"),
+        inventoryTotal: document.getElementById("inventory-total"),
+        inventoryGrid: document.getElementById("inventory-grid"),
         
         // Cementix elements
         cementixPanel: document.getElementById("cementix-panel"),
@@ -220,45 +290,294 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // === FONCTIONS UTILITAIRES ===
     
-    function saveIdleGame() {
-        localStorage.setItem('coopdle-idle', JSON.stringify(idleGame));
+    // === GACHA SYSTEM FUNCTIONS ===
+    
+    function saveGachaSystem() {
+        localStorage.setItem('coopdle-gacha', JSON.stringify(gachaSystem));
     }
     
-    function updateIdleUI() {
-        if (elements.idleCoins) elements.idleCoins.textContent = Math.floor(idleGame.coins);
-        if (elements.idlePerClick) elements.idlePerClick.textContent = idleGame.clickPower;
-        if (elements.idleAutoRate) elements.idleAutoRate.textContent = idleGame.autoRate;
-        if (elements.idleTotal) elements.idleTotal.textContent = Math.floor(idleGame.totalCoins);
+    function updateGachaUI() {
+        if (elements.gachaMoney) elements.gachaMoney.textContent = Math.floor(gachaSystem.money);
+        if (elements.gachaTotalItems) elements.gachaTotalItems.textContent = gachaSystem.totalItems;
+        if (elements.inventoryMoney) elements.inventoryMoney.textContent = Math.floor(gachaSystem.money);
+        if (elements.inventoryTotal) elements.inventoryTotal.textContent = gachaSystem.totalItems;
         
-        // Update costs
-        if (elements.costClick) elements.costClick.textContent = idleGame.costs.click;
-        if (elements.costAuto) elements.costAuto.textContent = idleGame.costs.auto;
-        if (elements.costHint) elements.costHint.textContent = idleGame.costs.hint;
-        
-        // Update button states
-        if (elements.btnUpgradeClick) {
-            elements.btnUpgradeClick.disabled = idleGame.coins < idleGame.costs.click;
-        }
-        if (elements.btnUpgradeAuto) {
-            elements.btnUpgradeAuto.disabled = idleGame.coins < idleGame.costs.auto;
-        }
+        // Update hint button state
         if (elements.btnBuyHint) {
-            elements.btnBuyHint.disabled = idleGame.coins < idleGame.costs.hint || gameState.status !== 'playing';
+            elements.btnBuyHint.disabled = gachaSystem.money < gachaSystem.hintCost || gameState.status !== 'playing';
         }
     }
     
-    // Debug function to add coins for testing
-    window.addCoins = function(amount = 10000) {
-        idleGame.coins += amount;
-        idleGame.totalCoins += amount;
-        updateIdleUI();
-        saveIdleGame();
-        console.log(`💰 Added ${amount} coins! Total: ${idleGame.coins}`);
+    function getRandomItem() {
+        const random = Math.random() * 100;
+        let cumulative = 0;
+        
+        for (const [rarity, config] of Object.entries(gachaRarities)) {
+            cumulative += config.probability;
+            if (random <= cumulative) {
+                const variantIndex = Math.floor(Math.random() * config.variants.length);
+                return {
+                    rarity: rarity,
+                    name: config.variants[variantIndex],
+                    icon: config.icon,
+                    color: config.color,
+                    price: config.price
+                };
+            }
+        }
+        
+        // Fallback to common
+        return {
+            rarity: 'common',
+            name: gachaRarities.common.variants[0],
+            icon: gachaRarities.common.icon,
+            color: gachaRarities.common.color,
+            price: gachaRarities.common.price
+        };
+    }
+    
+    function generateGachaItems(count = 25) {
+        const items = [];
+        for (let i = 0; i < count; i++) {
+            items.push(getRandomItem());
+        }
+        return items;
+    }
+    
+    function createGachaItemElement(item, isWinning = false) {
+        const itemEl = document.createElement('div');
+        itemEl.className = `gacha-item rarity-${item.rarity}`;
+        if (isWinning) itemEl.classList.add('winning');
+        
+        itemEl.innerHTML = `
+            <div class="gacha-item-icon">${item.icon}</div>
+            <div class="gacha-item-name">${item.name}</div>
+            <div class="gacha-item-rarity">${item.rarity}</div>
+        `;
+        
+        return itemEl;
+    }
+    
+    function playGachaAnimation(items, winningIndex) {
+        return new Promise((resolve) => {
+            const bar = elements.gachaOpeningBar;
+            bar.innerHTML = '';
+            
+            // Create items
+            items.forEach((item, index) => {
+                const itemEl = createGachaItemElement(item, index === winningIndex);
+                bar.appendChild(itemEl);
+            });
+            
+            // Start animation
+            const itemWidth = 130; // 120px + 10px gap
+            const startPosition = window.innerWidth / 2;
+            const endPosition = startPosition - (winningIndex * itemWidth);
+            
+            bar.style.transform = `translateX(${startPosition}px)`;
+            
+            // Play tick sounds during animation
+            let tickInterval;
+            const playTick = () => {
+                // Simple tick sound using Web Audio API
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                } catch (e) {
+                    // Fallback: no sound
+                }
+            };
+            
+            tickInterval = setInterval(playTick, 100);
+            
+            setTimeout(() => {
+                bar.style.transition = 'transform 4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                bar.style.transform = `translateX(${endPosition}px)`;
+                
+                setTimeout(() => {
+                    clearInterval(tickInterval);
+                    
+                    // Play winning sound
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // C5
+                        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1); // E5
+                        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2); // G5
+                        
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.5);
+                    } catch (e) {
+                        // Fallback: no sound
+                    }
+                    
+                    resolve(items[winningIndex]);
+                }, 4000);
+            }, 100);
+        });
+    }
+    
+    function showGachaResult(item) {
+        const resultItem = elements.gachaResultItem;
+        const resultIcon = resultItem.querySelector('.gacha-result-icon');
+        const resultName = resultItem.querySelector('.gacha-result-name');
+        const resultRarity = resultItem.querySelector('.gacha-result-rarity');
+        const resultValue = resultItem.querySelector('.gacha-result-value');
+        
+        resultIcon.textContent = item.icon;
+        resultIcon.style.color = item.color;
+        resultName.textContent = item.name;
+        resultRarity.textContent = item.rarity;
+        resultRarity.style.color = item.color;
+        resultValue.textContent = `${item.price}$`;
+        
+        elements.gachaResult.classList.remove('hidden');
+        elements.gachaSellItem.classList.remove('hidden');
+        
+        // Store current item for selling
+        elements.gachaSellItem.currentItem = item;
+    }
+    
+    function openGachaCase() {
+        if (elements.gachaModal.classList.contains('hidden')) {
+            elements.gachaModal.classList.remove('hidden');
+            elements.gachaResult.classList.add('hidden');
+            elements.gachaSellItem.classList.add('hidden');
+            
+            // Generate items and determine winner
+            const items = generateGachaItems(25);
+            const winningIndex = Math.floor(items.length / 2); // Middle item wins
+            const winningItem = getRandomItem(); // Get actual random winning item
+            items[winningIndex] = winningItem;
+            
+            // Play animation
+            playGachaAnimation(items, winningIndex).then((item) => {
+                // Add to inventory
+                gachaSystem.inventory[item.rarity]++;
+                gachaSystem.totalItems++;
+                saveGachaSystem();
+                updateGachaUI();
+                
+                // Show result
+                showGachaResult(item);
+            });
+        }
+    }
+    
+    function sellGachaItem(item) {
+        if (item && gachaSystem.inventory[item.rarity] > 0) {
+            gachaSystem.inventory[item.rarity]--;
+            gachaSystem.totalItems--;
+            gachaSystem.money += item.price;
+            saveGachaSystem();
+            updateGachaUI();
+            updateInventoryDisplay();
+            
+            // Close gacha modal
+            elements.gachaModal.classList.add('hidden');
+        }
+    }
+    
+    function updateInventoryDisplay() {
+        if (!elements.inventoryGrid) return;
+        
+        elements.inventoryGrid.innerHTML = '';
+        
+        Object.entries(gachaRarities).forEach(([rarity, config]) => {
+            const count = gachaSystem.inventory[rarity] || 0;
+            
+            const groupEl = document.createElement('div');
+            groupEl.className = 'inventory-rarity-group';
+            groupEl.innerHTML = `
+                <div class="inventory-rarity-header">
+                    <span class="inventory-rarity-name" style="color: ${config.color}">${config.icon} ${rarity}</span>
+                    <span class="inventory-rarity-count">${count}</span>
+                </div>
+                <div class="inventory-rarity-actions">
+                    <button class="inventory-sell-btn" data-rarity="${rarity}" ${count === 0 ? 'disabled' : ''}>
+                        Vendre 1 (${config.price}$)
+                    </button>
+                    <button class="inventory-sell-btn" data-rarity="${rarity}" data-all="true" ${count === 0 ? 'disabled' : ''}>
+                        Tout vendre (${count * config.price}$)
+                    </button>
+                </div>
+            `;
+            
+            elements.inventoryGrid.appendChild(groupEl);
+        });
+        
+        // Add event listeners for sell buttons
+        elements.inventoryGrid.querySelectorAll('.inventory-sell-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const rarity = e.target.dataset.rarity;
+                const sellAll = e.target.dataset.all === 'true';
+                const config = gachaRarities[rarity];
+                const count = gachaSystem.inventory[rarity] || 0;
+                
+                if (count > 0) {
+                    if (sellAll) {
+                        gachaSystem.money += count * config.price;
+                        gachaSystem.totalItems -= count;
+                        gachaSystem.inventory[rarity] = 0;
+                    } else {
+                        gachaSystem.money += config.price;
+                        gachaSystem.totalItems--;
+                        gachaSystem.inventory[rarity]--;
+                    }
+                    
+                    saveGachaSystem();
+                    updateGachaUI();
+                    updateInventoryDisplay();
+                }
+            });
+        });
+    }
+    
+    function buyHintWithGacha() {
+        if (gachaSystem.money >= gachaSystem.hintCost && gameState.status === 'playing' && ws) {
+            gachaSystem.money -= gachaSystem.hintCost;
+            gachaSystem.hintCost = Math.floor(gachaSystem.hintCost * 1.2);
+            
+            ws.send(JSON.stringify({
+                type: 'shop',
+                item: 'letter'
+            }));
+            
+            saveGachaSystem();
+            updateGachaUI();
+            console.log('✅ Hint purchased with gacha money!');
+        }
+    }
+    
+    // Debug functions for testing
+    window.addGachaMoney = function(amount = 5000) {
+        gachaSystem.money += amount;
+        saveGachaSystem();
+        updateGachaUI();
+        console.log(`💰 Added ${amount}$ to gacha! Total: ${gachaSystem.money}$`);
     };
     
-    // Debug function to reset idle game
-    window.resetIdleGame = function() {
-        localStorage.removeItem('coopdle-idle');
+    window.resetGachaSystem = function() {
+        localStorage.removeItem('coopdle-gacha');
         location.reload();
     };
     
@@ -389,6 +708,21 @@ document.addEventListener('DOMContentLoaded', function() {
             timestamp
         });
         
+        // Award money for good Cementix scores (only for current player)
+        if (pseudo === gameState.pseudo) {
+            let moneyReward = 0;
+            if (score >= 90) moneyReward = 50;      // Excellent score
+            else if (score >= 75) moneyReward = 25; // Good score
+            else if (score >= 50) moneyReward = 10; // Decent score
+            else if (score >= 25) moneyReward = 5;  // Fair score
+            
+            if (moneyReward > 0) {
+                gachaSystem.money += moneyReward;
+                saveGachaSystem();
+                updateGachaUI();
+            }
+        }
+        
         // Limiter à 100 tentatives max
         if (cementixAttempts.length > 100) {
             cementixAttempts = cementixAttempts.slice(0, 100);
@@ -440,13 +774,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Use integrated result instead of modal
         if (!elements.gameResultIntegrated) return;
         
+        // Award money for participating
+        let moneyReward = 0;
         if (won) {
+            moneyReward = 100 + (word.length * 20); // Base 100$ + 20$ per letter
             if (elements.resultIconIntegrated) elements.resultIconIntegrated.textContent = '🎉';
-            if (elements.resultTextIntegrated) elements.resultTextIntegrated.textContent = 'Partie gagnée !';
+            if (elements.resultTextIntegrated) elements.resultTextIntegrated.textContent = `Partie gagnée ! +${moneyReward}$`;
         } else {
+            moneyReward = 25 + (word.length * 5); // Consolation prize: 25$ + 5$ per letter
             if (elements.resultIconIntegrated) elements.resultIconIntegrated.textContent = '😞';
-            if (elements.resultTextIntegrated) elements.resultTextIntegrated.textContent = `Partie perdue ! Le mot était : ${word.toUpperCase()}`;
+            if (elements.resultTextIntegrated) elements.resultTextIntegrated.textContent = `Partie perdue ! Le mot était : ${word.toUpperCase()} (+${moneyReward}$)`;
         }
+        
+        // Add money to gacha system
+        gachaSystem.money += moneyReward;
+        saveGachaSystem();
+        updateGachaUI();
         
         elements.gameResultIntegrated.classList.remove('hidden');
         
@@ -466,13 +809,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function calculateClickReward() {
-        return idleGame.clickPower;
+        // This function is no longer used in gacha system
+        return 1;
     }
     
     function showCoinAnimation(x, y, amount) {
+        // This function is no longer used in gacha system
         const coinEl = document.createElement('div');
         coinEl.className = 'coin-animation';
-        coinEl.textContent = `+${amount}`;
+        coinEl.textContent = `+${amount}$`;
         coinEl.style.left = x + 'px';
         coinEl.style.top = y + 'px';
         document.body.appendChild(coinEl);
@@ -724,6 +1069,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
                 
             case 'state':
+                const previousAttempts = gameState.attempts || 0;
+                
                 gameState.length = data.length;
                 gameState.guesses = data.guesses || [];
                 gameState.attempts = data.attempts || 0;
@@ -732,6 +1079,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 gameState.currentPlayerId = data.currentPlayerId;
                 gameState.players = data.players || [];
                 gameState.revealedLetters = data.revealedLetters || [];
+                
+                // Award money for valid guess attempts (only if attempts increased)
+                if (gameState.attempts > previousAttempts && gameState.status === 'playing') {
+                    const moneyReward = 10; // Small reward for each valid guess
+                    gachaSystem.money += moneyReward;
+                    saveGachaSystem();
+                    updateGachaUI();
+                }
                 
                 if (elements.attempts) elements.attempts.textContent = gameState.attempts;
                 if (elements.wordLength) elements.wordLength.textContent = gameState.length;
@@ -926,114 +1281,98 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // === IDLE GAME ===
     
-    function initIdleGame() {
-        console.log('🎮 Initializing idle game...');
-        console.log('💰 Initial idle state:', idleGame);
+    function initGachaSystem() {
+        console.log('🎰 Initializing gacha system...');
+        console.log('💰 Initial gacha state:', gachaSystem);
         
-        updateIdleUI();
-        
-        // Auto-clicker
-        setInterval(() => {
-            if (idleGame.autoRate > 0) {
-                const earned = idleGame.autoRate;
-                idleGame.coins += earned;
-                idleGame.totalCoins += earned;
-                updateIdleUI();
-                saveIdleGame();
-            }
-        }, 1000);
-        
-        // Foot click handler
-        if (elements.btnFootClick) {
-            console.log('✅ Foot button found, adding click handler');
-            elements.btnFootClick.addEventListener('click', (e) => {
-                // Add intensive click effect
-                elements.btnFootClick.classList.add('clicking');
-                setTimeout(() => {
-                    elements.btnFootClick.classList.remove('clicking');
-                }, 150);
-                
-                const earned = calculateClickReward();
-                idleGame.coins += earned;
-                idleGame.totalCoins += earned;
-                
-                // Show animation
-                const rect = elements.btnFootClick.getBoundingClientRect();
-                showCoinAnimation(
-                    rect.left + rect.width / 2,
-                    rect.top,
-                    earned
-                );
-                
-                updateIdleUI();
-                saveIdleGame();
-            });
-        } else {
-            console.error('❌ Foot button not found!');
+        // Check for daily bonus
+        const now = Date.now();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        if (now - gachaSystem.lastDailyBonus > oneDayMs) {
+            gachaSystem.money += 500; // Daily bonus
+            gachaSystem.lastDailyBonus = now;
+            saveGachaSystem();
+            console.log('🎁 Daily bonus awarded: +500$');
         }
         
-        // Upgrade click power
-        if (elements.btnUpgradeClick) {
-            console.log('✅ Click upgrade button found');
-            elements.btnUpgradeClick.addEventListener('click', () => {
-                console.log(`🔧 Click upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.click}`);
-                if (idleGame.coins >= idleGame.costs.click) {
-                    idleGame.coins -= idleGame.costs.click;
-                    idleGame.upgrades.clickLevel++;
-                    idleGame.clickPower++;
-                    idleGame.costs.click = Math.floor(idleGame.costs.click * 1.25); // Reduced from 1.5 to 1.25
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Click upgrade purchased!');
-                }
+        updateGachaUI();
+        
+        // Open case button
+        if (elements.btnOpenCase) {
+            console.log('✅ Open case button found, adding click handler');
+            elements.btnOpenCase.addEventListener('click', () => {
+                openGachaCase();
             });
         } else {
-            console.error('❌ Click upgrade button not found!');
+            console.error('❌ Open case button not found!');
         }
         
-        // Upgrade auto-clicker
-        if (elements.btnUpgradeAuto) {
-            console.log('✅ Auto upgrade button found');
-            elements.btnUpgradeAuto.addEventListener('click', () => {
-                console.log(`🔧 Auto upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.auto}`);
-                if (idleGame.coins >= idleGame.costs.auto) {
-                    idleGame.coins -= idleGame.costs.auto;
-                    idleGame.upgrades.autoLevel++;
-                    idleGame.autoRate++;
-                    idleGame.costs.auto = Math.floor(idleGame.costs.auto * 1.5); // Reduced from 2 to 1.5
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Auto upgrade purchased!');
-                }
-            });
-        } else {
-            console.error('❌ Auto upgrade button not found!');
-        }
-        
-        // Buy hint
+        // Buy hint button
         if (elements.btnBuyHint) {
-            console.log('✅ Hint button found');
+            console.log('✅ Hint button found, adding click handler');
             elements.btnBuyHint.addEventListener('click', () => {
-                console.log(`💡 Hint purchase: coins=${idleGame.coins}, cost=${idleGame.costs.hint}, gameStatus=${gameState.status}`);
-                if (idleGame.coins >= idleGame.costs.hint && gameState.status === 'playing' && ws) {
-                    idleGame.coins -= idleGame.costs.hint;
-                    idleGame.costs.hint = Math.floor(idleGame.costs.hint * 1.2);
-                    
-                    ws.send(JSON.stringify({
-                        type: 'shop',
-                        item: 'letter'
-                    }));
-                    
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Hint purchased!');
-                }
+                buyHintWithGacha();
             });
         } else {
             console.error('❌ Hint button not found!');
         }
         
-        console.log('🎮 Idle game initialization complete!');
+        // Show inventory button
+        if (elements.btnShowInventory) {
+            console.log('✅ Inventory button found, adding click handler');
+            elements.btnShowInventory.addEventListener('click', () => {
+                elements.inventoryModal.classList.remove('hidden');
+                updateInventoryDisplay();
+            });
+        } else {
+            console.error('❌ Inventory button not found!');
+        }
+        
+        // Gacha modal close button
+        if (elements.gachaClose) {
+            elements.gachaClose.addEventListener('click', () => {
+                elements.gachaModal.classList.add('hidden');
+            });
+        }
+        
+        // Inventory modal close button
+        if (elements.inventoryClose) {
+            elements.inventoryClose.addEventListener('click', () => {
+                elements.inventoryModal.classList.add('hidden');
+            });
+        }
+        
+        // Sell item button in gacha modal
+        if (elements.gachaSellItem) {
+            elements.gachaSellItem.addEventListener('click', () => {
+                if (elements.gachaSellItem.currentItem) {
+                    sellGachaItem(elements.gachaSellItem.currentItem);
+                }
+            });
+        }
+        
+        // Close modals on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                elements.gachaModal.classList.add('hidden');
+                elements.inventoryModal.classList.add('hidden');
+            }
+        });
+        
+        // Close modals on background click
+        elements.gachaModal.addEventListener('click', (e) => {
+            if (e.target === elements.gachaModal) {
+                elements.gachaModal.classList.add('hidden');
+            }
+        });
+        
+        elements.inventoryModal.addEventListener('click', (e) => {
+            if (e.target === elements.inventoryModal) {
+                elements.inventoryModal.classList.add('hidden');
+            }
+        });
+        
+        console.log('🎰 Gacha system initialization complete!');
     }
     
     // === INITIALISATION DES SELECTS ===
@@ -1242,7 +1581,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setupEventListeners();
         fillSelects();
-        initIdleGame();
+        initGachaSystem();
         connectWebSocket();
         
         // Check URL params first

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Gacha System - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .log {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎰 Test du Système Gacha - Coopdle</h1>
+    
+    <div class="test-section">
+        <h2>💰 Statistiques</h2>
+        <div class="stats">
+            <div class="stat-item">
+                <div>Argent</div>
+                <div id="money-display">0$</div>
+            </div>
+            <div class="stat-item">
+                <div>Items Total</div>
+                <div id="items-display">0</div>
+            </div>
+            <div class="stat-item">
+                <div>Caisses Ouvertes</div>
+                <div id="cases-opened">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎮 Actions de Test</h2>
+        <button class="test-button" onclick="addMoney(1000)">+1000$ Argent</button>
+        <button class="test-button" onclick="openCase()">📦 Ouvrir Caisse</button>
+        <button class="test-button" onclick="open100Cases()">📦 Ouvrir 100 Caisses</button>
+        <button class="test-button" onclick="sellAllItems()">💰 Vendre Tout</button>
+        <button class="test-button" onclick="resetSystem()">🔄 Reset</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 Inventaire par Rareté</h2>
+        <div class="stats" id="inventory-display"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📈 Statistiques de Drop</h2>
+        <div class="stats" id="drop-stats"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📝 Log des Actions</h2>
+        <div class="log" id="action-log"></div>
+    </div>
+
+    <script>
+        // Simplified gacha system for testing
+        let testGacha = {
+            money: 1000,
+            inventory: {
+                common: 0, uncommon: 0, rare: 0, epic: 0,
+                legendary: 0, mythic: 0, exotic: 0, radiant: 0
+            },
+            totalItems: 0,
+            casesOpened: 0
+        };
+
+        const rarities = {
+            common: { probability: 80, color: '#808080', price: 3, icon: '⚪' },
+            uncommon: { probability: 15, color: '#00FF00', price: 15, icon: '🟢' },
+            rare: { probability: 3, color: '#0080FF', price: 50, icon: '🔵' },
+            epic: { probability: 1, color: '#AA00FF', price: 200, icon: '🟣' },
+            legendary: { probability: 0.6, color: '#FFAA00', price: 500, icon: '🟠' },
+            mythic: { probability: 0.3, color: '#FF0000', price: 1000, icon: '🔴' },
+            exotic: { probability: 0.09, color: '#00FFFF', price: 2500, icon: '🌈' },
+            radiant: { probability: 0.01, color: '#FFD700', price: 5000, icon: '✨' }
+        };
+
+        function getRandomItem() {
+            const random = Math.random() * 100;
+            let cumulative = 0;
+            
+            for (const [rarity, config] of Object.entries(rarities)) {
+                cumulative += config.probability;
+                if (random <= cumulative) {
+                    return rarity;
+                }
+            }
+            return 'common';
+        }
+
+        function addMoney(amount) {
+            testGacha.money += amount;
+            updateDisplay();
+            log(`💰 Ajouté ${amount}$ (Total: ${testGacha.money}$)`);
+        }
+
+        function openCase() {
+            if (testGacha.money < 0) { // Free for testing
+                const item = getRandomItem();
+                testGacha.inventory[item]++;
+                testGacha.totalItems++;
+                testGacha.casesOpened++;
+                updateDisplay();
+                log(`📦 Caisse ouverte: ${rarities[item].icon} ${item} (Prix: ${rarities[item].price}$)`);
+            }
+        }
+
+        function open100Cases() {
+            for (let i = 0; i < 100; i++) {
+                const item = getRandomItem();
+                testGacha.inventory[item]++;
+                testGacha.totalItems++;
+                testGacha.casesOpened++;
+            }
+            updateDisplay();
+            log(`📦 Ouvert 100 caisses d'un coup!`);
+        }
+
+        function sellAllItems() {
+            let totalEarned = 0;
+            Object.entries(testGacha.inventory).forEach(([rarity, count]) => {
+                if (count > 0) {
+                    const earned = count * rarities[rarity].price;
+                    totalEarned += earned;
+                    testGacha.inventory[rarity] = 0;
+                }
+            });
+            testGacha.money += totalEarned;
+            testGacha.totalItems = 0;
+            updateDisplay();
+            log(`💰 Vendu tous les items pour ${totalEarned}$`);
+        }
+
+        function resetSystem() {
+            testGacha = {
+                money: 1000,
+                inventory: {
+                    common: 0, uncommon: 0, rare: 0, epic: 0,
+                    legendary: 0, mythic: 0, exotic: 0, radiant: 0
+                },
+                totalItems: 0,
+                casesOpened: 0
+            };
+            updateDisplay();
+            log(`🔄 Système réinitialisé`);
+        }
+
+        function updateDisplay() {
+            document.getElementById('money-display').textContent = testGacha.money + '$';
+            document.getElementById('items-display').textContent = testGacha.totalItems;
+            document.getElementById('cases-opened').textContent = testGacha.casesOpened;
+
+            // Update inventory display
+            const inventoryDiv = document.getElementById('inventory-display');
+            inventoryDiv.innerHTML = '';
+            Object.entries(testGacha.inventory).forEach(([rarity, count]) => {
+                const div = document.createElement('div');
+                div.className = 'stat-item';
+                div.style.borderLeft = `4px solid ${rarities[rarity].color}`;
+                div.innerHTML = `
+                    <div>${rarities[rarity].icon} ${rarity}</div>
+                    <div>${count} (${count * rarities[rarity].price}$)</div>
+                `;
+                inventoryDiv.appendChild(div);
+            });
+
+            // Update drop stats
+            const dropStatsDiv = document.getElementById('drop-stats');
+            dropStatsDiv.innerHTML = '';
+            if (testGacha.casesOpened > 0) {
+                Object.entries(testGacha.inventory).forEach(([rarity, count]) => {
+                    const actualRate = ((count / testGacha.casesOpened) * 100).toFixed(2);
+                    const expectedRate = rarities[rarity].probability;
+                    const div = document.createElement('div');
+                    div.className = 'stat-item';
+                    div.innerHTML = `
+                        <div>${rarity}</div>
+                        <div>${actualRate}% (${expectedRate}%)</div>
+                    `;
+                    inventoryDiv.appendChild(div);
+                });
+            }
+        }
+
+        function log(message) {
+            const logDiv = document.getElementById('action-log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${time}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Initialize display
+        updateDisplay();
+        log('🎰 Système de test Gacha initialisé');
+    </script>
+</body>
+</html>
