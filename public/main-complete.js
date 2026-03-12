@@ -161,16 +161,16 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.btnUpgradeAuto.disabled = idleGame.coins < idleGame.costs.auto;
         }
         if (elements.btnUpgradeMultiplier) {
-            elements.btnUpgradeMultiplier.disabled = idleGame.coins < idleGame.costs.multiplier;
-            // Debug log for multiplier button
-            if (idleGame.coins >= idleGame.costs.multiplier) {
+            const canAfford = idleGame.coins >= idleGame.costs.multiplier;
+            elements.btnUpgradeMultiplier.disabled = !canAfford;
+            if (canAfford) {
                 console.log(`💰 Multiplier upgrade available! Coins: ${idleGame.coins}, Cost: ${idleGame.costs.multiplier}`);
             }
         }
         if (elements.btnUpgradeLuck) {
-            elements.btnUpgradeLuck.disabled = idleGame.coins < idleGame.costs.luck;
-            // Debug log for luck button
-            if (idleGame.coins >= idleGame.costs.luck) {
+            const canAfford = idleGame.coins >= idleGame.costs.luck;
+            elements.btnUpgradeLuck.disabled = !canAfford;
+            if (canAfford) {
                 console.log(`🍀 Luck upgrade available! Coins: ${idleGame.coins}, Cost: ${idleGame.costs.luck}`);
             }
         }
@@ -178,6 +178,21 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.btnBuyHint.disabled = idleGame.coins < idleGame.costs.hint || gameState.status !== 'playing';
         }
     }
+    
+    // Debug function to add coins for testing
+    window.addCoins = function(amount = 10000) {
+        idleGame.coins += amount;
+        idleGame.totalCoins += amount;
+        updateIdleUI();
+        saveIdleGame();
+        console.log(`💰 Added ${amount} coins! Total: ${idleGame.coins}`);
+    };
+    
+    // Debug function to reset idle game
+    window.resetIdleGame = function() {
+        localStorage.removeItem('coopdle-idle');
+        location.reload();
+    };
     
     function showGameResult(won, word) {
         if (!elements.gameResult) return;
@@ -664,6 +679,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // === IDLE GAME ===
     
     function initIdleGame() {
+        console.log('🎮 Initializing idle game...');
+        console.log('💰 Initial idle state:', idleGame);
+        
         updateIdleUI();
         
         // Auto-clicker
@@ -679,6 +697,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Foot click handler
         if (elements.btnFootClick) {
+            console.log('✅ Foot button found, adding click handler');
             elements.btnFootClick.addEventListener('click', (e) => {
                 const earned = calculateClickReward();
                 idleGame.coins += earned;
@@ -695,11 +714,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateIdleUI();
                 saveIdleGame();
             });
+        } else {
+            console.error('❌ Foot button not found!');
         }
         
         // Upgrade click power
         if (elements.btnUpgradeClick) {
+            console.log('✅ Click upgrade button found');
             elements.btnUpgradeClick.addEventListener('click', () => {
+                console.log(`🔧 Click upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.click}`);
                 if (idleGame.coins >= idleGame.costs.click) {
                     idleGame.coins -= idleGame.costs.click;
                     idleGame.upgrades.clickLevel++;
@@ -707,13 +730,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     idleGame.costs.click = Math.floor(idleGame.costs.click * 1.5);
                     updateIdleUI();
                     saveIdleGame();
+                    console.log('✅ Click upgrade purchased!');
                 }
             });
+        } else {
+            console.error('❌ Click upgrade button not found!');
         }
         
         // Upgrade auto-clicker
         if (elements.btnUpgradeAuto) {
+            console.log('✅ Auto upgrade button found');
             elements.btnUpgradeAuto.addEventListener('click', () => {
+                console.log(`🔧 Auto upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.auto}`);
                 if (idleGame.coins >= idleGame.costs.auto) {
                     idleGame.coins -= idleGame.costs.auto;
                     idleGame.upgrades.autoLevel++;
@@ -721,13 +749,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     idleGame.costs.auto = Math.floor(idleGame.costs.auto * 2);
                     updateIdleUI();
                     saveIdleGame();
+                    console.log('✅ Auto upgrade purchased!');
                 }
             });
+        } else {
+            console.error('❌ Auto upgrade button not found!');
         }
         
         // Upgrade multiplier
         if (elements.btnUpgradeMultiplier) {
+            console.log('✅ Multiplier upgrade button found');
             elements.btnUpgradeMultiplier.addEventListener('click', () => {
+                console.log(`🚀 Multiplier upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.multiplier}`);
                 if (idleGame.coins >= idleGame.costs.multiplier) {
                     idleGame.coins -= idleGame.costs.multiplier;
                     idleGame.upgrades.multiplierLevel++;
@@ -735,13 +768,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     idleGame.costs.multiplier = Math.floor(idleGame.costs.multiplier * 3);
                     updateIdleUI();
                     saveIdleGame();
+                    console.log('✅ Multiplier upgrade purchased! New multiplier:', idleGame.multiplier);
+                } else {
+                    console.log('❌ Not enough coins for multiplier upgrade');
                 }
             });
+        } else {
+            console.error('❌ Multiplier upgrade button not found!');
         }
         
         // Upgrade luck
         if (elements.btnUpgradeLuck) {
+            console.log('✅ Luck upgrade button found');
             elements.btnUpgradeLuck.addEventListener('click', () => {
+                console.log(`🍀 Luck upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.luck}`);
                 if (idleGame.coins >= idleGame.costs.luck) {
                     idleGame.coins -= idleGame.costs.luck;
                     idleGame.upgrades.luckLevel++;
@@ -749,13 +789,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     idleGame.costs.luck = Math.floor(idleGame.costs.luck * 2.5);
                     updateIdleUI();
                     saveIdleGame();
+                    console.log('✅ Luck upgrade purchased! New critical chance:', idleGame.criticalChance + '%');
+                } else {
+                    console.log('❌ Not enough coins for luck upgrade');
                 }
             });
+        } else {
+            console.error('❌ Luck upgrade button not found!');
         }
         
         // Buy hint
         if (elements.btnBuyHint) {
+            console.log('✅ Hint button found');
             elements.btnBuyHint.addEventListener('click', () => {
+                console.log(`💡 Hint purchase: coins=${idleGame.coins}, cost=${idleGame.costs.hint}, gameStatus=${gameState.status}`);
                 if (idleGame.coins >= idleGame.costs.hint && gameState.status === 'playing' && ws) {
                     idleGame.coins -= idleGame.costs.hint;
                     idleGame.costs.hint = Math.floor(idleGame.costs.hint * 1.2);
@@ -767,9 +814,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     updateIdleUI();
                     saveIdleGame();
+                    console.log('✅ Hint purchased!');
                 }
             });
+        } else {
+            console.error('❌ Hint button not found!');
         }
+        
+        console.log('🎮 Idle game initialization complete!');
     }
     
     // === INITIALISATION DES SELECTS ===

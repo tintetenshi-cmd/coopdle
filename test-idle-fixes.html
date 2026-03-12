@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Idle Game Fixes - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        .warning { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; }
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+        }
+        .test-controls {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        .test-btn {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-btn:hover {
+            background: linear-gradient(135deg, #a855f7, #c084fc);
+        }
+        code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test des Corrections Idle Game</h1>
+    
+    <div class="test-section">
+        <h2>✅ Corrections Implémentées</h2>
+        <div class="test-result success">
+            <strong>1. Layout 50/50 optimisé</strong><br>
+            ✓ Section joueurs : 50% du haut avec scroll<br>
+            ✓ Idle game : 50% du bas avec design compact<br>
+            ✓ Bouton pied centré et plus petit (45px)<br>
+            ✓ Stats en grille 2x2 compacte<br>
+            ✓ Boutons d'upgrade plus petits et optimisés
+        </div>
+        <div class="test-result success">
+            <strong>2. Boutons multiplicateur et critique réparés</strong><br>
+            ✓ Event listeners ajoutés avec logs de debug<br>
+            ✓ Vérification des éléments DOM au démarrage<br>
+            ✓ Fonctions de test ajoutées : <code>addCoins()</code> et <code>resetIdleGame()</code><br>
+            ✓ Multiplicateur : 2000 pièces (x2 multiplier)<br>
+            ✓ Critique : 5000 pièces (+10% chance)
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Instructions de Test</h2>
+        <div class="test-result info">
+            <strong>Pour tester les upgrades :</strong><br>
+            1. Ouvrez la console du navigateur (F12)<br>
+            2. Tapez <code>addCoins(10000)</code> pour ajouter 10,000 pièces<br>
+            3. Testez les boutons multiplicateur (2000) et critique (5000)<br>
+            4. Vérifiez que les stats se mettent à jour correctement<br>
+            5. Utilisez <code>resetIdleGame()</code> pour remettre à zéro
+        </div>
+        
+        <div class="test-controls">
+            <strong>Commandes de test :</strong><br>
+            <button class="test-btn" onclick="testAddCoins()">Ajouter 10,000 pièces</button>
+            <button class="test-btn" onclick="testReset()">Reset Idle Game</button>
+            <button class="test-btn" onclick="testConsoleLog()">Voir état actuel</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎮 Test de l'Application</h2>
+        <iframe src="index.html" id="gameFrame"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Points de Vérification</h2>
+        <div class="test-result warning">
+            <strong>À vérifier :</strong><br>
+            • Liste des joueurs scrollable dans la partie haute<br>
+            • Idle game compact dans la partie basse<br>
+            • Bouton pied bien centré et de bonne taille<br>
+            • Boutons multiplicateur et critique fonctionnels<br>
+            • Stats qui se mettent à jour en temps réel<br>
+            • Layout responsive qui ne casse pas
+        </div>
+    </div>
+
+    <script>
+        function testAddCoins() {
+            const frame = document.getElementById('gameFrame');
+            if (frame.contentWindow && frame.contentWindow.addCoins) {
+                frame.contentWindow.addCoins(10000);
+                console.log('✅ Added 10,000 coins to the game');
+            } else {
+                console.log('❌ Game not loaded or addCoins function not available');
+                alert('Veuillez attendre que le jeu soit chargé, puis réessayez');
+            }
+        }
+        
+        function testReset() {
+            const frame = document.getElementById('gameFrame');
+            if (frame.contentWindow && frame.contentWindow.resetIdleGame) {
+                if (confirm('Êtes-vous sûr de vouloir remettre à zéro l\'idle game ?')) {
+                    frame.contentWindow.resetIdleGame();
+                }
+            } else {
+                console.log('❌ Game not loaded or resetIdleGame function not available');
+                alert('Veuillez attendre que le jeu soit chargé, puis réessayez');
+            }
+        }
+        
+        function testConsoleLog() {
+            const frame = document.getElementById('gameFrame');
+            if (frame.contentWindow && frame.contentWindow.console) {
+                console.log('🎮 Current game state:');
+                frame.contentWindow.console.log('Current idle game state:', frame.contentWindow.idleGame || 'Not available');
+            } else {
+                console.log('❌ Cannot access game console');
+            }
+        }
+        
+        console.log('🧪 Test page loaded');
+        console.log('📋 Available test functions:');
+        console.log('- testAddCoins(): Add 10,000 coins');
+        console.log('- testReset(): Reset idle game');
+        console.log('- testConsoleLog(): Show current state');
+    </script>
+</body>
+</html>

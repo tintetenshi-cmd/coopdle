@@ -659,23 +659,52 @@
             position: relative;
         }
         
+        /* === SECTION JOUEURS (50% du haut) === */
+        .players-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            max-height: 50%;
+        }
+        
         .players-list {
             list-style: none;
-            margin-bottom: 0;
-            flex: 0 0 auto;
-            max-height: 40%;
+            margin: 0;
+            padding: 0;
+            flex: 1;
             overflow-y: auto;
+            min-height: 0;
+            padding-right: 4px;
+        }
+        
+        .players-list::-webkit-scrollbar {
+            width: 3px;
+        }
+        
+        .players-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 2px;
+        }
+        
+        .players-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border-radius: 2px;
+        }
+        
+        .players-list::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #a855f7, #c084fc);
         }
         
         .player-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px;
-            margin-bottom: 6px;
+            padding: 6px 8px;
+            margin-bottom: 4px;
             background: 
                 linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -702,9 +731,9 @@
         }
         
         .player-avatar {
-            font-size: 1.2rem;
-            width: 24px;
-            height: 24px;
+            font-size: 1.1rem;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -713,39 +742,39 @@
         .player-name {
             font-weight: 500;
             color: #e2e8f0;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         
         /* === SÉPARATEUR === */
         .panel-separator {
             height: 2px;
             background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
-            margin: 16px 0;
+            margin: 12px 0;
             flex: 0 0 auto;
             border-radius: 1px;
             box-shadow: 0 1px 3px rgba(139, 92, 246, 0.2);
         }
         
-        /* === IDLE GAME SIDEBAR === */
+        /* === IDLE GAME SIDEBAR (50% du bas) === */
         .idle-game-sidebar {
             flex: 1;
             display: flex;
             flex-direction: column;
             min-height: 0;
-            position: relative;
+            max-height: 50%;
             background: 
                 linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
             border-radius: 12px;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
         .idle-stats-sidebar {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
         }
         
         .idle-stat-sidebar {
@@ -754,21 +783,22 @@
             align-items: center;
             background: 
                 linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
-            padding: 8px 6px;
-            border-radius: 8px;
+            padding: 4px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
         }
         
         .stat-emoji {
-            font-size: 1.1rem;
-            margin-bottom: 2px;
+            font-size: 0.9rem;
+            margin-bottom: 1px;
         }
         
         .stat-label {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: #94a3b8;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
+            text-align: center;
         }
         
         .idle-stat-value {
@@ -777,31 +807,36 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            text-align: center;
         }
         
         .idle-clicker-sidebar {
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .foot-button-sidebar {
-            font-size: 2.5rem;
+            font-size: 2rem;
             background: 
                 linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%);
             border: 1px solid rgba(139, 92, 246, 0.4);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 12px;
+            padding: 8px;
             border-radius: 50%;
             box-shadow: 
                 0 4px 12px rgba(139, 92, 246, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0 auto;
         }
         
         .foot-button-sidebar:hover {
@@ -819,8 +854,8 @@
         
         .idle-upgrades-sidebar {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3px;
             flex: 1;
             align-content: start;
         }
@@ -830,9 +865,9 @@
                 linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%);
             border: 1px solid rgba(139, 92, 246, 0.4);
             color: #c4b5fd;
-            padding: 8px 6px;
-            border-radius: 8px;
-            font-size: 0.7rem;
+            padding: 4px 3px;
+            border-radius: 6px;
+            font-size: 0.6rem;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
@@ -840,7 +875,11 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             font-weight: 500;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.1;
+            min-height: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .hint-btn-sidebar {
@@ -1561,13 +1600,16 @@
 
                 <!-- Panneau joueurs + Idle game (droite) -->
                 <div class="players-panel">
-                    <div class="panel-title">👥 Joueurs</div>
-                    <ul class="players-list" id="participants-list"></ul>
+                    <!-- Section Joueurs (50% du haut) -->
+                    <div class="players-section">
+                        <div class="panel-title">👥 Joueurs</div>
+                        <ul class="players-list" id="participants-list"></ul>
+                    </div>
                     
                     <!-- Séparateur -->
                     <div class="panel-separator"></div>
                     
-                    <!-- Idle Game dans la colonne joueurs -->
+                    <!-- Idle Game dans la colonne joueurs (50% du bas) -->
                     <div class="idle-game-sidebar">
                         <div class="panel-title">🦶 Idle Clicker</div>
                         <div class="idle-stats-sidebar">
