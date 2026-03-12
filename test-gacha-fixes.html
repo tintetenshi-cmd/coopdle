@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Corrections Gacha - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-info {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .corrections {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test des Corrections Gacha</h1>
+    
+    <div class="corrections">
+        <h2>✅ Corrections Appliquées</h2>
+        <ul>
+            <li><strong>Décalage de la flèche</strong> : Calcul de position corrigé pour centrer précisément l'item gagnant</li>
+            <li><strong>Modale plus petite</strong> : Largeur réduite de 800px à 600px</li>
+            <li><strong>Fond transparent</strong> : Opacité réduite de 0.8 à 0.3</li>
+            <li><strong>Position plus basse</strong> : Alignement vers le bas avec padding-bottom: 10vh</li>
+            <li><strong>Items redimensionnés</strong> : 100x130px au lieu de 120x160px</li>
+        </ul>
+    </div>
+    
+    <div class="test-info">
+        <h2>🎯 Comment Tester</h2>
+        <p>1. Ouvrez le jeu principal (index.html)</p>
+        <p>2. Utilisez la console : <code>addGachaMoney(5000)</code></p>
+        <p>3. Cliquez sur "📦 Ouvrir Caisse" plusieurs fois</p>
+        <p>4. Vérifiez que l'item affiché correspond à celui reçu</p>
+        <p>5. Observez la nouvelle apparence de la modale</p>
+    </div>
+    
+    <div class="test-info">
+        <h2>🔍 Points de Vérification</h2>
+        <ul>
+            <li>La flèche pointe exactement sur l'item gagnant</li>
+            <li>La modale est plus petite et transparente</li>
+            <li>La modale apparaît dans le bas de l'écran</li>
+            <li>Les items sont plus compacts mais lisibles</li>
+            <li>L'animation reste fluide</li>
+        </ul>
+    </div>
+    
+    <button class="test-button" onclick="window.open('public/index.html', '_blank')">
+        🚀 Ouvrir le Jeu Principal
+    </button>
+</body>
+</html>

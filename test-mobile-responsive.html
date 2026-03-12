@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mobile Responsive - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-section {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .responsive-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .breakpoint {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 8px 0;
+        }
+        .current-size {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Test Mobile Responsive - Coopdle</h1>
+    
+    <div class="current-size" id="current-size">
+        Largeur actuelle: <span id="width-display">-</span>px
+    </div>
+    
+    <div class="responsive-info">
+        <h2>✅ Améliorations Mobile Appliquées</h2>
+        <ul>
+            <li><strong>Layout vertical</strong> : Colonnes empilées sur mobile</li>
+            <li><strong>Wordle optimisé</strong> : Cellules 26px, espacement réduit</li>
+            <li><strong>Chat compact</strong> : 150px de hauteur sur mobile</li>
+            <li><strong>Panneaux scrollables</strong> : Hauteurs fixes avec scroll</li>
+            <li><strong>Gacha mobile</strong> : Items 60px, modal pleine largeur</li>
+            <li><strong>Touch-friendly</strong> : Boutons plus grands, espacement adapté</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>📐 Breakpoints Responsive</h2>
+        
+        <div class="breakpoint">
+            <strong>Desktop (>1200px)</strong><br>
+            Layout 4 colonnes : Chat | Wordle | Alphabet+Joueurs | Cementix+Gacha
+        </div>
+        
+        <div class="breakpoint">
+            <strong>Tablette (900-1200px)</strong><br>
+            Layout vertical : Header → Wordle → Chat → Alphabet+Joueurs → Cementix+Gacha
+        </div>
+        
+        <div class="breakpoint">
+            <strong>Mobile (400-600px)</strong><br>
+            Optimisé mobile : Cellules 26px, chat 150px, panneaux compacts
+        </div>
+        
+        <div class="breakpoint">
+            <strong>Petit Mobile (<400px)</strong><br>
+            Ultra compact : Cellules 22px, éléments minimaux
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🧪 Comment Tester</h2>
+        <ol>
+            <li>Ouvrez le jeu principal sur mobile ou redimensionnez la fenêtre</li>
+            <li>Testez les différents breakpoints (400px, 600px, 900px, 1200px)</li>
+            <li>Vérifiez que le Wordle reste jouable</li>
+            <li>Testez le scroll des panneaux</li>
+            <li>Ouvrez une caisse gacha sur mobile</li>
+        </ol>
+    </div>
+    
+    <button class="test-button" onclick="window.open('public/index.html', '_blank')">
+        🚀 Tester sur Mobile
+    </button>
+    
+    <button class="test-button" onclick="simulateBreakpoint(400)">
+        📱 Simuler 400px
+    </button>
+    
+    <button class="test-button" onclick="simulateBreakpoint(600)">
+        📱 Simuler 600px
+    </button>
+    
+    <script>
+        function updateSize() {
+            const width = window.innerWidth;
+            document.getElementById('width-display').textContent = width;
+            
+            let device = '';
+            if (width > 1200) device = '🖥️ Desktop';
+            else if (width > 900) device = '💻 Tablette Large';
+            else if (width > 600) device = '📱 Tablette';
+            else if (width > 400) device = '📱 Mobile';
+            else device = '📱 Petit Mobile';
+            
+            document.getElementById('current-size').innerHTML = 
+                `Largeur actuelle: <span id="width-display">${width}</span>px - ${device}`;
+        }
+        
+        function simulateBreakpoint(width) {
+            alert(`Pour simuler ${width}px:\n1. Ouvrez les DevTools (F12)\n2. Cliquez sur l'icône mobile\n3. Définissez la largeur à ${width}px`);
+        }
+        
+        window.addEventListener('resize', updateSize);
+        updateSize();
+    </script>
+</body>
+</html>

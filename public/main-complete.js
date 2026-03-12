@@ -175,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
         gachaTotalItems: document.getElementById("gacha-total-items"),
         btnOpenCase: document.getElementById("btn-open-case"),
         btnBuyHint: document.getElementById("btn-buy-hint"),
+        hintCost: document.getElementById("hint-cost"),
         btnShowInventory: document.getElementById("btn-show-inventory"),
         
         // Gacha Modal
@@ -302,9 +303,31 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.inventoryMoney) elements.inventoryMoney.textContent = Math.floor(gachaSystem.money);
         if (elements.inventoryTotal) elements.inventoryTotal.textContent = gachaSystem.totalItems;
         
-        // Update hint button state
+        // Update hint cost display
+        if (elements.hintCost) elements.hintCost.textContent = gachaSystem.hintCost;
+        
+        // Update hint button state and appearance
         if (elements.btnBuyHint) {
-            elements.btnBuyHint.disabled = gachaSystem.money < gachaSystem.hintCost || gameState.status !== 'playing';
+            const canAfford = gachaSystem.money >= gachaSystem.hintCost;
+            const canUse = gameState.status === 'playing';
+            const isEnabled = canAfford && canUse;
+            
+            elements.btnBuyHint.disabled = !isEnabled;
+            
+            // Visual feedback for affordability
+            if (!canAfford) {
+                elements.btnBuyHint.style.opacity = '0.5';
+                elements.btnBuyHint.style.cursor = 'not-allowed';
+                elements.btnBuyHint.title = `Pas assez d'argent (${Math.floor(gachaSystem.money)}$ / ${gachaSystem.hintCost}$)`;
+            } else if (!canUse) {
+                elements.btnBuyHint.style.opacity = '0.7';
+                elements.btnBuyHint.style.cursor = 'not-allowed';
+                elements.btnBuyHint.title = 'Disponible uniquement pendant une partie';
+            } else {
+                elements.btnBuyHint.style.opacity = '1';
+                elements.btnBuyHint.style.cursor = 'pointer';
+                elements.btnBuyHint.title = `Acheter un indice pour ${gachaSystem.hintCost}$`;
+            }
         }
     }
     
@@ -361,6 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function playGachaAnimation(items, winningIndex) {
         return new Promise((resolve) => {
             const bar = elements.gachaOpeningBar;
+            const container = bar.parentElement;
             bar.innerHTML = '';
             
             // Create items
@@ -369,12 +393,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 bar.appendChild(itemEl);
             });
             
-            // Start animation
-            const itemWidth = 130; // 120px + 10px gap
-            const startPosition = window.innerWidth / 2;
-            const endPosition = startPosition - (winningIndex * itemWidth);
+            // Calculate positions more accurately
+            let itemWidth = 100; // 90px + 10px gap (desktop)
+            
+            // Adjust for mobile
+            if (window.innerWidth <= 600) {
+                itemWidth = 70; // 60px + 10px gap (mobile)
+            } else if (window.innerWidth <= 400) {
+                itemWidth = 60; // 50px + 10px gap (très petit mobile)
+            }
+            
+            const containerWidth = container.offsetWidth;
+            const containerCenter = containerWidth / 2;
+            
+            // Position the bar so the winning item will be centered under the selector
+            const startPosition = containerCenter + (items.length * itemWidth / 2);
+            const endPosition = containerCenter - (winningIndex * itemWidth) - (itemWidth / 2);
             
             bar.style.transform = `translateX(${startPosition}px)`;
+            bar.style.transition = 'none';
             
             // Play tick sounds during animation
             let tickInterval;
@@ -554,8 +591,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function buyHintWithGacha() {
         if (gachaSystem.money >= gachaSystem.hintCost && gameState.status === 'playing' && ws) {
+            const oldCost = gachaSystem.hintCost;
             gachaSystem.money -= gachaSystem.hintCost;
-            gachaSystem.hintCost = Math.floor(gachaSystem.hintCost * 1.2);
+            gachaSystem.hintCost = Math.floor(gachaSystem.hintCost * 1.5); // Augmentation plus significative
             
             ws.send(JSON.stringify({
                 type: 'shop',
@@ -564,7 +602,35 @@ document.addEventListener('DOMContentLoaded', function() {
             
             saveGachaSystem();
             updateGachaUI();
-            console.log('✅ Hint purchased with gacha money!');
+            
+            // Show feedback message
+            if (elements.info) {
+                elements.info.textContent = `💡 Indice acheté pour ${oldCost}$ ! Prochain indice : ${gachaSystem.hintCost}$`;
+                elements.info.classList.remove('hidden');
+                setTimeout(() => {
+                    elements.info.classList.add('hidden');
+                }, 3000);
+            }
+            
+            console.log(`✅ Hint purchased for ${oldCost}$! Next hint will cost ${gachaSystem.hintCost}$`);
+        } else {
+            // Show error message
+            let errorMsg = '';
+            if (gachaSystem.money < gachaSystem.hintCost) {
+                errorMsg = `💰 Pas assez d'argent ! Il vous faut ${gachaSystem.hintCost}$ (vous avez ${Math.floor(gachaSystem.money)}$)`;
+            } else if (gameState.status !== 'playing') {
+                errorMsg = '🎮 Les indices ne sont disponibles que pendant une partie !';
+            } else {
+                errorMsg = '❌ Impossible d\'acheter un indice maintenant';
+            }
+            
+            if (elements.error) {
+                elements.error.textContent = errorMsg;
+                elements.error.classList.remove('hidden');
+                setTimeout(() => {
+                    elements.error.classList.add('hidden');
+                }, 3000);
+            }
         }
     }
     

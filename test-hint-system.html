@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Système d'Indices Progressifs - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-section {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .feature-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .pricing-table {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        .price-row:last-child {
+            border-bottom: none;
+        }
+        .demo-button {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin: 4px;
+            cursor: pointer;
+        }
+        .demo-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .demo-stats {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>💡 Test Système d'Indices Progressifs</h1>
+    
+    <div class="feature-info">
+        <h2>✅ Nouvelles Fonctionnalités</h2>
+        <ul>
+            <li><strong>Prix dynamique</strong> : Le coût s'affiche en temps réel sur le bouton</li>
+            <li><strong>Augmentation progressive</strong> : +50% à chaque achat (au lieu de +20%)</li>
+            <li><strong>Bouton intelligent</strong> : Désactivé si pas assez d'argent</li>
+            <li><strong>Feedback visuel</strong> : Opacité et tooltip selon l'état</li>
+            <li><strong>Messages informatifs</strong> : Confirmation d'achat et erreurs</li>
+        </ul>
+    </div>
+    
+    <div class="pricing-table">
+        <h2>💰 Progression des Prix (x1.5 à chaque achat)</h2>
+        <div class="price-row">
+            <span><strong>Indice #1</strong></span>
+            <span>1000$</span>
+        </div>
+        <div class="price-row">
+            <span><strong>Indice #2</strong></span>
+            <span>1500$</span>
+        </div>
+        <div class="price-row">
+            <span><strong>Indice #3</strong></span>
+            <span>2250$</span>
+        </div>
+        <div class="price-row">
+            <span><strong>Indice #4</strong></span>
+            <span>3375$</span>
+        </div>
+        <div class="price-row">
+            <span><strong>Indice #5</strong></span>
+            <span>5062$</span>
+        </div>
+        <div class="price-row">
+            <span><strong>Indice #6</strong></span>
+            <span>7593$</span>
+        </div>
+        <div class="price-row">
+            <span><strong>Indice #7</strong></span>
+            <span>11390$</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎮 Démonstration Interactive</h2>
+        <div class="demo-stats">
+            <div class="stat-item">
+                <div>Argent</div>
+                <div id="demo-money">2000</div>$
+            </div>
+            <div class="stat-item">
+                <div>Coût Indice</div>
+                <div id="demo-cost">1000</div>$
+            </div>
+            <div class="stat-item">
+                <div>Indices Achetés</div>
+                <div id="demo-hints">0</div>
+            </div>
+        </div>
+        
+        <button class="demo-button" id="demo-hint-btn" onclick="buyDemoHint()">
+            💡 Indice (<span id="demo-btn-cost">1000</span>$)
+        </button>
+        
+        <button class="test-button" onclick="addDemoMoney(5000)">
+            💰 +5000$ (Test)
+        </button>
+        
+        <button class="test-button" onclick="resetDemo()">
+            🔄 Reset Demo
+        </button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🧪 Instructions de Test</h2>
+        <ol>
+            <li>Ouvrez le jeu principal</li>
+            <li>Ajoutez de l'argent : <code>addGachaMoney(10000)</code></li>
+            <li>Démarrez une partie (Solo ou Coop)</li>
+            <li>Observez le bouton "💡 Indice" dans la section Gacha</li>
+            <li>Achetez plusieurs indices et voyez le prix augmenter</li>
+            <li>Testez avec peu d'argent pour voir la désactivation</li>
+        </ol>
+    </div>
+    
+    <button class="test-button" onclick="window.open('public/index.html', '_blank')">
+        🚀 Tester dans le Jeu Principal
+    </button>
+    
+    <script>
+        let demoState = {
+            money: 2000,
+            hintCost: 1000,
+            hintsUsed: 0
+        };
+        
+        function updateDemoUI() {
+            document.getElementById('demo-money').textContent = demoState.money;
+            document.getElementById('demo-cost').textContent = demoState.hintCost;
+            document.getElementById('demo-hints').textContent = demoState.hintsUsed;
+            document.getElementById('demo-btn-cost').textContent = demoState.hintCost;
+            
+            const btn = document.getElementById('demo-hint-btn');
+            const canAfford = demoState.money >= demoState.hintCost;
+            
+            btn.disabled = !canAfford;
+            btn.style.opacity = canAfford ? '1' : '0.5';
+            btn.title = canAfford ? 
+                `Acheter indice pour ${demoState.hintCost}$` : 
+                `Pas assez d'argent (${demoState.money}$ / ${demoState.hintCost}$)`;
+        }
+        
+        function buyDemoHint() {
+            if (demoState.money >= demoState.hintCost) {
+                demoState.money -= demoState.hintCost;
+                demoState.hintCost = Math.floor(demoState.hintCost * 1.5);
+                demoState.hintsUsed++;
+                updateDemoUI();
+                
+                alert(`💡 Indice acheté ! Prochain indice : ${demoState.hintCost}$`);
+            }
+        }
+        
+        function addDemoMoney(amount) {
+            demoState.money += amount;
+            updateDemoUI();
+        }
+        
+        function resetDemo() {
+            demoState = {
+                money: 2000,
+                hintCost: 1000,
+                hintsUsed: 0
+            };
+            updateDemoUI();
+        }
+        
+        updateDemoUI();
+    </script>
+</body>
+</html>

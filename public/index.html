@@ -1216,25 +1216,31 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.2); /* Très transparent */
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Alignement vers le haut */
             justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(2px); /* Blur minimal */
+            padding-top: 20vh; /* Espace depuis le haut pour être sous le Wordle */
         }
         
         .gacha-modal-content {
             background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%),
-                rgba(10, 10, 15, 0.95);
+                linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(168, 85, 247, 0.08) 100%),
+                rgba(10, 10, 15, 0.75); /* Très transparent */
             border: 2px solid rgba(139, 92, 246, 0.3);
             border-radius: 20px;
-            padding: 30px;
-            max-width: 90vw;
-            max-height: 90vh;
-            width: 800px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            max-width: 80vw;
+            max-height: 50vh; /* Hauteur limitée pour ne pas déborder */
+            width: 700px; /* Largeur adaptée */
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
         }
         
         .gacha-modal-header {
@@ -1273,13 +1279,14 @@
         
         .gacha-opening-container {
             position: relative;
-            height: 200px;
+            height: 140px; /* Hauteur optimisée */
             overflow: hidden;
             background: 
-                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+                linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.4) 100%);
             border-radius: 15px;
-            border: 2px solid rgba(139, 92, 246, 0.2);
-            margin-bottom: 20px;
+            border: 2px solid rgba(139, 92, 246, 0.4);
+            margin-bottom: 15px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .gacha-opening-bar {
@@ -1293,10 +1300,10 @@
         }
         
         .gacha-item {
-            min-width: 120px;
-            height: 160px;
+            min-width: 90px; /* Largeur optimisée */
+            height: 110px; /* Hauteur optimisée */
             background: 
-                linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+                linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
             border-radius: 10px;
             display: flex;
             flex-direction: column;
@@ -1305,22 +1312,24 @@
             border: 2px solid;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         
         .gacha-item-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
+            font-size: 2.2rem; /* Taille optimisée */
+            margin-bottom: 6px;
         }
         
         .gacha-item-name {
-            font-size: 0.8rem;
+            font-size: 0.65rem; /* Taille optimisée */
             font-weight: 600;
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+            line-height: 1.1;
         }
         
         .gacha-item-rarity {
-            font-size: 0.7rem;
+            font-size: 0.55rem; /* Taille optimisée */
             text-transform: uppercase;
             font-weight: 700;
         }
@@ -1331,10 +1340,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 4px;
-            height: 180px;
+            height: 120px; /* Hauteur ajustée */
             background: linear-gradient(to bottom, transparent, #fff, transparent);
-            box-shadow: 0 0 20px #fff;
+            box-shadow: 
+                0 0 20px #fff,
+                0 0 40px rgba(255, 255, 255, 0.8);
             z-index: 10;
+            border-radius: 2px;
         }
         
         .gacha-result {
@@ -2353,7 +2365,7 @@
             font-style: italic;
         }
         
-        /* === RESPONSIVE === */
+        /* === RESPONSIVE MOBILE === */
         @media (max-width: 1200px) {
             .game-container {
                 grid-template-columns: 260px 1fr 320px 320px;
@@ -2376,218 +2388,445 @@
             }
         }
         
+        /* === TABLETTE === */
         @media (max-width: 900px) {
             .game-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto auto;
-                gap: 12px;
-                padding: 10px;
+                grid-template-rows: auto auto auto auto auto;
+                gap: 8px;
+                padding: 8px;
                 height: 100vh;
+                overflow-y: auto;
             }
             
             .game-container.solo-mode {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto auto;
+                grid-template-rows: auto auto auto auto;
             }
             
-            .alphabet-players-panel {
-                grid-row: 3;
-                height: auto;
-                max-height: 200px;
-            }
-            
-            .cementix-idle-panel {
-                grid-row: 4;
-                height: auto;
-                max-height: 250px;
-            }
-            
-            .chat-panel {
-                display: none; /* Masquer le chat sur mobile pour gagner de la place */
+            .game-header {
+                grid-row: 1;
+                padding: 8px 12px;
+                flex-wrap: wrap;
+                gap: 6px;
             }
             
             .board-panel {
-                padding: 16px;
-                height: calc(100vh - 400px);
+                grid-row: 2;
+                padding: 12px;
+                height: auto;
+                min-height: 400px;
+            }
+            
+            .chat-panel {
+                grid-row: 3;
+                height: 200px;
+                min-height: 200px;
+            }
+            
+            .alphabet-players-panel {
+                grid-row: 4;
+                height: auto;
+                min-height: 180px;
+                max-height: 250px;
+            }
+            
+            .cementix-idle-panel {
+                grid-row: 5;
+                height: auto;
+                min-height: 200px;
+                max-height: 300px;
             }
             
             .cell {
-                width: 36px;
-                height: 36px;
-                font-size: 1.1rem;
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
             }
             
             .alphabet-grid {
-                grid-template-columns: repeat(8, 1fr);
+                grid-template-columns: repeat(6, 1fr);
+                gap: 6px;
             }
             
             .alphabet-letter {
-                width: 32px;
-                height: 32px;
+                width: 30px;
+                height: 30px;
                 font-size: 0.8rem;
             }
         }
         
+        /* === MOBILE PORTRAIT === */
         @media (max-width: 600px) {
             body {
-                font-size: 13px;
+                font-size: 12px;
+                overflow-x: hidden;
             }
             
             h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
             
             .title-card, .mode-card {
-                padding: 24px 16px;
-                margin: 0 8px;
+                padding: 20px 12px;
+                margin: 0 4px;
+                max-width: calc(100vw - 16px);
             }
             
             .field-row {
                 grid-template-columns: 1fr;
-                gap: 8px;
+                gap: 6px;
             }
             
             .mode-buttons {
                 grid-template-columns: 1fr;
-                gap: 8px;
+                gap: 6px;
             }
             
             .game-container {
-                padding: 8px;
-                gap: 8px;
+                padding: 4px;
+                gap: 6px;
+                max-width: 100vw;
             }
             
             .game-header {
-                padding: 8px 12px;
-                flex-wrap: wrap;
-                gap: 8px;
+                padding: 6px 8px;
+                font-size: 0.8rem;
             }
             
-            .game-info {
-                flex-wrap: wrap;
-                gap: 6px;
-            }
-            
-            .cell {
-                width: 28px;
-                height: 28px;
-                font-size: 0.9rem;
-            }
-            
-            .board-panel {
-                padding: 12px;
-            }
-            
-            .chat-panel, .alphabet-players-panel, .cementix-idle-panel {
-                padding: 12px;
-                max-height: 200px;
-            }
-            
-            .chat-messages {
-                min-height: 120px;
-                max-height: 140px;
-            }
-            
-            .idle-stats-sidebar {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 4px;
-            }
-            
-            .idle-stat-sidebar {
-                padding: 6px 4px;
-            }
-            
-            .stat-label {
-                font-size: 0.6rem;
-            }
-            
-            .idle-stat-value {
-                font-size: 0.7rem;
-            }
-            
-            .foot-button-sidebar {
-                width: 45px;
-                height: 45px;
-                font-size: 1.8rem;
-                padding: 8px;
-            }
-            
-            .idle-upgrades-sidebar {
-                grid-template-columns: 1fr;
-                gap: 4px;
-            }
-            
-            .upgrade-btn-sidebar, .hint-btn-sidebar {
-                padding: 6px 4px;
+            .badge {
+                padding: 2px 6px;
                 font-size: 0.65rem;
-                line-height: 1.1;
-            }
-            
-            .result-content {
-                padding: 30px 20px;
-                margin: 0 20px;
-            }
-            
-            .result-icon {
-                font-size: 3rem;
-            }
-            
-            .result-text {
-                font-size: 1.5rem;
-            }
-            
-            .btn {
-                padding: 10px 16px;
-                font-size: 0.85rem;
             }
             
             .btn.ghost {
-                padding: 6px 12px;
-                font-size: 0.8rem;
+                padding: 4px 8px;
+                font-size: 0.7rem;
             }
-        }
-        
-        @media (max-width: 400px) {
-            .game-container {
-                padding: 6px;
-                gap: 6px;
+            
+            /* Wordle optimisé mobile */
+            .board-panel {
+                padding: 8px;
+                min-height: 350px;
+            }
+            
+            .word-info {
+                font-size: 0.8rem;
+                margin-bottom: 12px;
             }
             
             .cell {
-                width: 24px;
-                height: 24px;
-                font-size: 0.8rem;
+                width: 26px;
+                height: 26px;
+                font-size: 0.85rem;
+                border-radius: 4px;
             }
             
-            .foot-button-sidebar {
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
+            .board {
+                gap: 3px;
+                margin-bottom: 12px;
             }
             
-            .idle-stats-sidebar {
-                grid-template-columns: repeat(4, 1fr);
+            .board-row {
+                gap: 3px;
             }
             
-            .idle-stat-sidebar {
-                padding: 4px 2px;
+            .guess-input {
+                gap: 6px;
+                max-width: 100%;
             }
             
-            .stat-emoji {
+            .guess-input input {
+                padding: 8px;
                 font-size: 0.9rem;
             }
             
-            .stat-label {
-                font-size: 0.55rem;
+            .guess-input .btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
             }
             
-            .idle-stat-value {
+            /* Chat mobile */
+            .chat-panel {
+                height: 150px;
+                min-height: 150px;
+                padding: 8px;
+            }
+            
+            .panel-title {
+                font-size: 0.85rem;
+                margin-bottom: 8px;
+            }
+            
+            .chat-messages {
+                min-height: 80px;
+                max-height: 80px;
+                margin-bottom: 8px;
+            }
+            
+            .chat-message {
+                padding: 6px;
+                margin-bottom: 4px;
+                font-size: 0.75rem;
+            }
+            
+            .chat-input input {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+            
+            .chat-input .btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+            
+            /* Alphabet + Joueurs mobile */
+            .alphabet-players-panel {
+                min-height: 160px;
+                max-height: 200px;
+                padding: 8px;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 4px;
+            }
+            
+            .alphabet-letter {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+            }
+            
+            .player-item-vertical {
+                padding: 4px 6px;
+                margin-bottom: 3px;
+            }
+            
+            .player-avatar-vertical {
+                font-size: 1rem;
+                width: 18px;
+                height: 18px;
+            }
+            
+            .player-name-vertical {
+                font-size: 0.75rem;
+            }
+            
+            /* Cementix + Gacha mobile */
+            .cementix-idle-panel {
+                min-height: 180px;
+                max-height: 220px;
+                padding: 8px;
+            }
+            
+            .cementix-section {
+                max-height: 60%;
+            }
+            
+            .cementix-panel-compact {
+                padding: 8px;
+            }
+            
+            .cementix-title-compact {
+                font-size: 0.85rem;
+            }
+            
+            .cementix-subtitle-compact {
                 font-size: 0.65rem;
             }
             
-            .upgrade-btn-sidebar, .hint-btn-sidebar {
-                padding: 4px 2px;
+            .cementix-input-section-compact input {
+                padding: 6px 8px;
+                font-size: 0.75rem;
+            }
+            
+            .cementix-btn-compact {
+                padding: 6px 8px;
+                font-size: 0.65rem;
+            }
+            
+            .cementix-attempts-container-compact {
+                height: 120px;
+            }
+            
+            .cementix-attempt-compact {
+                padding: 4px 6px;
+                margin-bottom: 2px;
+            }
+            
+            .cementix-attempt-player-compact,
+            .cementix-attempt-word-compact,
+            .cementix-attempt-score-compact {
                 font-size: 0.6rem;
+            }
+            
+            /* Gacha mobile */
+            .gacha-section {
+                max-height: 40%;
+            }
+            
+            .gacha-panel-compact {
+                padding: 8px;
+            }
+            
+            .gacha-stats {
+                gap: 4px;
+            }
+            
+            .gacha-money, .gacha-items {
+                padding: 4px 6px;
+                font-size: 0.65rem;
+            }
+            
+            .gacha-buttons {
+                gap: 4px;
+            }
+            
+            .gacha-btn, .hint-btn {
+                padding: 6px 4px;
+                font-size: 0.6rem;
+            }
+            
+            .gacha-inventory-btn {
+                padding: 4px;
+                font-size: 0.6rem;
+            }
+            
+            /* Modales mobile */
+            .gacha-modal {
+                padding-top: 15vh;
+                padding-left: 4px;
+                padding-right: 4px;
+            }
+            
+            .gacha-modal-content {
+                width: calc(100vw - 16px);
+                max-width: none;
+                max-height: 70vh;
+                padding: 12px;
+            }
+            
+            .gacha-modal-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .gacha-opening-container {
+                height: 100px;
+                margin-bottom: 10px;
+            }
+            
+            .gacha-item {
+                min-width: 60px;
+                height: 80px;
+            }
+            
+            .gacha-item-icon {
+                font-size: 1.5rem;
+                margin-bottom: 4px;
+            }
+            
+            .gacha-item-name {
+                font-size: 0.5rem;
+                margin-bottom: 2px;
+            }
+            
+            .gacha-item-rarity {
+                font-size: 0.45rem;
+            }
+            
+            .gacha-selector {
+                height: 80px;
+            }
+            
+            .gacha-result {
+                padding: 10px;
+            }
+            
+            .gacha-result-icon {
+                font-size: 2rem;
+            }
+            
+            .gacha-result-name {
+                font-size: 0.9rem;
+            }
+            
+            .gacha-result-rarity {
+                font-size: 0.8rem;
+            }
+            
+            .inventory-modal-content {
+                width: calc(100vw - 16px);
+                max-width: none;
+                height: calc(100vh - 40px);
+                max-height: none;
+                padding: 12px;
+            }
+            
+            .inventory-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+        
+        /* === MOBILE TRÈS PETIT === */
+        @media (max-width: 400px) {
+            .game-container {
+                padding: 2px;
+                gap: 4px;
+            }
+            
+            .cell {
+                width: 22px;
+                height: 22px;
+                font-size: 0.75rem;
+            }
+            
+            .board {
+                gap: 2px;
+            }
+            
+            .board-row {
+                gap: 2px;
+            }
+            
+            .alphabet-letter {
+                width: 20px;
+                height: 20px;
+                font-size: 0.6rem;
+            }
+            
+            .chat-panel {
+                height: 120px;
+                min-height: 120px;
+            }
+            
+            .chat-messages {
+                min-height: 60px;
+                max-height: 60px;
+            }
+            
+            .alphabet-players-panel,
+            .cementix-idle-panel {
+                min-height: 140px;
+                max-height: 160px;
+            }
+            
+            .gacha-item {
+                min-width: 50px;
+                height: 70px;
+            }
+            
+            .gacha-item-icon {
+                font-size: 1.2rem;
+            }
+            
+            .gacha-item-name {
+                font-size: 0.45rem;
+            }
+            
+            .gacha-item-rarity {
+                font-size: 0.4rem;
             }
         }
         
@@ -2797,7 +3036,7 @@
                             
                             <div class="gacha-buttons">
                                 <button id="btn-open-case" class="btn gacha-btn">📦 Ouvrir Caisse</button>
-                                <button id="btn-buy-hint" class="btn hint-btn">💡 Indice (1000$)</button>
+                                <button id="btn-buy-hint" class="btn hint-btn">💡 Indice (<span id="hint-cost">1000</span>$)</button>
                             </div>
                             
                             <button id="btn-show-inventory" class="btn gacha-inventory-btn">🎒 Inventaire</button>

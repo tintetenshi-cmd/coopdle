@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Position Gacha - Sous Wordle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-info {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .position-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .visual-demo {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .demo-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr;
+            gap: 10px;
+            height: 300px;
+            margin: 20px 0;
+        }
+        .demo-panel {
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .demo-wordle {
+            background: rgba(139, 92, 246, 0.2);
+            position: relative;
+        }
+        .demo-gacha-overlay {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 60px;
+            background: rgba(139, 92, 246, 0.3);
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Test Position Gacha - Sous Wordle</h1>
+    
+    <div class="position-info">
+        <h2>✅ Nouvelle Position de la Modale</h2>
+        <ul>
+            <li><strong>Position</strong> : Juste en dessous de la section Wordle</li>
+            <li><strong>Fond</strong> : Très transparent (rgba(0,0,0,0.2))</li>
+            <li><strong>Alignement</strong> : Centré horizontalement, 20vh depuis le haut</li>
+            <li><strong>Visibilité</strong> : On peut voir le jeu derrière la modale</li>
+            <li><strong>Taille</strong> : 700px de large, hauteur adaptative</li>
+        </ul>
+    </div>
+    
+    <div class="visual-demo">
+        <h2>📐 Démonstration Visuelle du Layout</h2>
+        <div class="demo-layout">
+            <div class="demo-panel" style="background: rgba(59, 130, 246, 0.2);">
+                💬 Chat
+            </div>
+            <div class="demo-panel demo-wordle">
+                🎯 Wordle
+                <div class="demo-gacha-overlay">
+                    📦 Modale Gacha
+                </div>
+            </div>
+            <div class="demo-panel" style="background: rgba(16, 185, 129, 0.2);">
+                🔤 Alphabet<br>👥 Joueurs
+            </div>
+            <div class="demo-panel" style="background: rgba(245, 158, 11, 0.2);">
+                🧠 Cementix<br>📦 Gacha
+            </div>
+        </div>
+        <p><em>La modale gacha apparaît comme overlay transparent au-dessus du Wordle</em></p>
+    </div>
+    
+    <div class="test-info">
+        <h2>🧪 Instructions de Test</h2>
+        <ol>
+            <li>Ouvrez le jeu principal</li>
+            <li>Ajoutez de l'argent : <code>addGachaMoney(5000)</code></li>
+            <li>Cliquez sur "📦 Ouvrir Caisse"</li>
+            <li>Vérifiez que la modale apparaît sous le Wordle</li>
+            <li>Vérifiez que le fond est transparent</li>
+            <li>Vérifiez que vous pouvez voir le jeu derrière</li>
+        </ol>
+    </div>
+    
+    <div class="test-info">
+        <h2>🎨 Améliorations Appliquées</h2>
+        <ul>
+            <li><strong>Items plus compacts</strong> : 90x110px pour s'adapter</li>
+            <li><strong>Flèche renforcée</strong> : Plus visible sur fond transparent</li>
+            <li><strong>Conteneur optimisé</strong> : 140px de hauteur</li>
+            <li><strong>Blur minimal</strong> : 2px pour garder la visibilité</li>
+            <li><strong>Ombres subtiles</strong> : Pour la profondeur sans masquer</li>
+        </ul>
+    </div>
+    
+    <button class="test-button" onclick="window.open('public/index.html', '_blank')">
+        🚀 Tester dans le Jeu Principal
+    </button>
+    
+    <button class="test-button" onclick="alert('Console: addGachaMoney(5000)')">
+        💰 Commande pour Ajouter de l\'Argent
+    </button>
+</body>
+</html>
