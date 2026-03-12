@@ -23,7 +23,8 @@
                 linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
             color: #e2e8f0;
             min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            overflow: hidden;
             font-size: 14px;
             font-weight: 400;
         }
@@ -256,17 +257,18 @@
         /* === ÉCRAN JEU === */
         .game-container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             height: 100vh;
             display: grid;
-            grid-template-columns: 280px 1fr 280px;
+            grid-template-columns: 280px 1fr 280px 200px;
             grid-template-rows: auto 1fr;
             gap: 16px;
             padding: 16px;
+            overflow: hidden;
         }
         
         .game-container.solo-mode {
-            grid-template-columns: 1fr 280px;
+            grid-template-columns: 1fr 280px 200px;
             grid-template-rows: auto 1fr;
         }
         
@@ -1581,7 +1583,8 @@
             box-shadow: 
                 0 8px 25px rgba(0, 0, 0, 0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            margin-top: 16px;
+            height: 100%;
+            overflow-y: auto;
         }
         
         .alphabet-title {
@@ -1597,18 +1600,18 @@
         
         .alphabet-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 4px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
         }
         
         .alphabet-letter {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1633,16 +1636,20 @@
             opacity: 0.6;
         }
         
+        .game-container.solo-mode .alphabet-panel {
+            display: block; /* Afficher l'alphabet même en solo */
+        }
+        
         /* === RESPONSIVE === */
         @media (max-width: 1200px) {
             .game-container {
-                grid-template-columns: 240px 1fr 240px;
+                grid-template-columns: 220px 1fr 220px 180px;
                 gap: 12px;
                 padding: 12px;
             }
             
             .game-container.solo-mode {
-                grid-template-columns: 1fr 240px;
+                grid-template-columns: 1fr 220px 180px;
             }
             
             .idle-stats-sidebar {
@@ -1652,12 +1659,18 @@
             .idle-upgrades-sidebar {
                 grid-template-columns: 1fr;
             }
+            
+            .alphabet-letter {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
         }
         
         @media (max-width: 900px) {
             .game-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto;
+                grid-template-rows: auto auto 1fr auto auto;
                 gap: 12px;
                 padding: 10px;
                 height: 100vh;
@@ -1665,14 +1678,14 @@
             
             .game-container.solo-mode {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto;
+                grid-template-rows: auto 1fr auto auto;
             }
             
             .chat-panel {
                 order: 3;
                 height: auto;
-                max-height: 250px;
-                min-height: 200px;
+                max-height: 200px;
+                min-height: 150px;
             }
             
             .board-panel {
@@ -1683,13 +1696,19 @@
             .players-panel {
                 order: 4;
                 height: auto;
-                max-height: 300px;
-                min-height: 250px;
+                max-height: 250px;
+                min-height: 200px;
+            }
+            
+            .alphabet-panel {
+                order: 5;
+                height: auto;
+                max-height: 200px;
             }
             
             .chat-messages {
-                min-height: 150px;
-                max-height: 180px;
+                min-height: 120px;
+                max-height: 150px;
             }
             
             .cell {
@@ -2052,15 +2071,16 @@
                             <div id="cementix-attempts" class="cementix-attempts"></div>
                         </div>
                     </div>
-                    
-                    <!-- Panneau Alphabet -->
-                    <div class="alphabet-panel">
-                        <div class="alphabet-title">🔤 Alphabet</div>
-                        <div class="alphabet-grid" id="alphabet-grid"></div>
-                    </div>
                 </div>
 
-                <!-- Message de victoire/défaite -->
+                <!-- Panneau Alphabet (4ème colonne) -->
+                <div class="alphabet-panel">
+                    <div class="alphabet-title">🔤 Alphabet</div>
+                    <div class="alphabet-grid" id="alphabet-grid"></div>
+                </div>
+            </div>
+
+            <!-- Message de victoire/défaite -->
                 <div id="game-result" class="game-result hidden">
                     <div class="result-content">
                         <div class="result-icon" id="result-icon">🎉</div>
