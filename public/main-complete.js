@@ -27,19 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
         totalCoins: 0,
         clickPower: 1,
         autoRate: 0,
-        multiplier: 1,
-        criticalChance: 0,
         upgrades: {
             clickLevel: 0,
-            autoLevel: 0,
-            multiplierLevel: 0,
-            luckLevel: 0
+            autoLevel: 0
         },
         costs: {
             click: 10,
             auto: 50,
-            multiplier: 2000,
-            luck: 5000,
             hint: 1000
         }
     };
@@ -121,22 +115,70 @@ document.addEventListener('DOMContentLoaded', function() {
         idlePerClick: document.getElementById("idle-per-click"),
         idleAutoRate: document.getElementById("idle-auto-rate"),
         idleTotal: document.getElementById("idle-total"),
-        idleMultiplier: document.getElementById("idle-multiplier"),
-        idleLuck: document.getElementById("idle-luck"),
         btnFootClick: document.getElementById("btn-foot-click"),
         btnUpgradeClick: document.getElementById("btn-upgrade-click"),
         btnUpgradeAuto: document.getElementById("btn-upgrade-auto"),
-        btnUpgradeMultiplier: document.getElementById("btn-upgrade-multiplier"),
-        btnUpgradeLuck: document.getElementById("btn-upgrade-luck"),
         btnBuyHint: document.getElementById("btn-buy-hint"),
         costClick: document.getElementById("cost-click"),
         costAuto: document.getElementById("cost-auto"),
-        costMultiplier: document.getElementById("cost-multiplier"),
-        costLuck: document.getElementById("cost-luck"),
         costHint: document.getElementById("cost-hint")
     };
     
     console.log('📋 All required elements found, initializing...');
+    
+    // === MESSAGES DE BIENVENUE ===
+    
+    const welcomeMessages = [
+        "mais quel banger de fou",
+        "c'est parti mon reuf",
+        "ça va être chaud patate",
+        "on va se régaler",
+        "c'est du lourd",
+        "ça va envoyer du pâté",
+        "préparez-vous les amis",
+        "ça va être épique",
+        "on va tout défoncer",
+        "c'est parti pour le show",
+        "ça va être de la bombe",
+        "on va faire des étincelles",
+        "c'est du niveau supérieur",
+        "ça va être légendaire",
+        "on va tout exploser"
+    ];
+    
+    function getRandomWelcomeMessage() {
+        return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    }
+    
+    function addWelcomeMessage(pseudo, avatar, color) {
+        if (!elements.chatMessages) return;
+        
+        const messageEl = document.createElement('div');
+        messageEl.className = 'chat-message welcome-message';
+        
+        const time = new Date().toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        const welcomePhrase = getRandomWelcomeMessage();
+        
+        messageEl.innerHTML = `
+            <div class="chat-avatar">${avatar}</div>
+            <div class="chat-content">
+                <div class="chat-meta">
+                    <span class="chat-author system-author">🔥 Système</span>
+                    <span class="chat-time">${time}</span>
+                </div>
+                <div class="chat-text welcome-text">
+                    <span class="player-name" style="color: ${color || '#e2e8f0'}">${pseudo}</span> a rejoint la partie ! ${welcomePhrase} 🔥
+                </div>
+            </div>
+        `;
+        
+        elements.chatMessages.appendChild(messageEl);
+        elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+    }
     
     // === FONCTIONS UTILITAIRES ===
     
@@ -149,36 +191,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.idlePerClick) elements.idlePerClick.textContent = idleGame.clickPower;
         if (elements.idleAutoRate) elements.idleAutoRate.textContent = idleGame.autoRate;
         if (elements.idleTotal) elements.idleTotal.textContent = Math.floor(idleGame.totalCoins);
-        if (elements.idleMultiplier) elements.idleMultiplier.textContent = idleGame.multiplier;
-        if (elements.idleLuck) elements.idleLuck.textContent = Math.floor(idleGame.criticalChance) + '%';
         
         // Update costs
         if (elements.costClick) elements.costClick.textContent = idleGame.costs.click;
         if (elements.costAuto) elements.costAuto.textContent = idleGame.costs.auto;
-        if (elements.costMultiplier) elements.costMultiplier.textContent = idleGame.costs.multiplier;
-        if (elements.costLuck) elements.costLuck.textContent = idleGame.costs.luck;
         if (elements.costHint) elements.costHint.textContent = idleGame.costs.hint;
         
-        // Update button states - ensure multiplier and luck buttons work
+        // Update button states
         if (elements.btnUpgradeClick) {
             elements.btnUpgradeClick.disabled = idleGame.coins < idleGame.costs.click;
         }
         if (elements.btnUpgradeAuto) {
             elements.btnUpgradeAuto.disabled = idleGame.coins < idleGame.costs.auto;
-        }
-        if (elements.btnUpgradeMultiplier) {
-            const canAfford = idleGame.coins >= idleGame.costs.multiplier;
-            elements.btnUpgradeMultiplier.disabled = !canAfford;
-            if (canAfford) {
-                console.log(`💰 Multiplier upgrade available! Coins: ${idleGame.coins}, Cost: ${idleGame.costs.multiplier}`);
-            }
-        }
-        if (elements.btnUpgradeLuck) {
-            const canAfford = idleGame.coins >= idleGame.costs.luck;
-            elements.btnUpgradeLuck.disabled = !canAfford;
-            if (canAfford) {
-                console.log(`🍀 Luck upgrade available! Coins: ${idleGame.coins}, Cost: ${idleGame.costs.luck}`);
-            }
         }
         if (elements.btnBuyHint) {
             elements.btnBuyHint.disabled = idleGame.coins < idleGame.costs.hint || gameState.status !== 'playing';
@@ -230,41 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function calculateClickReward() {
-        let baseReward = idleGame.clickPower * idleGame.multiplier;
-        
-        // Critical hit chance
-        if (Math.random() * 100 < idleGame.criticalChance) {
-            baseReward *= 2;
-            // Show critical hit animation
-            showCriticalHit();
-        }
-        
-        return baseReward;
-    }
-    
-    function showCriticalHit() {
-        if (!elements.btnFootClick) return;
-        
-        const critEl = document.createElement('div');
-        critEl.textContent = 'CRITIQUE!';
-        critEl.style.position = 'absolute';
-        critEl.style.color = '#f59e0b';
-        critEl.style.fontWeight = 'bold';
-        critEl.style.fontSize = '1.2rem';
-        critEl.style.pointerEvents = 'none';
-        critEl.style.animation = 'coinEarn 1s ease-out forwards';
-        
-        const rect = elements.btnFootClick.getBoundingClientRect();
-        critEl.style.left = (rect.left + rect.width / 2) + 'px';
-        critEl.style.top = (rect.top - 20) + 'px';
-        
-        document.body.appendChild(critEl);
-        
-        setTimeout(() => {
-            if (critEl.parentNode) {
-                critEl.parentNode.removeChild(critEl);
-            }
-        }, 1000);
+        return idleGame.clickPower;
     }
     
     function showCoinAnimation(x, y, amount) {
@@ -505,6 +495,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 createBoard();
                 updatePlayersList();
                 showInfo('Connecté à la partie !');
+                
+                // Add welcome message for the current player
+                const currentPlayer = gameState.players.find(p => p.id === playerId);
+                if (currentPlayer && currentMode === 'coop') {
+                    addWelcomeMessage(currentPlayer.pseudo, currentPlayer.avatar, currentPlayer.color);
+                }
                 break;
                 
             case 'state':
@@ -688,12 +684,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get desired length from selector or generate random
         let desiredLength;
-        if (elements.nextWordLength && elements.nextWordLength.value !== "0") {
+        if (elements.nextWordLength && elements.nextWordLength.value && elements.nextWordLength.value !== "0") {
             desiredLength = parseInt(elements.nextWordLength.value);
             console.log(`🎯 Starting new game with chosen length: ${desiredLength}`);
         } else {
             desiredLength = Math.floor(Math.random() * 9) + 2; // 2 to 10
             console.log(`🎲 Starting new game with random length: ${desiredLength}`);
+        }
+        
+        // Reset selector to random for next time
+        if (elements.nextWordLength) {
+            elements.nextWordLength.value = "0";
         }
         
         ws.send(JSON.stringify({
@@ -713,7 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Auto-clicker
         setInterval(() => {
             if (idleGame.autoRate > 0) {
-                const earned = idleGame.autoRate * idleGame.multiplier;
+                const earned = idleGame.autoRate;
                 idleGame.coins += earned;
                 idleGame.totalCoins += earned;
                 updateIdleUI();
@@ -735,21 +736,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 idleGame.coins += earned;
                 idleGame.totalCoins += earned;
                 
-                // Show animation with more intensity
+                // Show animation
                 const rect = elements.btnFootClick.getBoundingClientRect();
                 showCoinAnimation(
                     rect.left + rect.width / 2,
                     rect.top,
                     earned
                 );
-                
-                // Add screen shake effect for critical hits
-                if (Math.random() * 100 < idleGame.criticalChance) {
-                    document.body.style.animation = 'shake 0.3s ease-in-out';
-                    setTimeout(() => {
-                        document.body.style.animation = '';
-                    }, 300);
-                }
                 
                 updateIdleUI();
                 saveIdleGame();
@@ -794,48 +787,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             console.error('❌ Auto upgrade button not found!');
-        }
-        
-        // Upgrade multiplier
-        if (elements.btnUpgradeMultiplier) {
-            console.log('✅ Multiplier upgrade button found');
-            elements.btnUpgradeMultiplier.addEventListener('click', () => {
-                console.log(`🚀 Multiplier upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.multiplier}`);
-                if (idleGame.coins >= idleGame.costs.multiplier) {
-                    idleGame.coins -= idleGame.costs.multiplier;
-                    idleGame.upgrades.multiplierLevel++;
-                    idleGame.multiplier *= 2;
-                    idleGame.costs.multiplier = Math.floor(idleGame.costs.multiplier * 3);
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Multiplier upgrade purchased! New multiplier:', idleGame.multiplier);
-                } else {
-                    console.log('❌ Not enough coins for multiplier upgrade');
-                }
-            });
-        } else {
-            console.error('❌ Multiplier upgrade button not found!');
-        }
-        
-        // Upgrade luck
-        if (elements.btnUpgradeLuck) {
-            console.log('✅ Luck upgrade button found');
-            elements.btnUpgradeLuck.addEventListener('click', () => {
-                console.log(`🍀 Luck upgrade: coins=${idleGame.coins}, cost=${idleGame.costs.luck}`);
-                if (idleGame.coins >= idleGame.costs.luck) {
-                    idleGame.coins -= idleGame.costs.luck;
-                    idleGame.upgrades.luckLevel++;
-                    idleGame.criticalChance += 10;
-                    idleGame.costs.luck = Math.floor(idleGame.costs.luck * 2.5);
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Luck upgrade purchased! New critical chance:', idleGame.criticalChance + '%');
-                } else {
-                    console.log('❌ Not enough coins for luck upgrade');
-                }
-            });
-        } else {
-            console.error('❌ Luck upgrade button not found!');
         }
         
         // Buy hint

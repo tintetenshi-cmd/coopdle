@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Optimisations Finales - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        .warning { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; }
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+        }
+        .feature-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .demo-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .slang-demo {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 8px;
+            border-radius: 6px;
+            margin: 5px 0;
+            font-style: italic;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Test des Optimisations Finales</h1>
+    
+    <div class="test-section">
+        <h2>✅ Optimisations Complétées</h2>
+        
+        <div class="feature-demo">
+            <div class="demo-card">
+                <div class="test-result success">
+                    <strong>1. Sélection longueur corrigée</strong><br>
+                    ✓ Fonction startNewGame améliorée<br>
+                    ✓ Vérification de l'élément DOM<br>
+                    ✓ Reset automatique à "aléatoire"<br>
+                    ✓ Logs de debug détaillés<br>
+                    ✓ Transmission correcte au serveur
+                </div>
+            </div>
+            
+            <div class="demo-card">
+                <div class="test-result success">
+                    <strong>2. Idle game simplifié</strong><br>
+                    ✓ Multiplicateur supprimé<br>
+                    ✓ Coup critique supprimé<br>
+                    ✓ Interface plus claire<br>
+                    ✓ Code optimisé et allégé<br>
+                    ✓ Seulement : Force, Auto, Hint
+                </div>
+            </div>
+            
+            <div class="demo-card">
+                <div class="test-result success">
+                    <strong>3. Code optimisé</strong><br>
+                    ✓ Fonctions inutiles supprimées<br>
+                    ✓ État idle game simplifié<br>
+                    ✓ Event listeners nettoyés<br>
+                    ✓ Calculs simplifiés<br>
+                    ✓ Performance améliorée
+                </div>
+            </div>
+            
+            <div class="demo-card">
+                <div class="test-result success">
+                    <strong>4. Messages de bienvenue 🔥</strong><br>
+                    ✓ 15 phrases de slang français<br>
+                    ✓ Sélection aléatoire<br>
+                    ✓ Style avec effet feu doux<br>
+                    ✓ Animation fireGlow<br>
+                    ✓ Couleur et ombres spéciales
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔥 Exemples de Messages de Bienvenue</h2>
+        <div class="slang-demo">mais quel banger de fou</div>
+        <div class="slang-demo">c'est parti mon reuf</div>
+        <div class="slang-demo">ça va être chaud patate</div>
+        <div class="slang-demo">on va se régaler</div>
+        <div class="slang-demo">c'est du lourd</div>
+        <div class="slang-demo">ça va envoyer du pâté</div>
+        <div class="slang-demo">préparez-vous les amis</div>
+        <div class="slang-demo">ça va être épique</div>
+        <div class="slang-demo">on va tout défoncer</div>
+        <div class="slang-demo">c'est parti pour le show</div>
+        <div class="slang-demo">ça va être de la bombe</div>
+        <div class="slang-demo">on va faire des étincelles</div>
+        <div class="slang-demo">c'est du niveau supérieur</div>
+        <div class="slang-demo">ça va être légendaire</div>
+        <div class="slang-demo">on va tout exploser</div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Instructions de Test</h2>
+        
+        <div class="test-result info">
+            <strong>Test sélection longueur :</strong><br>
+            1. Terminez une partie (gagnée ou perdue)<br>
+            2. Choisissez une longueur spécifique (ex: 5 lettres)<br>
+            3. Cliquez "Nouvelle partie"<br>
+            4. Vérifiez que le nouveau mot a exactement 5 lettres<br>
+            5. Le sélecteur doit revenir sur "Aléatoire"
+        </div>
+        
+        <div class="test-result info">
+            <strong>Test idle game simplifié :</strong><br>
+            1. Vérifiez qu'il n'y a que 3 boutons : 💪 ⚡ 💡<br>
+            2. Plus de boutons 🚀 (multiplicateur) et 🍀 (critique)<br>
+            3. Stats affichées : Pièces, Par clic, Auto/sec, Total<br>
+            4. Fonctionnalité simplifiée mais complète
+        </div>
+        
+        <div class="test-result info">
+            <strong>Test messages de bienvenue :</strong><br>
+            1. Créez une partie coop<br>
+            2. Faites rejoindre un autre joueur (ou ouvrez un autre onglet)<br>
+            3. Vérifiez le message dans le chat avec effet feu 🔥<br>
+            4. Format : "[Pseudo] a rejoint la partie ! [phrase aléatoire] 🔥"
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎮 Test de l'Application</h2>
+        <iframe src="index.html" id="gameFrame"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Checklist de Validation</h2>
+        <div class="test-result warning">
+            <strong>À vérifier :</strong><br>
+            ☐ Sélection longueur fonctionne et se reset<br>
+            ☐ Idle game n'a que 3 boutons (Force, Auto, Hint)<br>
+            ☐ Plus de multiplicateur ni critique<br>
+            ☐ Messages de bienvenue avec effet feu dans le chat<br>
+            ☐ Phrases de slang français aléatoires<br>
+            ☐ Code plus propre et optimisé<br>
+            ☐ Pas de régression sur les fonctionnalités<br>
+            ☐ Performance améliorée
+        </div>
+    </div>
+
+    <script>
+        console.log('🚀 Final optimizations test page loaded');
+        console.log('🎯 Features to test:');
+        console.log('1. Word length selection working correctly');
+        console.log('2. Simplified idle game (3 buttons only)');
+        console.log('3. Welcome messages with fire effect');
+        console.log('4. French slang phrases');
+        console.log('5. Optimized and cleaner code');
+        
+        // Test function to simulate joining
+        function simulateJoin() {
+            console.log('💡 To test welcome messages:');
+            console.log('1. Create a coop game');
+            console.log('2. Open another tab/window');
+            console.log('3. Join the same room');
+            console.log('4. Check the chat for welcome message with fire effect');
+        }
+        
+        window.simulateJoin = simulateJoin;
+    </script>
+</body>
+</html>

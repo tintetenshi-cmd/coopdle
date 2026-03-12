@@ -425,6 +425,43 @@
             font-size: 0.85rem;
         }
         
+        .chat-message.welcome-message {
+            background: 
+                linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(239, 68, 68, 0.15) 50%, rgba(245, 158, 11, 0.1) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 
+                0 4px 12px rgba(245, 158, 11, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fireGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .system-author {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        
+        .welcome-text {
+            color: #fbbf24;
+            font-weight: 500;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+        
+        @keyframes fireGlow {
+            0% { 
+                box-shadow: 
+                    0 4px 12px rgba(245, 158, 11, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            100% { 
+                box-shadow: 
+                    0 6px 20px rgba(245, 158, 11, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+        }
+        
         .chat-input {
             display: flex;
             gap: 6px;
@@ -1810,8 +1847,8 @@
                             </div>
                             <div class="idle-stat-sidebar">
                                 <span class="stat-emoji">🎯</span>
-                                <span class="stat-label">Multi</span>
-                                <span class="idle-stat-value" id="idle-multiplier">1</span>
+                                <span class="stat-label">Total</span>
+                                <span class="idle-stat-value" id="idle-total">0</span>
                             </div>
                         </div>
                         <div class="idle-clicker-sidebar">
@@ -1825,14 +1862,6 @@
                             <button class="upgrade-btn-sidebar" id="btn-upgrade-auto">
                                 <div class="upgrade-icon">⚡</div>
                                 <div class="upgrade-cost">💰 <span id="cost-auto">50</span></div>
-                            </button>
-                            <button class="upgrade-btn-sidebar" id="btn-upgrade-multiplier">
-                                <div class="upgrade-icon">🚀</div>
-                                <div class="upgrade-cost">💰 <span id="cost-multiplier">2000</span></div>
-                            </button>
-                            <button class="upgrade-btn-sidebar" id="btn-upgrade-luck">
-                                <div class="upgrade-icon">🍀</div>
-                                <div class="upgrade-cost">💰 <span id="cost-luck">5000</span></div>
                             </button>
                             <button class="hint-btn-sidebar" id="btn-buy-hint">
                                 <div class="upgrade-icon">💡</div>
