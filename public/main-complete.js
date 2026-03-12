@@ -96,10 +96,15 @@ document.addEventListener('DOMContentLoaded', function() {
         errorEl: document.getElementById("error"),
         infoEl: document.getElementById("info"),
         statusCurrentPlayer: document.getElementById("status-current-player"),
+        // Game result elements
         gameResult: document.getElementById("game-result"),
+        gameResultIntegrated: document.getElementById("game-result-integrated"),
         resultIcon: document.getElementById("result-icon"),
+        resultIconIntegrated: document.getElementById("result-icon-integrated"),
         resultText: document.getElementById("result-text"),
+        resultTextIntegrated: document.getElementById("result-text-integrated"),
         btnNewGameHighlight: document.getElementById("btn-new-game-highlight"),
+        btnNewGameIntegrated: document.getElementById("btn-new-game-integrated"),
         
         // Chat
         chatPanel: document.getElementById("chat-panel"),
@@ -195,20 +200,29 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     function showGameResult(won, word) {
-        if (!elements.gameResult) return;
+        // Use integrated result instead of modal
+        if (!elements.gameResultIntegrated) return;
         
         if (won) {
-            if (elements.resultIcon) elements.resultIcon.textContent = '🎉';
-            if (elements.resultText) elements.resultText.textContent = 'Partie gagnée !';
+            if (elements.resultIconIntegrated) elements.resultIconIntegrated.textContent = '🎉';
+            if (elements.resultTextIntegrated) elements.resultTextIntegrated.textContent = 'Partie gagnée !';
         } else {
-            if (elements.resultIcon) elements.resultIcon.textContent = '😞';
-            if (elements.resultText) elements.resultText.textContent = `Partie perdue ! Le mot était : ${word.toUpperCase()}`;
+            if (elements.resultIconIntegrated) elements.resultIconIntegrated.textContent = '😞';
+            if (elements.resultTextIntegrated) elements.resultTextIntegrated.textContent = `Partie perdue ! Le mot était : ${word.toUpperCase()}`;
         }
         
-        elements.gameResult.classList.remove('hidden');
+        elements.gameResultIntegrated.classList.remove('hidden');
+        
+        // Hide old modal if it exists
+        if (elements.gameResult) {
+            elements.gameResult.classList.add('hidden');
+        }
     }
     
     function hideGameResult() {
+        if (elements.gameResultIntegrated) {
+            elements.gameResultIntegrated.classList.add('hidden');
+        }
         if (elements.gameResult) {
             elements.gameResult.classList.add('hidden');
         }
@@ -671,8 +685,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         hideGameResult();
         
+        // Generate random word length between 2 and 10
+        const randomLength = Math.floor(Math.random() * 9) + 2; // 2 to 10
+        
+        console.log(`🎲 Starting new game with random length: ${randomLength}`);
+        
         ws.send(JSON.stringify({
-            type: 'newGame'
+            type: 'newGame',
+            desiredLength: randomLength
         }));
     }
     
@@ -699,17 +719,31 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.btnFootClick) {
             console.log('✅ Foot button found, adding click handler');
             elements.btnFootClick.addEventListener('click', (e) => {
+                // Add intensive click effect
+                elements.btnFootClick.classList.add('clicking');
+                setTimeout(() => {
+                    elements.btnFootClick.classList.remove('clicking');
+                }, 150);
+                
                 const earned = calculateClickReward();
                 idleGame.coins += earned;
                 idleGame.totalCoins += earned;
                 
-                // Show animation
+                // Show animation with more intensity
                 const rect = elements.btnFootClick.getBoundingClientRect();
                 showCoinAnimation(
                     rect.left + rect.width / 2,
                     rect.top,
                     earned
                 );
+                
+                // Add screen shake effect for critical hits
+                if (Math.random() * 100 < idleGame.criticalChance) {
+                    document.body.style.animation = 'shake 0.3s ease-in-out';
+                    setTimeout(() => {
+                        document.body.style.animation = '';
+                    }, 300);
+                }
                 
                 updateIdleUI();
                 saveIdleGame();
@@ -982,6 +1016,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (elements.btnNewGameHighlight) {
             elements.btnNewGameHighlight.addEventListener('click', () => {
+                hideGameResult();
+                startNewGame();
+            });
+        }
+        
+        if (elements.btnNewGameIntegrated) {
+            elements.btnNewGameIntegrated.addEventListener('click', () => {
                 hideGameResult();
                 startNewGame();
             });
