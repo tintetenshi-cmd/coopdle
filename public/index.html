@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
         * {
             margin: 0;
@@ -16,7 +16,7 @@
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
             background: 
                 radial-gradient(ellipse at top, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
                 radial-gradient(ellipse at bottom, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
@@ -25,6 +25,7 @@
             min-height: 100vh;
             overflow-x: hidden;
             font-size: 14px;
+            font-weight: 400;
         }
         
         #app {
@@ -259,14 +260,14 @@
             height: 100vh;
             display: grid;
             grid-template-columns: 280px 1fr 280px;
-            grid-template-rows: auto 1fr auto;
+            grid-template-rows: auto 1fr;
             gap: 16px;
             padding: 16px;
         }
         
         .game-container.solo-mode {
             grid-template-columns: 1fr 280px;
-            grid-template-rows: auto 1fr auto;
+            grid-template-rows: auto 1fr;
         }
         
         .game-header {
@@ -349,8 +350,7 @@
             overflow-y: auto;
             margin-bottom: 12px;
             padding-right: 6px;
-            max-height: 400px;
-            min-height: 200px;
+            min-height: 300px;
         }
         
         .chat-messages::-webkit-scrollbar {
@@ -868,23 +868,143 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
         }
         
-        /* === IDLE GAME PANEL === */
-        .idle-game-panel {
-            grid-column: 1 / -1;
-            background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(168, 85, 247, 0.03) 100%),
-                rgba(10, 10, 15, 0.9);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 16px;
+        /* === IDLE GAME INTÉGRÉ === */
+        .idle-game-integrated {
+            margin-top: 20px;
             padding: 16px;
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
         }
         
-        .game-container.solo-mode .idle-game-panel {
+        .idle-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .idle-stats-compact {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .idle-stat-compact {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+            font-size: 0.8rem;
+        }
+        
+        .idle-stat-compact span:first-child {
+            font-size: 1rem;
+        }
+        
+        .idle-stat-compact .idle-stat-value {
+            font-weight: 600;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.85rem;
+        }
+        
+        .idle-clicker-compact {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        
+        .foot-button-compact {
+            font-size: 2.5rem;
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px;
+            border-radius: 50%;
+            box-shadow: 
+                0 4px 12px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .foot-button-compact:hover {
+            transform: scale(1.05);
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(168, 85, 247, 0.3) 100%);
+            box-shadow: 
+                0 8px 20px rgba(139, 92, 246, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .foot-button-compact:active {
+            transform: scale(0.95);
+        }
+        
+        .idle-upgrades-compact {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+        
+        .upgrade-btn-compact, .hint-btn-compact {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 2px 6px rgba(139, 92, 246, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+        }
+        
+        .hint-btn-compact {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+            border: 1px solid #f59e0b;
+            color: white;
             grid-column: 1 / -1;
+        }
+        
+        .upgrade-btn-compact:hover, .hint-btn-compact:hover {
+            transform: translateY(-1px);
+            box-shadow: 
+                0 4px 12px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .hint-btn-compact:hover {
+            box-shadow: 
+                0 4px 12px rgba(245, 158, 11, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .upgrade-btn-compact:disabled, .hint-btn-compact:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 
+                0 2px 4px rgba(139, 92, 246, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
         }
         
         /* === RESPONSIVE === */
@@ -899,27 +1019,31 @@
                 grid-template-columns: 1fr 240px;
             }
             
-            .idle-stats {
-                grid-template-columns: repeat(3, 1fr);
+            .idle-stats-compact {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
         @media (max-width: 900px) {
             .game-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto auto;
+                grid-template-rows: auto 1fr auto;
                 gap: 12px;
                 padding: 10px;
             }
             
             .game-container.solo-mode {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto;
+                grid-template-rows: auto 1fr;
             }
             
             .chat-panel, .players-panel {
                 height: auto;
-                max-height: 250px;
+                max-height: 300px;
+            }
+            
+            .chat-messages {
+                min-height: 200px;
             }
             
             .cell {
@@ -928,8 +1052,12 @@
                 font-size: 1.1rem;
             }
             
-            .idle-stats {
+            .idle-stats-compact {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .idle-upgrades-compact {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -959,8 +1087,25 @@
                 font-size: 1rem;
             }
             
-            .foot-button {
-                font-size: 2.5rem;
+            .foot-button-compact {
+                font-size: 2rem;
+            }
+            
+            .result-content {
+                padding: 30px 20px;
+                margin: 0 20px;
+            }
+            
+            .result-icon {
+                font-size: 3rem;
+            }
+            
+            .result-text {
+                font-size: 1.5rem;
+            }
+            
+            .idle-stats-compact {
+                grid-template-columns: repeat(2, 1fr);
             }
             
             .result-content {
@@ -1112,6 +1257,45 @@
                     <div id="error" class="status-message error hidden"></div>
                     <div id="info" class="status-message info hidden"></div>
                     <div id="status-current-player" style="margin-top: 16px; text-align: center; color: #94a3b8;"></div>
+                    
+                    <!-- Idle Game intégré dans le panneau de jeu -->
+                    <div class="idle-game-integrated">
+                        <div class="idle-title">🦶 Idle Clicker</div>
+                        <div class="idle-stats-compact">
+                            <div class="idle-stat-compact">
+                                <span>💰</span><span class="idle-stat-value" id="idle-coins">0</span>
+                            </div>
+                            <div class="idle-stat-compact">
+                                <span>👊</span><span class="idle-stat-value" id="idle-per-click">1</span>
+                            </div>
+                            <div class="idle-stat-compact">
+                                <span>⚡</span><span class="idle-stat-value" id="idle-auto-rate">0</span>
+                            </div>
+                            <div class="idle-stat-compact">
+                                <span>🎯</span><span class="idle-stat-value" id="idle-multiplier">1</span>
+                            </div>
+                        </div>
+                        <div class="idle-clicker-compact">
+                            <button class="foot-button-compact" id="btn-foot-click">🦶</button>
+                        </div>
+                        <div class="idle-upgrades-compact">
+                            <button class="upgrade-btn-compact" id="btn-upgrade-click">
+                                💪 +1 (💰<span id="cost-click">10</span>)
+                            </button>
+                            <button class="upgrade-btn-compact" id="btn-upgrade-auto">
+                                ⚡ +1/s (💰<span id="cost-auto">50</span>)
+                            </button>
+                            <button class="upgrade-btn-compact" id="btn-upgrade-multiplier">
+                                🚀 x2 (💰<span id="cost-multiplier">2000</span>)
+                            </button>
+                            <button class="upgrade-btn-compact" id="btn-upgrade-luck">
+                                🍀 +10% (💰<span id="cost-luck">5000</span>)
+                            </button>
+                            <button class="hint-btn-compact" id="btn-buy-hint">
+                                💡 Lettre (💰<span id="cost-hint">1000</span>)
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Message de victoire/défaite -->
@@ -1127,63 +1311,6 @@
                 <div class="players-panel">
                     <div class="panel-title">👥 Joueurs</div>
                     <ul class="players-list" id="participants-list"></ul>
-                </div>
-            </div>
-            
-            <!-- Idle Game (bas, séparé) -->
-            <div class="idle-game-panel">
-                <div class="idle-game">
-                    <div class="idle-title">🦶 Idle Clicker</div>
-                    <div class="idle-stats">
-                        <div class="idle-stat">
-                            <div>💰 Pièces</div>
-                            <div class="idle-stat-value" id="idle-coins">0</div>
-                        </div>
-                        <div class="idle-stat">
-                            <div>👊 Par clic</div>
-                            <div class="idle-stat-value" id="idle-per-click">1</div>
-                        </div>
-                        <div class="idle-stat">
-                            <div>⚡ Auto/sec</div>
-                            <div class="idle-stat-value" id="idle-auto-rate">0</div>
-                        </div>
-                        <div class="idle-stat">
-                            <div>🏆 Total</div>
-                            <div class="idle-stat-value" id="idle-total">0</div>
-                        </div>
-                        <div class="idle-stat">
-                            <div>🎯 Multiplicateur</div>
-                            <div class="idle-stat-value" id="idle-multiplier">1</div>
-                        </div>
-                        <div class="idle-stat">
-                            <div>🍀 Chance critique</div>
-                            <div class="idle-stat-value" id="idle-luck">0%</div>
-                        </div>
-                    </div>
-                    <div class="idle-clicker">
-                        <button class="foot-button" id="btn-foot-click">🦶</button>
-                    </div>
-                    <div class="idle-upgrades">
-                        <button class="upgrade-btn" id="btn-upgrade-click">
-                            💪 Force +1 (💰 <span id="cost-click">10</span>)
-                        </button>
-                        <button class="upgrade-btn" id="btn-upgrade-auto">
-                            ⚡ Auto +1/s (💰 <span id="cost-auto">50</span>)
-                        </button>
-                        <button class="upgrade-btn" id="btn-upgrade-multiplier">
-                            🚀 Multiplicateur x2 (💰 <span id="cost-multiplier">200</span>)
-                        </button>
-                        <button class="upgrade-btn" id="btn-upgrade-luck">
-                            🍀 Chance critique +10% (💰 <span id="cost-luck">500</span>)
-                        </button>
-                    </div>
-                    <div class="shop-section">
-                        <div class="shop-title">🛒 Boutique</div>
-                        <button class="hint-btn" id="btn-buy-hint">
-                            💡 Révéler une lettre<br>
-                            <small>💰 <span id="cost-hint">1000</span> pièces</small>
-                        </button>
-                    </div>
                 </div>
             </div>
             </div>

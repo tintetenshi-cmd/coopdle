@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
         costs: {
             click: 10,
             auto: 50,
-            multiplier: 200,
-            luck: 500,
+            multiplier: 2000,
+            luck: 5000,
             hint: 1000
         }
     };
