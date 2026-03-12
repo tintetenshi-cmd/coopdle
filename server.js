@@ -699,6 +699,9 @@ wss.on("connection", (ws) => {
       const text = textRaw.trim().slice(0, 200);
       if (!text) return;
       
+      // Détecter si le message contient "67" pour l'effet spécial
+      const contains67 = text.includes('67');
+      
       const payload = JSON.stringify({
         type: "chat",
         from: clientId,
@@ -706,7 +709,8 @@ wss.on("connection", (ws) => {
         avatar: sender?.avatar || "🙂",
         color: sender?.color || null,
         text,
-        ts: Date.now()
+        ts: Date.now(),
+        special67: contains67 // Ajouter l'indicateur pour l'effet spécial
       });
       
       room.players.forEach((p) => {

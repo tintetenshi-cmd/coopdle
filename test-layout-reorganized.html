@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Layout Réorganisé - Coopdle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-container {
+            max-width: 1800px;
+            height: 80vh;
+            display: grid;
+            grid-template-columns: 280px 1fr 320px 320px;
+            gap: 16px;
+            background: #0f0f23;
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .test-panel {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.05));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        .test-panel h3 {
+            margin: 0 0 10px 0;
+            color: #a855f7;
+        }
+        .test-panel p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .large {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.08));
+        }
+        .split-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .split-top, .split-bottom {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(168, 85, 247, 0.04));
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .split-top h4, .split-bottom h4 {
+            margin: 0 0 5px 0;
+            color: #c084fc;
+            font-size: 1rem;
+        }
+        .split-top p, .split-bottom p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test du Layout Réorganisé</h1>
+    <p>Nouvelle structure: Chat | Wordle | Alphabet+Joueurs | Cementix+Idle</p>
+    
+    <div class="test-container">
+        <div class="test-panel">
+            <h3>💬 Chat</h3>
+            <p>Colonne 1<br>280px<br>(plus large)</p>
+        </div>
+        
+        <div class="test-panel large">
+            <h3>🎯 Wordle</h3>
+            <p>Colonne 2 (large)<br>1fr (flexible)<br>Plus d'espace pour le jeu</p>
+        </div>
+        
+        <div class="test-panel split-panel">
+            <div class="split-top">
+                <h4>🔤 Alphabet</h4>
+                <p>50% du haut<br>6 colonnes</p>
+            </div>
+            <div class="split-bottom">
+                <h4>👥 Joueurs</h4>
+                <p>50% du bas<br>Liste verticale</p>
+            </div>
+        </div>
+        
+        <div class="test-panel split-panel">
+            <div class="split-top">
+                <h4>🧠 Cementix</h4>
+                <p>60% du haut<br>Compact</p>
+            </div>
+            <div class="split-bottom">
+                <h4>🦶 Idle Game</h4>
+                <p>40% du bas<br>Clicker</p>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h2>✅ Layout Réorganisé!</h2>
+        <ul>
+            <li>✅ Chat plus large (280px)</li>
+            <li>✅ Wordle seul au centre (plus d'espace)</li>
+            <li>✅ Alphabet en haut de la 3ème colonne (6 colonnes)</li>
+            <li>✅ Joueurs en bas de la 3ème colonne</li>
+            <li>✅ Cementix en haut de la 4ème colonne (60%)</li>
+            <li>✅ Idle Game en bas de la 4ème colonne (40%)</li>
+            <li>✅ Éléments plus grands (cellules 48px, paddings 20px)</li>
+            <li>✅ Meilleure utilisation de l'espace</li>
+        </ul>
+    </div>
+</body>
+</html>

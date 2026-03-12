@@ -357,23 +357,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (cementixAttempts.length === 0) {
             const emptyMsg = document.createElement('div');
             emptyMsg.className = 'cementix-empty';
-            emptyMsg.textContent = 'Aucune tentative pour le moment...';
+            emptyMsg.textContent = 'Aucune tentative...';
             elements.cementixAttempts.appendChild(emptyMsg);
             return;
         }
         
         cementixAttempts.forEach(attempt => {
             const attemptEl = document.createElement('div');
-            attemptEl.className = 'cementix-attempt';
+            attemptEl.className = 'cementix-attempt-compact';
             
             const emoji = getHeatEmoji(attempt.score);
             const scoreClass = getScoreClass(attempt.score);
             
             attemptEl.innerHTML = `
-                <div class="cementix-attempt-player">${attempt.pseudo}</div>
-                <div class="cementix-attempt-word">${attempt.word}</div>
-                <div class="cementix-attempt-score ${scoreClass}">${attempt.score}/100</div>
-                <div class="cementix-attempt-emoji">${emoji}</div>
+                <div class="cementix-attempt-player-compact">${attempt.pseudo}</div>
+                <div class="cementix-attempt-word-compact">${attempt.word}</div>
+                <div class="cementix-attempt-score-compact ${scoreClass}">${attempt.score}/100</div>
+                <div class="cementix-attempt-emoji-compact">${emoji}</div>
             `;
             
             elements.cementixAttempts.appendChild(attemptEl);
@@ -597,16 +597,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function addChatMessage(from, pseudo, avatar, color, text, timestamp) {
+    function addChatMessage(from, pseudo, avatar, color, text, timestamp, special67 = false) {
         if (!elements.chatMessages) return;
         
         const messageEl = document.createElement('div');
         messageEl.className = 'chat-message';
         
+        // Appliquer l'effet spécial si le serveur l'indique
+        if (special67) {
+            messageEl.classList.add('lightning-67');
+        }
+        
         const time = new Date(timestamp).toLocaleTimeString('fr-FR', {
             hour: '2-digit',
             minute: '2-digit'
         });
+        
+        // Remplacer "67" par une version stylée si l'effet spécial est activé
+        let styledText = text;
+        if (special67) {
+            styledText = text.replace(/67/g, '<span class="number-67">67</span>');
+        }
         
         messageEl.innerHTML = `
             <div class="chat-avatar">${avatar}</div>
@@ -615,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span class="chat-author" style="color: ${color || '#e2e8f0'}">${pseudo}</span>
                     <span class="chat-time">${time}</span>
                 </div>
-                <div class="chat-text">${text}</div>
+                <div class="chat-text">${styledText}</div>
             </div>
         `;
         
@@ -646,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         gameState.players.forEach(player => {
             const li = document.createElement('li');
-            li.className = 'player-item';
+            li.className = 'player-item-vertical';
             
             if (player.id === playerId) {
                 li.classList.add('you');
@@ -656,8 +667,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             li.innerHTML = `
-                <div class="player-avatar">${player.avatar}</div>
-                <div class="player-name" style="color: ${player.color || '#e2e8f0'}">${player.pseudo}</div>
+                <div class="player-avatar-vertical">${player.avatar}</div>
+                <div class="player-name-vertical" style="color: ${player.color || '#e2e8f0'}">${player.pseudo}</div>
             `;
             
             elements.participantsList.appendChild(li);
@@ -731,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
                 
             case 'chat':
-                addChatMessage(data.from, data.pseudo, data.avatar, data.color, data.text, data.ts);
+                addChatMessage(data.from, data.pseudo, data.avatar, data.color, data.text, data.ts, data.special67);
                 break;
                 
             case 'systemMessage':
