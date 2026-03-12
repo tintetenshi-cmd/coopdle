@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Design Premium - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: 
+                radial-gradient(ellipse at top, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .demo-card {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%),
+                rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        .demo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature-item {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .feature-item:hover {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-color: rgba(139, 92, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        .btn-demo {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 4px 12px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            margin: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-demo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn-demo:hover::before {
+            left: 100%;
+        }
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 25px rgba(139, 92, 246, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .highlight {
+            color: #a855f7;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-card">
+            <h1 class="demo-title">✨ Design Premium Coopdle</h1>
+            <p style="text-align: center; font-size: 1.1rem; color: #cbd5e1; margin-bottom: 30px;">
+                Interface minimal, propre et lisse avec gradients harmonieux
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3 class="gradient-text">🎨 Fond Gradient Sophistiqué</h3>
+                    <ul style="color: #94a3b8; line-height: 1.6;">
+                        <li>Gradient radial subtil en arrière-plan</li>
+                        <li>Dégradé multi-couches harmonieux</li>
+                        <li>Effets de profondeur avec transparence</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-item">
+                    <h3 class="gradient-text">✨ Éléments Glassmorphism</h3>
+                    <ul style="color: #94a3b8; line-height: 1.6;">
+                        <li>Backdrop-filter blur sur tous les panneaux</li>
+                        <li>Bordures subtiles avec transparence</li>
+                        <li>Effets inset pour la profondeur</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-item">
+                    <h3 class="gradient-text">🌈 Gradients Harmonieux</h3>
+                    <ul style="color: #94a3b8; line-height: 1.6;">
+                        <li>Textes avec gradients violet/blanc</li>
+                        <li>Boutons avec gradients 3-couleurs</li>
+                        <li>Cellules Wordle avec gradients subtils</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-item">
+                    <h3 class="gradient-text">⚡ Animations Fluides</h3>
+                    <ul style="color: #94a3b8; line-height: 1.6;">
+                        <li>Transitions cubic-bezier premium</li>
+                        <li>Effets hover avec shimmer</li>
+                        <li>Transformations 3D subtiles</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-item">
+                    <h3 class="gradient-text">🎯 Détails Premium</h3>
+                    <ul style="color: #94a3b8; line-height: 1.6;">
+                        <li>Ombres multiples pour la profondeur</li>
+                        <li>Bordures avec highlights internes</li>
+                        <li>Typographie avec gradients</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-item">
+                    <h3 class="gradient-text">🔧 Interface Polie</h3>
+                    <ul style="color: #94a3b8; line-height: 1.6;">
+                        <li>Coins arrondis harmonieux</li>
+                        <li>Espacement parfaitement équilibré</li>
+                        <li>Cohérence visuelle totale</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn-demo" onclick="window.open('index.html', '_blank')">
+                    🚀 Tester le Design Premium
+                </button>
+                
+                <div style="margin-top: 20px; padding: 20px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <h4 class="gradient-text">🎮 Points à vérifier :</h4>
+                    <div style="text-align: left; color: #94a3b8; line-height: 1.6;">
+                        <p><span class="highlight">✨ Fond :</span> Gradient radial avec profondeur</p>
+                        <p><span class="highlight">🎨 Panneaux :</span> Glassmorphism avec blur et gradients</p>
+                        <p><span class="highlight">🔘 Boutons :</span> Gradients 3-couleurs avec shimmer</p>
+                        <p><span class="highlight">📱 Cellules :</span> Ombres et gradients subtils</p>
+                        <p><span class="highlight">⚡ Animations :</span> Transitions fluides et naturelles</p>
+                        <p><span class="highlight">🎯 Cohérence :</span> Design harmonieux et professionnel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
