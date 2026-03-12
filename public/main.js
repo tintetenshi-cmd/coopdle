@@ -427,6 +427,18 @@ function initializeApp() {
       if (!currentRoomFromUrl) {
         console.log('Showing title screen...');
         showScreen(elements.screenTitle);
+        
+        // Debug CSS
+        setTimeout(() => {
+          console.log('=== DEBUG CSS ===');
+          console.log('Title screen element:', elements.screenTitle);
+          console.log('Title screen classes:', elements.screenTitle?.className);
+          console.log('Title screen computed style display:', window.getComputedStyle(elements.screenTitle).display);
+          console.log('Title screen computed style opacity:', window.getComputedStyle(elements.screenTitle).opacity);
+          console.log('Title screen computed style visibility:', window.getComputedStyle(elements.screenTitle).visibility);
+          console.log('App div:', document.getElementById('app'));
+          console.log('Body style:', document.body.style.cssText);
+        }, 100);
       }
       
       console.log('App initialization complete!');

@@ -35,9 +35,15 @@ body {
 }
 
 .hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(8px);
+  display: none !important;
+}
+
+/* Force l'affichage des écrans visibles */
+.screen:not(.hidden) {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
 }
 
 .screen-title {

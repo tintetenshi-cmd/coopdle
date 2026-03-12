@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-box {
+            background: #333;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #6d28d9;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Debug Coopdle</h1>
+    
+    <div class="test-box">
+        <h2>Test 1: Affichage de Base</h2>
+        <p>Si vous voyez ce texte, le HTML et CSS de base fonctionnent ✅</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>Test 2: JavaScript</h2>
+        <button class="btn" onclick="testJS()">Tester JavaScript</button>
+        <div id="js-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>Test 3: Simulation Coopdle</h2>
+        <div id="screen-title" class="screen">
+            <div style="text-align: center;">
+                <h1>Coopdle</h1>
+                <p>Devinez le même mot à plusieurs, en 6 essais.</p>
+                <button class="btn" onclick="testCoopdle()">Jouer</button>
+            </div>
+        </div>
+        <div id="screen-mode" class="screen hidden">
+            <div style="text-align: center;">
+                <h2>Mode de jeu</h2>
+                <button class="btn" onclick="backToTitle()">← Retour</button>
+            </div>
+        </div>
+        <div id="coopdle-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>Test 4: CSS et Classes</h2>
+        <div id="css-test" style="background: green; padding: 10px; color: white;">
+            Element visible
+        </div>
+        <button class="btn" onclick="toggleCSS()">Toggle Hidden</button>
+    </div>
+    
+    <script>
+        console.log('Test debug script loaded');
+        
+        function testJS() {
+            document.getElementById('js-result').innerHTML = '<p style="color: green;">✅ JavaScript fonctionne parfaitement !</p>';
+            console.log('JavaScript test passed');
+        }
+        
+        function testCoopdle() {
+            console.log('Testing Coopdle simulation...');
+            const titleScreen = document.getElementById('screen-title');
+            const modeScreen = document.getElementById('screen-mode');
+            const result = document.getElementById('coopdle-result');
+            
+            titleScreen.classList.add('hidden');
+            modeScreen.classList.remove('hidden');
+            
+            result.innerHTML = '<p style="color: green;">✅ Navigation Coopdle fonctionne !</p>';
+            console.log('Coopdle simulation test passed');
+        }
+        
+        function backToTitle() {
+            console.log('Back to title...');
+            const titleScreen = document.getElementById('screen-title');
+            const modeScreen = document.getElementById('screen-mode');
+            
+            modeScreen.classList.add('hidden');
+            titleScreen.classList.remove('hidden');
+            console.log('Back to title test passed');
+        }
+        
+        function toggleCSS() {
+            const element = document.getElementById('css-test');
+            element.classList.toggle('hidden');
+            console.log('CSS toggle test, hidden:', element.classList.contains('hidden'));
+        }
+        
+        // Test automatique au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== DEBUG TEST LOADED ===');
+            console.log('Title screen:', document.getElementById('screen-title'));
+            console.log('Mode screen:', document.getElementById('screen-mode'));
+            
+            // Test des styles
+            const titleScreen = document.getElementById('screen-title');
+            if (titleScreen) {
+                console.log('Title screen computed style:');
+                console.log('- display:', window.getComputedStyle(titleScreen).display);
+                console.log('- opacity:', window.getComputedStyle(titleScreen).opacity);
+                console.log('- visibility:', window.getComputedStyle(titleScreen).visibility);
+            }
+        });
+    </script>
+</body>
+</html>
