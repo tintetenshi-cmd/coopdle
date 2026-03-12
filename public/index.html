@@ -1,184 +1,280 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <title>Coopdle</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #app {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .title-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mode-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .field-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .mode-buttons .btn {
+            flex: 1;
+        }
+        
+        .btn.outline {
+            background: transparent;
+            border: 2px solid #ff6b6b;
+        }
+        
+        .btn.ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+            padding: 8px 16px;
+        }
+        
+        .field-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .field-half {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
     <div id="app">
-      <!-- Écran de titre -->
-      <div class="screen screen-title" id="screen-title">
-        <div class="title-card glass">
-          <h1>Coopdle</h1>
-          <p class="subtitle">Devinez le même mot à plusieurs, en 6 essais.</p>
-          <button id="btn-play" class="btn primary">Jouer</button>
+        <!-- Écran de titre -->
+        <div class="screen screen-title" id="screen-title">
+            <div class="title-card">
+                <h1>🎮 Coopdle</h1>
+                <p class="subtitle">Devinez le même mot à plusieurs, en 6 essais.</p>
+                <button id="btn-play" class="btn primary">🚀 Jouer</button>
+            </div>
         </div>
-        <div class="accent-orbit"></div>
-      </div>
 
-      <!-- Écran de sélection du mode -->
-      <div class="screen screen-mode hidden" id="screen-mode">
-        <div class="mode-card glass">
-          <h2 id="mode-title">Choix du mode</h2>
-          <p id="mode-description">Un mot aléatoire entre 2 et 10 lettres.</p>
+        <!-- Écran de sélection du mode -->
+        <div class="screen screen-mode hidden" id="screen-mode">
+            <div class="mode-card">
+                <h2 id="mode-title">🎯 Choix du mode</h2>
+                <p id="mode-description">Un mot aléatoire entre 2 et 10 lettres.</p>
 
-          <div class="field-group">
-            <label for="input-pseudo">Pseudo</label>
-            <input id="input-pseudo" type="text" maxlength="16" autocomplete="off" placeholder="Entrez votre pseudo" />
-          </div>
-
-          <div class="field-row">
-            <div class="field-group field-half">
-              <label for="select-avatar">Icône</label>
-              <select id="select-avatar" aria-label="Choisir une icône">
-                <option value="random">🎲 Aléatoire</option>
-              </select>
-            </div>
-            <div class="field-group field-half">
-              <label for="select-name-color">Couleur du pseudo</label>
-              <select id="select-name-color" aria-label="Choisir une couleur">
-                <option value="random">🎲 Aléatoire</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field-group" id="field-length">
-            <label for="select-length">Nombre de lettres à deviner</label>
-            <select id="select-length">
-              <option value="0">Aléatoire (2-10)</option>
-              <option value="2">2 lettres</option>
-              <option value="3">3 lettres</option>
-              <option value="4">4 lettres</option>
-              <option value="5">5 lettres</option>
-              <option value="6">6 lettres</option>
-              <option value="7">7 lettres</option>
-              <option value="8">8 lettres</option>
-              <option value="9">9 lettres</option>
-              <option value="10">10 lettres</option>
-            </select>
-          </div>
-
-          <div class="mode-buttons" id="mode-buttons-main">
-            <button id="btn-solo" class="btn primary">Solo</button>
-            <button id="btn-coop" class="btn outline">Créer une room coop</button>
-          </div>
-
-          <div class="mode-buttons hidden" id="mode-buttons-join">
-            <button id="btn-join-room" class="btn primary">Rejoindre la room</button>
-          </div>
-
-          <button id="btn-back-to-title" class="btn ghost small">&larr; Retour</button>
-        </div>
-      </div>
-
-      <!-- Écran de jeu -->
-      <div class="screen screen-game hidden" id="screen-game">
-        <header class="top-bar">
-          <div class="top-left">
-            <button id="btn-back-to-mode" class="btn ghost small">&larr; Modes</button>
-          </div>
-          <div class="top-center">
-            <span class="badge" id="badge-mode"></span>
-            <span class="badge subtle" id="badge-room"></span>
-          </div>
-          <div class="top-right">
-            <button id="btn-new-game" class="btn ghost small">Nouvelle partie</button>
-          </div>
-        </header>
-
-        <main class="game-layout">
-          <!-- Chat -->
-          <section class="chat-panel glass" aria-label="Chat de la room">
-            <h2 class="panel-title">Chat</h2>
-            <div id="chat-messages" class="chat-messages" role="log" aria-live="polite"></div>
-            <div class="chat-input-row">
-              <input id="input-chat" type="text" autocomplete="off" maxlength="200" placeholder="Écrivez un message..." aria-label="Message de chat" />
-              <button id="btn-send-chat" class="btn outline small">Envoyer</button>
-            </div>
-          </section>
-
-          <!-- Grille de jeu -->
-          <section class="board-panel glass" id="board-panel" aria-label="Grille du mot à deviner">
-            <h2 class="panel-title">Mot mystère</h2>
-            <p class="hint">
-              Longueur : <span id="word-length">-</span> lettres • 
-              Essais : <span id="attempts">0</span>/<span id="max-attempts">6</span>
-            </p>
-            <div id="board" class="board"></div>
-          </section>
-
-          <!-- Panneau latéral -->
-          <section class="side-panel glass" aria-label="Zone de saisie et outils">
-            <h2 class="panel-title">Votre essai</h2>
-            <div id="status-current-player" class="status-line" aria-live="polite"></div>
-            
-            <div class="input-row">
-              <input id="input-guess" type="text" autocomplete="off" spellcheck="false" maxlength="10" placeholder="Tapez un mot..." aria-label="Mot proposé" />
-              <button id="btn-submit" class="btn primary small">Valider</button>
-            </div>
-            
-            <div id="error" class="message error hidden" aria-live="polite" role="alert"></div>
-            <div id="info" class="message info hidden" aria-live="polite"></div>
-
-            <div id="share-container" class="share-container hidden">
-              <h3>Partager la room</h3>
-              <p class="share-url" id="share-url"></p>
-              <button id="btn-copy-link" class="btn outline small">Copier le lien</button>
-            </div>
-
-            <div class="participants-panel">
-              <h3>Participants</h3>
-              <ul id="participants-list" class="participants-list"></ul>
-            </div>
-
-            <!-- Idle game simplifié -->
-            <div class="idle-panel">
-              <h3>Idle game</h3>
-              <div class="idle-main">
-                <button id="btn-foot-click" class="idle-foot-btn" aria-label="Cliquer pour gagner des pas">🦶</button>
-                <div class="idle-stats">
-                  <div class="idle-stat-line">
-                    <span>Pas :</span>
-                    <span id="idle-steps">0</span>
-                  </div>
-                  <div class="idle-stat-line">
-                    <span>Par clic :</span>
-                    <span id="idle-per-click">1</span>
-                  </div>
-                  <div class="idle-stat-line">
-                    <span>Auto/s :</span>
-                    <span id="idle-auto-rate">0</span>
-                  </div>
+                <div class="field-group">
+                    <label for="input-pseudo">👤 Pseudo</label>
+                    <input id="input-pseudo" type="text" maxlength="16" placeholder="Entrez votre pseudo" />
                 </div>
-              </div>
-              
-              <div class="idle-upgrades">
-                <button id="btn-upgrade-click" class="btn outline small">+ Clic (coût <span id="cost-click">10</span>)</button>
-                <button id="btn-upgrade-auto" class="btn outline small">+ Auto (coût <span id="cost-auto">25</span>)</button>
-              </div>
 
-              <div class="idle-shop">
-                <h4>Shop</h4>
-                <button id="btn-shop-letter" class="btn outline small">Lettre aléatoire (coût <span id="cost-letter">500</span>)</button>
-              </div>
+                <div class="field-row">
+                    <div class="field-group field-half">
+                        <label for="select-avatar">🎭 Icône</label>
+                        <select id="select-avatar">
+                            <option value="random">🎲 Aléatoire</option>
+                        </select>
+                    </div>
+                    <div class="field-group field-half">
+                        <label for="select-name-color">🎨 Couleur</label>
+                        <select id="select-name-color">
+                            <option value="random">🎲 Aléatoire</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field-group" id="field-length">
+                    <label for="select-length">📏 Nombre de lettres</label>
+                    <select id="select-length">
+                        <option value="0">🎲 Aléatoire (2-10)</option>
+                        <option value="2">2 lettres</option>
+                        <option value="3">3 lettres</option>
+                        <option value="4">4 lettres</option>
+                        <option value="5">5 lettres</option>
+                        <option value="6">6 lettres</option>
+                        <option value="7">7 lettres</option>
+                        <option value="8">8 lettres</option>
+                        <option value="9">9 lettres</option>
+                        <option value="10">10 lettres</option>
+                    </select>
+                </div>
+
+                <div class="mode-buttons" id="mode-buttons-main">
+                    <button id="btn-solo" class="btn primary">🎯 Solo</button>
+                    <button id="btn-coop" class="btn outline">👥 Créer Coop</button>
+                </div>
+
+                <div class="mode-buttons hidden" id="mode-buttons-join">
+                    <button id="btn-join-room" class="btn primary">🚪 Rejoindre</button>
+                </div>
+
+                <button id="btn-back-to-title" class="btn ghost">← Retour</button>
             </div>
-          </section>
-        </main>
-      </div>
+        </div>
+
+        <!-- Écran de jeu simplifié -->
+        <div class="screen screen-game hidden" id="screen-game">
+            <div class="mode-card" style="max-width: 600px;">
+                <h2>🎮 Jeu en cours...</h2>
+                <div style="margin: 20px 0;">
+                    <span id="badge-mode" style="background: #ff6b6b; padding: 5px 10px; border-radius: 15px; margin-right: 10px;">Mode</span>
+                    <span id="badge-room" style="background: #667eea; padding: 5px 10px; border-radius: 15px;">Room</span>
+                </div>
+                
+                <p>Longueur : <span id="word-length">-</span> lettres • Essais : <span id="attempts">0</span>/<span id="max-attempts">6</span></p>
+                
+                <div id="board" style="margin: 20px 0; min-height: 100px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; text-align: center;">
+                    Grille de jeu ici
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <input id="input-guess" type="text" placeholder="Tapez votre mot..." style="margin-right: 10px; width: 70%;" />
+                    <button id="btn-submit" class="btn" style="width: 25%;">✅ Valider</button>
+                </div>
+                
+                <div id="error" class="hidden" style="color: #ff6b6b; margin: 10px 0;"></div>
+                <div id="info" class="hidden" style="color: #4ecdc4; margin: 10px 0;"></div>
+                
+                <div id="status-current-player" style="margin: 15px 0; font-style: italic;"></div>
+                
+                <button id="btn-back-to-mode" class="btn ghost">← Retour aux modes</button>
+                <button id="btn-new-game" class="btn ghost" style="margin-left: 10px;">🔄 Nouvelle partie</button>
+                
+                <!-- Éléments cachés mais nécessaires -->
+                <div style="display: none;">
+                    <div id="share-container" class="hidden">
+                        <p id="share-url"></p>
+                        <button id="btn-copy-link">Copier</button>
+                    </div>
+                    <ul id="participants-list"></ul>
+                    <div id="chat-messages"></div>
+                    <input id="input-chat" />
+                    <button id="btn-send-chat">Envoyer</button>
+                    <button id="btn-foot-click">🦶</button>
+                    <button id="btn-upgrade-click">Upgrade</button>
+                    <button id="btn-upgrade-auto">Auto</button>
+                    <span id="idle-steps">0</span>
+                    <span id="idle-per-click">1</span>
+                    <span id="idle-auto-rate">0</span>
+                    <span id="cost-click">10</span>
+                    <span id="cost-auto">25</span>
+                    <span id="cost-letter">500</span>
+                    <button id="btn-shop-letter">Lettre</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Singe mystérieux -->
-    <div id="monkey-container" class="monkey-container hidden">
-      <div class="monkey-bubble" id="monkey-bubble"></div>
-      <div class="monkey-character">🐵</div>
+    <!-- Éléments cachés mais nécessaires -->
+    <div style="display: none;">
+        <div id="monkey-container" class="hidden">
+            <div id="monkey-bubble"></div>
+        </div>
     </div>
 
-    <script src="main.js"></script>
-  </body>
+    <script src="main-simple.js"></script>
+</body>
 </html>

@@ -438,6 +438,27 @@ function initializeApp() {
           console.log('Title screen computed style visibility:', window.getComputedStyle(elements.screenTitle).visibility);
           console.log('App div:', document.getElementById('app'));
           console.log('Body style:', document.body.style.cssText);
+          
+          // Vérifier si le CSS est chargé
+          const stylesheets = document.styleSheets;
+          console.log('=== STYLESHEETS ===');
+          console.log('Nombre de stylesheets:', stylesheets.length);
+          for (let i = 0; i < stylesheets.length; i++) {
+            console.log(`Stylesheet ${i}:`, stylesheets[i].href);
+          }
+          
+          // Vérifier le background du body
+          console.log('Body background:', window.getComputedStyle(document.body).background);
+          console.log('Body color:', window.getComputedStyle(document.body).color);
+          
+          // Si pas de CSS, forcer un style de base
+          if (stylesheets.length === 0 || !window.getComputedStyle(document.body).background.includes('gradient')) {
+            console.error('⚠️ CSS NOT LOADED! Applying emergency styles...');
+            document.body.style.cssText = 'margin: 0; padding: 0; background: #1a1a2e; color: white; font-family: Arial, sans-serif;';
+            if (elements.screenTitle) {
+              elements.screenTitle.style.cssText = 'display: flex !important; align-items: center; justify-content: center; min-height: 100vh;';
+            }
+          }
         }, 100);
       }
       
