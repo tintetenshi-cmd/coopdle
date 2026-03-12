@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Hauteurs Mobile Optimisées - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .improvements {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .comparison {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .height-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .before {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .after {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .height-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .height-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Test Hauteurs Mobile Optimisées</h1>
+    
+    <div class="improvements">
+        <h2>✅ Améliorations Appliquées (Mobile uniquement)</h2>
+        <ul>
+            <li><strong>Wordle</strong> : Plus haut et cellules plus grandes pour une meilleure jouabilité</li>
+            <li><strong>Chat</strong> : Plus haut et entièrement scrollable pour voir tous les messages</li>
+            <li><strong>Alphabet + Joueurs</strong> : Plus d'espace, liste joueurs scrollable</li>
+            <li><strong>Cementix + Gacha</strong> : Tout affiché en entier, plus d'espace pour chaque section</li>
+            <li><strong>Éléments</strong> : Tailles augmentées pour une meilleure expérience tactile</li>
+        </ul>
+    </div>
+    
+    <div class="comparison">
+        <h2>📐 Comparaison des Hauteurs (Mobile ≤600px)</h2>
+        <div class="height-comparison">
+            <div class="before">
+                <h3>❌ Avant (Trop petit)</h3>
+                <div class="height-item">
+                    <span>Wordle</span>
+                    <span>320-400px</span>
+                </div>
+                <div class="height-item">
+                    <span>Chat</span>
+                    <span>140px</span>
+                </div>
+                <div class="height-item">
+                    <span>Alphabet+Joueurs</span>
+                    <span>180px</span>
+                </div>
+                <div class="height-item">
+                    <span>Cementix+Gacha</span>
+                    <span>200px</span>
+                </div>
+                <div class="height-item">
+                    <span>Cellules Wordle</span>
+                    <span>24x24px</span>
+                </div>
+                <div class="height-item">
+                    <span>Alphabet</span>
+                    <span>22x22px</span>
+                </div>
+            </div>
+            
+            <div class="after">
+                <h3>✅ Après (Confortable)</h3>
+                <div class="height-item">
+                    <span>Wordle</span>
+                    <span>450-500px</span>
+                </div>
+                <div class="height-item">
+                    <span>Chat</span>
+                    <span>200px</span>
+                </div>
+                <div class="height-item">
+                    <span>Alphabet+Joueurs</span>
+                    <span>250px</span>
+                </div>
+                <div class="height-item">
+                    <span>Cementix+Gacha</span>
+                    <span>280px</span>
+                </div>
+                <div class="height-item">
+                    <span>Cellules Wordle</span>
+                    <span>28x28px</span>
+                </div>
+                <div class="height-item">
+                    <span>Alphabet</span>
+                    <span>26x26px</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="improvements">
+        <h2>🎯 Améliorations Spécifiques</h2>
+        <ul>
+            <li><strong>Wordle</strong> : +130px de hauteur, cellules +4px, meilleur espacement</li>
+            <li><strong>Chat</strong> : +60px de hauteur, zone messages +50px, scroll complet</li>
+            <li><strong>Joueurs</strong> : +70px de hauteur, liste entièrement scrollable</li>
+            <li><strong>Cementix</strong> : +80px de hauteur, tentatives +40px, tout visible</li>
+            <li><strong>Gacha</strong> : Boutons et stats plus grands, meilleure lisibilité</li>
+            <li><strong>Éléments tactiles</strong> : Padding augmenté, zones de clic plus grandes</li>
+        </ul>
+    </div>
+    
+    <div class="comparison">
+        <h2>🧪 Points de Test Mobile</h2>
+        <ol>
+            <li><strong>Wordle</strong> : Grille complète visible, cellules faciles à lire</li>
+            <li><strong>Chat</strong> : Scroll fluide, tous les messages accessibles</li>
+            <li><strong>Alphabet</strong> : 26 lettres visibles, taille tactile confortable</li>
+            <li><strong>Liste joueurs</strong> : Scroll indépendant, tous les joueurs visibles</li>
+            <li><strong>Cementix</strong> : Input + bouton + liste tentatives tout visible</li>
+            <li><strong>Gacha</strong> : Stats + boutons + inventaire tout accessible</li>
+            <li><strong>Responsive</strong> : Desktop inchangé, mobile optimisé</li>
+        </ol>
+    </div>
+    
+    <button class="test-button" onclick="window.open('public/index.html', '_blank')">
+        🚀 Tester sur Mobile
+    </button>
+    
+    <button class="test-button" onclick="alert('DevTools: F12 → Mode Mobile → 400px de largeur')">
+        📱 Instructions Test Mobile
+    </button>
+    
+    <button class="test-button" onclick="alert('Console: addGachaMoney(5000) pour tester le gacha')">
+        💰 Commande Test Gacha
+    </button>
+</body>
+</html>
