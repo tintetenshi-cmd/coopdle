@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Sélection Longueur - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        .warning { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+        }
+        .debug-controls {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        .test-btn {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-btn:hover {
+            background: linear-gradient(135deg, #a855f7, #c084fc);
+        }
+        .log-output {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Sélection Longueur de Mot</h1>
+    
+    <div class="test-section">
+        <h2>🎯 Problème Identifié</h2>
+        <div class="test-result error">
+            <strong>Problème :</strong> La sélection du nombre de lettres ne fonctionne pas lors de "Nouvelle partie"<br>
+            <strong>Cause probable :</strong> L'élément DOM n'est pas accessible au moment du clic<br>
+            <strong>Solution :</strong> Récupération dynamique de l'élément au lieu du cache
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Solution Implémentée</h2>
+        <div class="test-result success">
+            <strong>Changements apportés :</strong><br>
+            ✓ Récupération dynamique : <code>document.getElementById("next-word-length")</code><br>
+            ✓ Logs de debug détaillés pour tracer le problème<br>
+            ✓ Vérification de l'élément au moment du clic<br>
+            ✓ Comparaison entre référence cachée et récupération dynamique
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Test Étape par Étape</h2>
+        
+        <div class="test-result info">
+            <strong>Instructions de test :</strong><br>
+            1. Ouvrez la console du navigateur (F12)<br>
+            2. Lancez une partie solo<br>
+            3. Terminez la partie (gagnée ou perdue)<br>
+            4. Dans le résultat, choisissez une longueur spécifique (ex: 7 lettres)<br>
+            5. Cliquez "Nouvelle partie"<br>
+            6. Vérifiez les logs dans la console<br>
+            7. Vérifiez que le nouveau mot a la bonne longueur
+        </div>
+        
+        <div class="debug-controls">
+            <strong>Outils de debug :</strong><br>
+            <button class="test-btn" onclick="checkElement()">Vérifier élément</button>
+            <button class="test-btn" onclick="simulateSelection()">Simuler sélection</button>
+            <button class="test-btn" onclick="clearLogs()">Effacer logs</button>
+        </div>
+        
+        <div class="log-output" id="logOutput">
+            Logs de debug apparaîtront ici...
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎮 Test de l'Application</h2>
+        <iframe src="index.html" id="gameFrame"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Logs Attendus</h2>
+        <div class="test-result warning">
+            <strong>Dans la console, vous devriez voir :</strong><br>
+            <code>🔍 Button clicked - Debug element state:</code><br>
+            <code>- Direct getElementById result: &lt;select id="next-word-length"&gt;</code><br>
+            <code>- Element value: "7" (ou la valeur choisie)</code><br>
+            <code>🎯 Starting new game with chosen length: 7</code><br>
+            <br>
+            <strong>Si ça ne marche pas, vous verrez :</strong><br>
+            <code>- Element value: ELEMENT NOT FOUND</code><br>
+            <code>🎲 Starting new game with random length: X (reason: element not found)</code>
+        </div>
+    </div>
+
+    <script>
+        let logCount = 0;
+        
+        function log(message) {
+            const logOutput = document.getElementById('logOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            logOutput.innerHTML += `[${timestamp}] ${message}\n`;
+            logOutput.scrollTop = logOutput.scrollHeight;
+            console.log(message);
+        }
+        
+        function checkElement() {
+            const frame = document.getElementById('gameFrame');
+            if (frame.contentWindow) {
+                const element = frame.contentWindow.document.getElementById('next-word-length');
+                log(`🔍 Element check: ${element ? 'FOUND' : 'NOT FOUND'}`);
+                if (element) {
+                    log(`- Value: "${element.value}"`);
+                    log(`- Options: ${Array.from(element.options).map(o => `${o.value}:${o.text}`).join(', ')}`);
+                    log(`- Visible: ${!element.closest('.hidden')}`);
+                    log(`- In DOM: ${frame.contentWindow.document.contains(element)}`);
+                }
+            } else {
+                log('❌ Cannot access game frame');
+            }
+        }
+        
+        function simulateSelection() {
+            const frame = document.getElementById('gameFrame');
+            if (frame.contentWindow) {
+                const element = frame.contentWindow.document.getElementById('next-word-length');
+                if (element) {
+                    element.value = "5";
+                    log(`✅ Set element value to "5"`);
+                    log(`- Current value: "${element.value}"`);
+                } else {
+                    log('❌ Element not found for simulation');
+                }
+            } else {
+                log('❌ Cannot access game frame for simulation');
+            }
+        }
+        
+        function clearLogs() {
+            document.getElementById('logOutput').innerHTML = 'Logs effacés...\n';
+        }
+        
+        console.log('🔍 Word length debug page loaded');
+        console.log('📋 Use the debug tools to check element state');
+        console.log('🎯 Main test: Complete a game, select length, click "Nouvelle partie"');
+    </script>
+</body>
+</html>

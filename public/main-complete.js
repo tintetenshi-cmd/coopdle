@@ -682,19 +682,31 @@ document.addEventListener('DOMContentLoaded', function() {
         
         hideGameResult();
         
+        // Get the element dynamically instead of using cached reference
+        const nextWordLengthElement = document.getElementById("next-word-length");
+        
+        // Debug: Check if element exists and its value
+        console.log('🔍 Debug startNewGame:');
+        console.log('- nextWordLength element (cached):', elements.nextWordLength);
+        console.log('- nextWordLength element (dynamic):', nextWordLengthElement);
+        console.log('- nextWordLength value:', nextWordLengthElement ? nextWordLengthElement.value : 'ELEMENT NOT FOUND');
+        
         // Get desired length from selector or generate random
         let desiredLength;
-        if (elements.nextWordLength && elements.nextWordLength.value && elements.nextWordLength.value !== "0") {
-            desiredLength = parseInt(elements.nextWordLength.value);
+        if (nextWordLengthElement && nextWordLengthElement.value && nextWordLengthElement.value !== "0") {
+            desiredLength = parseInt(nextWordLengthElement.value);
             console.log(`🎯 Starting new game with chosen length: ${desiredLength}`);
         } else {
             desiredLength = Math.floor(Math.random() * 9) + 2; // 2 to 10
-            console.log(`🎲 Starting new game with random length: ${desiredLength}`);
+            console.log(`🎲 Starting new game with random length: ${desiredLength} (reason: ${!nextWordLengthElement ? 'element not found' : nextWordLengthElement.value === "0" ? 'value is 0' : 'value is empty'})`);
         }
         
         // Reset selector to random for next time
-        if (elements.nextWordLength) {
-            elements.nextWordLength.value = "0";
+        if (nextWordLengthElement) {
+            nextWordLengthElement.value = "0";
+            console.log('✅ Reset selector to random');
+        } else {
+            console.log('❌ Cannot reset selector - element not found');
         }
         
         ws.send(JSON.stringify({
@@ -980,6 +992,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (elements.btnNewGameIntegrated) {
             elements.btnNewGameIntegrated.addEventListener('click', () => {
+                // Debug: Check element state right before calling startNewGame
+                console.log('🔍 Button clicked - Debug element state:');
+                const lengthElement = document.getElementById("next-word-length");
+                console.log('- Direct getElementById result:', lengthElement);
+                console.log('- Element value:', lengthElement ? lengthElement.value : 'NOT FOUND');
+                console.log('- Element visible:', lengthElement ? !lengthElement.closest('.hidden') : 'NOT FOUND');
+                console.log('- Element in DOM:', lengthElement ? document.contains(lengthElement) : 'NOT FOUND');
+                
                 hideGameResult();
                 startNewGame();
             });
