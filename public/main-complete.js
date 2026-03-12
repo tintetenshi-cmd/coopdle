@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         coins: 0,
         totalCoins: 0,
         clickPower: 1,
-        autoRate: 0,
+        autoRate: 0, // Pas d'auto-farm de base
         upgrades: {
             clickLevel: 0,
             autoLevel: 0
@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
         resultTextIntegrated: document.getElementById("result-text-integrated"),
         btnNewGameHighlight: document.getElementById("btn-new-game-highlight"),
         btnNewGameIntegrated: document.getElementById("btn-new-game-integrated"),
-        nextWordLength: document.getElementById("next-word-length"),
         
         // Chat
         chatPanel: document.getElementById("chat-panel"),
@@ -129,21 +128,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // === MESSAGES DE BIENVENUE ===
     
     const welcomeMessages = [
-        "mais quel banger de fou",
-        "c'est parti mon reuf",
-        "ça va être chaud patate",
-        "on va se régaler",
-        "c'est du lourd",
-        "ça va envoyer du pâté",
-        "préparez-vous les amis",
-        "ça va être épique",
-        "on va tout défoncer",
-        "c'est parti pour le show",
-        "ça va être de la bombe",
-        "on va faire des étincelles",
-        "c'est du niveau supérieur",
-        "ça va être légendaire",
-        "on va tout exploser"
+        "les pixels dansent dans le vide quantique",
+        "protocole 7-alpha activé, les lettres murmurent",
+        "dimension parallèle détectée, synchronisation en cours",
+        "les algorithmes rêvent de moutons électriques",
+        "fréquence 432Hz captée, résonance harmonique établie",
+        "matrice lexicale initialisée, entropie stabilisée",
+        "signal fantôme reçu depuis la zone 51",
+        "les mots s'échappent du dictionnaire cosmique",
+        "anomalie temporelle détectée, boucle infinie évitée",
+        "connexion établie avec l'intelligence artificielle des chaussettes",
+        "les voyelles complotent contre les consonnes",
+        "transmission reçue depuis la planète des crayons perdus",
+        "les bits se transforment en papillons numériques",
+        "écho quantique détecté dans la base de données",
+        "les serveurs chantent des berceuses binaires"
     ];
     
     function getRandomWelcomeMessage() {
@@ -678,41 +677,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function startNewGame() {
-        if (!ws) return;
+        console.log('🔄 Starting new game - reloading page for fresh start');
         
-        hideGameResult();
+        // Clear any saved game state
+        localStorage.removeItem('coopdle-game-state');
         
-        // Get the element dynamically instead of using cached reference
-        const nextWordLengthElement = document.getElementById("next-word-length");
-        
-        // Debug: Check if element exists and its value
-        console.log('🔍 Debug startNewGame:');
-        console.log('- nextWordLength element (cached):', elements.nextWordLength);
-        console.log('- nextWordLength element (dynamic):', nextWordLengthElement);
-        console.log('- nextWordLength value:', nextWordLengthElement ? nextWordLengthElement.value : 'ELEMENT NOT FOUND');
-        
-        // Get desired length from selector or generate random
-        let desiredLength;
-        if (nextWordLengthElement && nextWordLengthElement.value && nextWordLengthElement.value !== "0") {
-            desiredLength = parseInt(nextWordLengthElement.value);
-            console.log(`🎯 Starting new game with chosen length: ${desiredLength}`);
-        } else {
-            desiredLength = Math.floor(Math.random() * 9) + 2; // 2 to 10
-            console.log(`🎲 Starting new game with random length: ${desiredLength} (reason: ${!nextWordLengthElement ? 'element not found' : nextWordLengthElement.value === "0" ? 'value is 0' : 'value is empty'})`);
-        }
-        
-        // Reset selector to random for next time
-        if (nextWordLengthElement) {
-            nextWordLengthElement.value = "0";
-            console.log('✅ Reset selector to random');
-        } else {
-            console.log('❌ Cannot reset selector - element not found');
-        }
-        
-        ws.send(JSON.stringify({
-            type: 'newGame',
-            desiredLength: desiredLength
-        }));
+        // Reload the page to start fresh
+        window.location.reload();
     }
     
     // === IDLE GAME ===
@@ -992,14 +963,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (elements.btnNewGameIntegrated) {
             elements.btnNewGameIntegrated.addEventListener('click', () => {
-                // Debug: Check element state right before calling startNewGame
-                console.log('🔍 Button clicked - Debug element state:');
-                const lengthElement = document.getElementById("next-word-length");
-                console.log('- Direct getElementById result:', lengthElement);
-                console.log('- Element value:', lengthElement ? lengthElement.value : 'NOT FOUND');
-                console.log('- Element visible:', lengthElement ? !lengthElement.closest('.hidden') : 'NOT FOUND');
-                console.log('- Element in DOM:', lengthElement ? document.contains(lengthElement) : 'NOT FOUND');
-                
                 hideGameResult();
                 startNewGame();
             });

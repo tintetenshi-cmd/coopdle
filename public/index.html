@@ -644,44 +644,6 @@
             line-height: 1.2;
         }
         
-        .new-game-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .length-selector {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .length-selector label {
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-        
-        .length-select {
-            background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%),
-                rgba(10, 10, 15, 0.9);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 8px;
-            color: #e2e8f0;
-            padding: 6px 10px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .length-select:focus {
-            outline: none;
-            border-color: rgba(139, 92, 246, 0.6);
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-        }
-        
         .result-btn-integrated {
             font-size: 1rem;
             padding: 12px 24px;
@@ -1702,7 +1664,7 @@
                     <div class="field-group">
                         <label for="select-name-color">🎨 Couleur</label>
                         <select id="select-name-color">
-                            <option value="random">◈ Aléatoire</option>
+                            <option value="random">⚡ Aléatoire</option>
                         </select>
                     </div>
                 </div>
@@ -1710,7 +1672,7 @@
                 <div class="field-group" id="field-length" style="display: none;">
                     <label for="select-length">📏 Longueur du mot</label>
                     <select id="select-length">
-                        <option value="0">⟲ Aléatoire (2-10 lettres)</option>
+                        <option value="0">⚡ Aléatoire (2-10 lettres)</option>
                         <option value="2">2 lettres</option>
                         <option value="3">3 lettres</option>
                         <option value="4">4 lettres</option>
@@ -1785,24 +1747,7 @@
                     <div id="game-result-integrated" class="game-result-integrated hidden">
                         <div class="result-icon" id="result-icon-integrated">🎉</div>
                         <div class="result-text" id="result-text-integrated">Partie gagnée !</div>
-                        <div class="new-game-controls">
-                            <div class="length-selector">
-                                <label for="next-word-length">Prochaine longueur :</label>
-                                <select id="next-word-length" class="length-select">
-                                    <option value="0">⚡ Aléatoire</option>
-                                    <option value="2">2 lettres</option>
-                                    <option value="3">3 lettres</option>
-                                    <option value="4">4 lettres</option>
-                                    <option value="5">5 lettres</option>
-                                    <option value="6">6 lettres</option>
-                                    <option value="7">7 lettres</option>
-                                    <option value="8">8 lettres</option>
-                                    <option value="9">9 lettres</option>
-                                    <option value="10">10 lettres</option>
-                                </select>
-                            </div>
-                            <button id="btn-new-game-integrated" class="btn result-btn-integrated">🔄 Nouvelle partie</button>
-                        </div>
+                        <button id="btn-new-game-integrated" class="btn result-btn-integrated">🔄 Nouvelle partie</button>
                     </div>
                 </div>
 

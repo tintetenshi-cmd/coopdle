@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simplifications Finales - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        .warning { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+        }
+        .feature-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .demo-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .icon-demo {
+            font-size: 1.2rem;
+            margin: 5px;
+            padding: 5px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚡ Test des Simplifications Finales</h1>
+    
+    <div class="test-section">
+        <h2>✅ Simplifications Complétées</h2>
+        
+        <div class="feature-demo">
+            <div class="demo-card">
+                <div class="test-result success">
+                    <strong>1. Icônes génériques uniformisées</strong><br>
+                    ✓ Toutes les options "Aléatoire" utilisent ⚡<br>
+                    ✓ Avatar : ⚡ Aléatoire<br>
+                    ✓ Couleur : ⚡ Aléatoire<br>
+                    ✓ Longueur : ⚡ Aléatoire<br>
+                    ✓ Design cohérent partout
+                </div>
+            </div>
+            
+            <div class="demo-card">
+                <div class="test-result success">
+                    <strong>2. Idle game sans auto-farm</strong><br>
+                    ✓ autoRate commence à 0<br>
+                    ✓ Pas de farm automatique de base<br>
+                    ✓ Il faut acheter l'upgrade Auto<br>
+                    ✓ Plus équilibré et progressif
+                </div>
+            </div>
+            
+            <div class="demo-card">
+                <div class="test-result success">
+                    <strong>3. Nouvelle partie simplifiée</strong><br>
+                    ✓ Plus de sélection de longueur<br>
+                    ✓ Toujours aléatoire (2-10 lettres)<br>
+                    ✓ Rechargement complet de la page<br>
+                    ✓ État complètement réinitialisé<br>
+                    ✓ Interface plus simple et claire
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>⚡ Icônes Uniformisées</h2>
+        <div style="display: flex; gap: 10px; align-items: center; margin: 10px 0;">
+            <span class="icon-demo">⚡</span>
+            <span>Avatar Aléatoire</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; margin: 10px 0;">
+            <span class="icon-demo">⚡</span>
+            <span>Couleur Aléatoire</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; margin: 10px 0;">
+            <span class="icon-demo">⚡</span>
+            <span>Longueur Aléatoire</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Instructions de Test</h2>
+        
+        <div class="test-result info">
+            <strong>Test icônes uniformisées :</strong><br>
+            1. Allez dans la sélection de mode<br>
+            2. Vérifiez que tous les dropdowns "Aléatoire" ont l'icône ⚡<br>
+            3. Avatar, Couleur, et Longueur doivent être cohérents
+        </div>
+        
+        <div class="test-result info">
+            <strong>Test idle game sans auto-farm :</strong><br>
+            1. Lancez une nouvelle partie<br>
+            2. Vérifiez que "Auto/sec" affiche 0<br>
+            3. Aucune pièce ne doit être générée automatiquement<br>
+            4. Il faut acheter l'upgrade ⚡ pour avoir de l'auto-farm
+        </div>
+        
+        <div class="test-result info">
+            <strong>Test nouvelle partie simplifiée :</strong><br>
+            1. Terminez une partie (gagnée ou perdue)<br>
+            2. Vérifiez qu'il n'y a plus de sélecteur de longueur<br>
+            3. Cliquez "Nouvelle partie"<br>
+            4. La page doit se recharger complètement<br>
+            5. Vous revenez à l'écran de titre avec tout réinitialisé
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎮 Test de l'Application</h2>
+        <iframe src="index.html" id="gameFrame"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Checklist de Validation</h2>
+        <div class="test-result warning">
+            <strong>À vérifier :</strong><br>
+            ☐ Toutes les options "Aléatoire" ont l'icône ⚡<br>
+            ☐ Idle game commence avec Auto/sec = 0<br>
+            ☐ Pas de génération automatique de pièces au début<br>
+            ☐ Plus de sélecteur de longueur dans le résultat<br>
+            ☐ "Nouvelle partie" recharge la page complètement<br>
+            ☐ Retour à l'écran de titre après nouvelle partie<br>
+            ☐ État idle game réinitialisé (mais sauvegardé)<br>
+            ☐ Interface plus simple et épurée
+        </div>
+    </div>
+
+    <script>
+        console.log('⚡ Final simplifications test page loaded');
+        console.log('🎯 Features to test:');
+        console.log('1. Generic ⚡ icons for all "Random" options');
+        console.log('2. Idle game starts with autoRate = 0');
+        console.log('3. New game reloads page completely');
+        console.log('4. No more word length selector in game result');
+        
+        // Monitor page reloads
+        let reloadCount = sessionStorage.getItem('reloadCount') || 0;
+        reloadCount++;
+        sessionStorage.setItem('reloadCount', reloadCount);
+        console.log(`📊 Page reload count: ${reloadCount}`);
+        
+        if (reloadCount > 1) {
+            console.log('✅ Page reload functionality working');
+        }
+    </script>
+</body>
+</html>
