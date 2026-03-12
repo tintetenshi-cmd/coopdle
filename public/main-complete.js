@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resultTextIntegrated: document.getElementById("result-text-integrated"),
         btnNewGameHighlight: document.getElementById("btn-new-game-highlight"),
         btnNewGameIntegrated: document.getElementById("btn-new-game-integrated"),
+        nextWordLength: document.getElementById("next-word-length"),
         
         // Chat
         chatPanel: document.getElementById("chat-panel"),
@@ -685,14 +686,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         hideGameResult();
         
-        // Generate random word length between 2 and 10
-        const randomLength = Math.floor(Math.random() * 9) + 2; // 2 to 10
-        
-        console.log(`🎲 Starting new game with random length: ${randomLength}`);
+        // Get desired length from selector or generate random
+        let desiredLength;
+        if (elements.nextWordLength && elements.nextWordLength.value !== "0") {
+            desiredLength = parseInt(elements.nextWordLength.value);
+            console.log(`🎯 Starting new game with chosen length: ${desiredLength}`);
+        } else {
+            desiredLength = Math.floor(Math.random() * 9) + 2; // 2 to 10
+            console.log(`🎲 Starting new game with random length: ${desiredLength}`);
+        }
         
         ws.send(JSON.stringify({
             type: 'newGame',
-            desiredLength: randomLength
+            desiredLength: desiredLength
         }));
     }
     
