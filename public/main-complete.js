@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.costLuck) elements.costLuck.textContent = idleGame.costs.luck;
         if (elements.costHint) elements.costHint.textContent = idleGame.costs.hint;
         
-        // Update button states
+        // Update button states - ensure multiplier and luck buttons work
         if (elements.btnUpgradeClick) {
             elements.btnUpgradeClick.disabled = idleGame.coins < idleGame.costs.click;
         }
@@ -162,9 +162,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (elements.btnUpgradeMultiplier) {
             elements.btnUpgradeMultiplier.disabled = idleGame.coins < idleGame.costs.multiplier;
+            // Debug log for multiplier button
+            if (idleGame.coins >= idleGame.costs.multiplier) {
+                console.log(`💰 Multiplier upgrade available! Coins: ${idleGame.coins}, Cost: ${idleGame.costs.multiplier}`);
+            }
         }
         if (elements.btnUpgradeLuck) {
             elements.btnUpgradeLuck.disabled = idleGame.coins < idleGame.costs.luck;
+            // Debug log for luck button
+            if (idleGame.coins >= idleGame.costs.luck) {
+                console.log(`🍀 Luck upgrade available! Coins: ${idleGame.coins}, Cost: ${idleGame.costs.luck}`);
+            }
         }
         if (elements.btnBuyHint) {
             elements.btnBuyHint.disabled = idleGame.coins < idleGame.costs.hint || gameState.status !== 'playing';

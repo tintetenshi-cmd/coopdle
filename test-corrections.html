@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Corrections - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a2e;
+            color: #e2e8f0;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+        .info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+        }
+        .mobile-test {
+            width: 375px;
+            height: 667px;
+            margin: 10px auto;
+            border: 2px solid #8b5cf6;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .mobile-test iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test des Corrections Coopdle</h1>
+    
+    <div class="test-section">
+        <h2>✅ Corrections Implémentées</h2>
+        <div class="test-result success">
+            <strong>1. Idle Game dans la colonne joueurs</strong><br>
+            ✓ Déplacé dans la même colonne que les joueurs<br>
+            ✓ Séparation distincte avec ligne de séparation améliorée<br>
+            ✓ Position fixe avec background et bordure pour stabilité
+        </div>
+        <div class="test-result success">
+            <strong>2. Prix pour multiplicateur et critique</strong><br>
+            ✓ Multiplicateur: 2000 pièces (x2 multiplier)<br>
+            ✓ Chance critique: 5000 pièces (+10% critique)<br>
+            ✓ Boutons fonctionnels avec désactivation quand pas assez de pièces
+        </div>
+        <div class="test-result success">
+            <strong>3. Responsive mobile amélioré</strong><br>
+            ✓ Layout adaptatif pour écrans < 900px<br>
+            ✓ Optimisations spéciales pour < 600px et < 400px<br>
+            ✓ Tailles réduites pour boutons et éléments sur mobile<br>
+            ✓ Ordre des panneaux réorganisé pour mobile
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🖥️ Test Desktop</h2>
+        <iframe src="index.html"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>📱 Test Mobile (375px)</h2>
+        <div class="mobile-test">
+            <iframe src="index.html"></iframe>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Points de Vérification</h2>
+        <div class="test-result info">
+            <strong>À tester:</strong><br>
+            • Idle game bien positionné dans colonne joueurs avec séparation visible<br>
+            • Boutons multiplicateur (2000) et critique (5000) achetables<br>
+            • Layout responsive qui ne casse pas sur mobile<br>
+            • Éléments bien dimensionnés sur petits écrans<br>
+            • Chat et panneaux accessibles sur mobile
+        </div>
+    </div>
+
+    <script>
+        console.log('🧪 Test page loaded');
+        console.log('📋 Corrections implemented:');
+        console.log('1. ✅ Idle game moved to players column with better separation');
+        console.log('2. ✅ Multiplier cost: 2000, Critical chance cost: 5000');
+        console.log('3. ✅ Enhanced mobile responsive design');
+    </script>
+</body>
+</html>
