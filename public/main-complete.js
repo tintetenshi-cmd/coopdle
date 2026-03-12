@@ -34,13 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         costs: {
             click: 15,    // Coût de base plus raisonnable
             auto: 75,     // Coût de base plus raisonnable
-            hint: 500,    // Coût de base plus raisonnable
-            // Nouveaux effets visuels
-            flames: 200,
-            shake: 300,
-            neon: 400,
-            rain: 500,
-            blur: 600
+            hint: 500     // Coût de base plus raisonnable
         }
     };
     
@@ -128,17 +122,11 @@ document.addEventListener('DOMContentLoaded', function() {
         costAuto: document.getElementById("cost-auto"),
         costHint: document.getElementById("cost-hint"),
         
-        // Effets visuels
-        btnEffectFlames: document.getElementById("btn-effect-flames"),
-        btnEffectShake: document.getElementById("btn-effect-shake"),
-        btnEffectNeon: document.getElementById("btn-effect-neon"),
-        btnEffectRain: document.getElementById("btn-effect-rain"),
-        btnEffectBlur: document.getElementById("btn-effect-blur"),
-        costFlames: document.getElementById("cost-flames"),
-        costShake: document.getElementById("cost-shake"),
-        costNeon: document.getElementById("cost-neon"),
-        costRain: document.getElementById("cost-rain"),
-        costBlur: document.getElementById("cost-blur")
+        // Cementix elements
+        cementixPanel: document.getElementById("cementix-panel"),
+        cementixInput: document.getElementById("cementix-input"),
+        cementixSubmit: document.getElementById("cementix-submit"),
+        cementixAttempts: document.getElementById("cementix-attempts")
     };
     
     console.log('📋 All required elements found, initializing...');
@@ -240,13 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.costAuto) elements.costAuto.textContent = idleGame.costs.auto;
         if (elements.costHint) elements.costHint.textContent = idleGame.costs.hint;
         
-        // Update effect costs
-        if (elements.costFlames) elements.costFlames.textContent = idleGame.costs.flames;
-        if (elements.costShake) elements.costShake.textContent = idleGame.costs.shake;
-        if (elements.costNeon) elements.costNeon.textContent = idleGame.costs.neon;
-        if (elements.costRain) elements.costRain.textContent = idleGame.costs.rain;
-        if (elements.costBlur) elements.costBlur.textContent = idleGame.costs.blur;
-        
         // Update button states
         if (elements.btnUpgradeClick) {
             elements.btnUpgradeClick.disabled = idleGame.coins < idleGame.costs.click;
@@ -256,23 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (elements.btnBuyHint) {
             elements.btnBuyHint.disabled = idleGame.coins < idleGame.costs.hint || gameState.status !== 'playing';
-        }
-        
-        // Update effect button states
-        if (elements.btnEffectFlames) {
-            elements.btnEffectFlames.disabled = idleGame.coins < idleGame.costs.flames;
-        }
-        if (elements.btnEffectShake) {
-            elements.btnEffectShake.disabled = idleGame.coins < idleGame.costs.shake;
-        }
-        if (elements.btnEffectNeon) {
-            elements.btnEffectNeon.disabled = idleGame.coins < idleGame.costs.neon;
-        }
-        if (elements.btnEffectRain) {
-            elements.btnEffectRain.disabled = idleGame.coins < idleGame.costs.rain;
-        }
-        if (elements.btnEffectBlur) {
-            elements.btnEffectBlur.disabled = idleGame.coins < idleGame.costs.blur;
         }
     }
     
@@ -291,33 +255,89 @@ document.addEventListener('DOMContentLoaded', function() {
         location.reload();
     };
     
-    function triggerVisualEffect(effectType) {
-        console.log(`🎨 Triggering visual effect: ${effectType}`);
+    // === CEMENTIX FUNCTIONS ===
+    
+    function getHeatEmoji(score) {
+        if (score <= 20) return '🧊';
+        if (score <= 40) return '❄️';
+        if (score <= 60) return '🙂';
+        if (score <= 80) return '🔥';
+        if (score <= 95) return '🔥🔥';
+        return '🔥🔥🔥';
+    }
+    
+    function getScoreClass(score) {
+        if (score <= 20) return 'score-cold';
+        if (score <= 40) return 'score-cool';
+        if (score <= 60) return 'score-warm';
+        if (score <= 80) return 'score-hot';
+        return 'score-burning';
+    }
+    
+    function addCementixAttempt(pseudo, word, score, timestamp) {
+        if (!elements.cementixAttempts) return;
         
-        const gameContainer = document.querySelector('.game-container');
-        if (!gameContainer) return;
+        const attemptEl = document.createElement('div');
+        attemptEl.className = 'cementix-attempt';
         
-        // Remove any existing effect classes
-        gameContainer.classList.remove('effect-flames', 'effect-shake', 'effect-neon', 'effect-rain', 'effect-blur');
+        const emoji = getHeatEmoji(score);
+        const scoreClass = getScoreClass(score);
         
-        // Add the new effect class
-        gameContainer.classList.add(`effect-${effectType}`);
+        attemptEl.innerHTML = `
+            <div class="cementix-attempt-player">${pseudo}</div>
+            <div class="cementix-attempt-word">${word}</div>
+            <div class="cementix-attempt-score ${scoreClass}">${score}/100</div>
+            <div class="cementix-attempt-emoji">${emoji}</div>
+        `;
         
-        // Remove the effect after animation duration
-        setTimeout(() => {
-            gameContainer.classList.remove(`effect-${effectType}`);
-        }, 3000); // 3 seconds duration
+        // Insert at the beginning (most recent first)
+        elements.cementixAttempts.insertBefore(attemptEl, elements.cementixAttempts.firstChild);
         
-        // Show info message
-        const effectNames = {
-            flames: '🔥 Effet Flammes déclenché !',
-            shake: '📳 Effet Tremblement déclenché !',
-            neon: '✨ Effet Néon déclenché !',
-            rain: '🌧️ Effet Pluie déclenché !',
-            blur: '🌀 Effet Flou déclenché !'
-        };
+        // Remove empty message if it exists
+        const emptyMsg = elements.cementixAttempts.querySelector('.cementix-empty');
+        if (emptyMsg) {
+            emptyMsg.remove();
+        }
         
-        showInfo(effectNames[effectType] || `Effet ${effectType} déclenché !`);
+        // Limit to 50 attempts max
+        const attempts = elements.cementixAttempts.querySelectorAll('.cementix-attempt');
+        if (attempts.length > 50) {
+            attempts[attempts.length - 1].remove();
+        }
+    }
+    
+    function submitCementixWord() {
+        if (!elements.cementixInput || !ws) return;
+        
+        const word = elements.cementixInput.value.trim().toLowerCase();
+        if (!word) return;
+        
+        // Basic validation
+        if (word.length < 2 || word.length > 20) {
+            showError('Le mot doit faire entre 2 et 20 lettres');
+            return;
+        }
+        
+        if (!/^[a-zA-ZàâäéèêëïîôöùûüÿçÀÂÄÉÈÊËÏÎÔÖÙÛÜŸÇ]+$/.test(word)) {
+            showError('Le mot ne doit contenir que des lettres');
+            return;
+        }
+        
+        ws.send(JSON.stringify({
+            type: 'cementix',
+            word: word
+        }));
+        
+        elements.cementixInput.value = '';
+    }
+    
+    function initCementixEmpty() {
+        if (!elements.cementixAttempts) return;
+        
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'cementix-empty';
+        emptyMsg.textContent = 'Aucune tentative pour le moment...';
+        elements.cementixAttempts.appendChild(emptyMsg);
     }
     
     function showGameResult(won, word) {
@@ -619,6 +639,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 addSystemMessage(data.text, data.ts);
                 break;
                 
+            case 'cementix':
+                addCementixAttempt(data.pseudo, data.word, data.score, data.ts);
+                break;
+                
             case 'reveal':
                 hideGameResult(); // Hide any existing result
                 if (gameState.status === 'won') {
@@ -633,10 +657,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 gameState.revealedLetters[data.index] = data.letter;
                 updateBoard();
                 showInfo(`Lettre révélée : ${data.letter.toUpperCase()} à la position ${data.index + 1}`);
-                break;
-                
-            case 'effect':
-                triggerVisualEffect(data.effect);
                 break;
                 
             case 'error':
@@ -668,19 +688,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // === GESTION DU JEU ===
     
     function setupGameLayout(mode) {
-        if (!elements.gameContainer || !elements.chatPanel) return;
+        if (!elements.gameContainer || !elements.chatPanel || !elements.cementixPanel) return;
         
         if (mode === 'solo') {
             // En mode solo, masquer le chat et ajuster le layout
             elements.chatPanel.style.display = 'none';
             elements.gameContainer.classList.add('solo-mode');
             if (elements.btnCopyRoomLink) elements.btnCopyRoomLink.classList.add('hidden');
+            // Afficher Cementix en mode solo aussi
+            elements.cementixPanel.style.display = 'block';
         } else {
-            // En mode coop, afficher le chat
+            // En mode coop, afficher le chat et Cementix
             elements.chatPanel.style.display = 'flex';
             elements.gameContainer.classList.remove('solo-mode');
             if (elements.btnCopyRoomLink) elements.btnCopyRoomLink.classList.remove('hidden');
+            elements.cementixPanel.style.display = 'block';
         }
+        
+        // Initialize empty state for Cementix
+        initCementixEmpty();
     }
     
     function copyRoomLink() {
@@ -894,107 +920,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Hint button not found!');
         }
         
-        // Visual Effects Event Listeners
-        if (elements.btnEffectFlames) {
-            console.log('✅ Flames effect button found');
-            elements.btnEffectFlames.addEventListener('click', () => {
-                console.log(`🔥 Flames effect: coins=${idleGame.coins}, cost=${idleGame.costs.flames}`);
-                if (idleGame.coins >= idleGame.costs.flames && ws) {
-                    idleGame.coins -= idleGame.costs.flames;
-                    idleGame.costs.flames = Math.floor(idleGame.costs.flames * 1.3);
-                    
-                    ws.send(JSON.stringify({
-                        type: 'effect',
-                        effect: 'flames'
-                    }));
-                    
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Flames effect triggered!');
-                }
-            });
-        }
-        
-        if (elements.btnEffectShake) {
-            console.log('✅ Shake effect button found');
-            elements.btnEffectShake.addEventListener('click', () => {
-                console.log(`📳 Shake effect: coins=${idleGame.coins}, cost=${idleGame.costs.shake}`);
-                if (idleGame.coins >= idleGame.costs.shake && ws) {
-                    idleGame.coins -= idleGame.costs.shake;
-                    idleGame.costs.shake = Math.floor(idleGame.costs.shake * 1.3);
-                    
-                    ws.send(JSON.stringify({
-                        type: 'effect',
-                        effect: 'shake'
-                    }));
-                    
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Shake effect triggered!');
-                }
-            });
-        }
-        
-        if (elements.btnEffectNeon) {
-            console.log('✅ Neon effect button found');
-            elements.btnEffectNeon.addEventListener('click', () => {
-                console.log(`✨ Neon effect: coins=${idleGame.coins}, cost=${idleGame.costs.neon}`);
-                if (idleGame.coins >= idleGame.costs.neon && ws) {
-                    idleGame.coins -= idleGame.costs.neon;
-                    idleGame.costs.neon = Math.floor(idleGame.costs.neon * 1.3);
-                    
-                    ws.send(JSON.stringify({
-                        type: 'effect',
-                        effect: 'neon'
-                    }));
-                    
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Neon effect triggered!');
-                }
-            });
-        }
-        
-        if (elements.btnEffectRain) {
-            console.log('✅ Rain effect button found');
-            elements.btnEffectRain.addEventListener('click', () => {
-                console.log(`🌧️ Rain effect: coins=${idleGame.coins}, cost=${idleGame.costs.rain}`);
-                if (idleGame.coins >= idleGame.costs.rain && ws) {
-                    idleGame.coins -= idleGame.costs.rain;
-                    idleGame.costs.rain = Math.floor(idleGame.costs.rain * 1.3);
-                    
-                    ws.send(JSON.stringify({
-                        type: 'effect',
-                        effect: 'rain'
-                    }));
-                    
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Rain effect triggered!');
-                }
-            });
-        }
-        
-        if (elements.btnEffectBlur) {
-            console.log('✅ Blur effect button found');
-            elements.btnEffectBlur.addEventListener('click', () => {
-                console.log(`🌀 Blur effect: coins=${idleGame.coins}, cost=${idleGame.costs.blur}`);
-                if (idleGame.coins >= idleGame.costs.blur && ws) {
-                    idleGame.coins -= idleGame.costs.blur;
-                    idleGame.costs.blur = Math.floor(idleGame.costs.blur * 1.3);
-                    
-                    ws.send(JSON.stringify({
-                        type: 'effect',
-                        effect: 'blur'
-                    }));
-                    
-                    updateIdleUI();
-                    saveIdleGame();
-                    console.log('✅ Blur effect triggered!');
-                }
-            });
-        }
-        
         console.log('🎮 Idle game initialization complete!');
     }
     
@@ -1177,6 +1102,19 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.inputChat.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     sendChatMessage();
+                }
+            });
+        }
+        
+        // Cementix
+        if (elements.cementixSubmit) {
+            elements.cementixSubmit.addEventListener('click', submitCementixWord);
+        }
+        
+        if (elements.cementixInput) {
+            elements.cementixInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    submitCementixWord();
                 }
             });
         }

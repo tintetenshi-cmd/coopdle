@@ -15,6 +15,73 @@ app.use(express.static(publicDir));
 
 // ----- Word / room logic -----
 
+function calculateSemanticProximity(word, targetWord) {
+  // Fonction simplifiée de calcul de proximité sémantique
+  // Dans un vrai projet, on utiliserait une API comme Word2Vec, FastText, ou une API de NLP
+  
+  const w1 = word.toLowerCase();
+  const w2 = targetWord.toLowerCase();
+  
+  // Si c'est le même mot, score maximum
+  if (w1 === w2) return 100;
+  
+  // Calcul basé sur la similarité des lettres et longueur
+  let score = 0;
+  
+  // Bonus pour les lettres communes
+  const letters1 = w1.split('');
+  const letters2 = w2.split('');
+  const commonLetters = letters1.filter(letter => letters2.includes(letter));
+  score += (commonLetters.length / Math.max(letters1.length, letters2.length)) * 30;
+  
+  // Bonus pour la longueur similaire
+  const lengthDiff = Math.abs(w1.length - w2.length);
+  score += Math.max(0, 20 - lengthDiff * 3);
+  
+  // Bonus pour les préfixes/suffixes communs
+  let prefixMatch = 0;
+  for (let i = 0; i < Math.min(w1.length, w2.length); i++) {
+    if (w1[i] === w2[i]) prefixMatch++;
+    else break;
+  }
+  score += prefixMatch * 5;
+  
+  let suffixMatch = 0;
+  for (let i = 1; i <= Math.min(w1.length, w2.length); i++) {
+    if (w1[w1.length - i] === w2[w2.length - i]) suffixMatch++;
+    else break;
+  }
+  score += suffixMatch * 5;
+  
+  // Mots sémantiquement proches (exemples hardcodés pour la démo)
+  const semanticGroups = {
+    'chat': ['animal', 'félin', 'miaou', 'ronron', 'souris'],
+    'chien': ['animal', 'aboie', 'fidèle', 'os', 'queue'],
+    'maison': ['toit', 'porte', 'fenêtre', 'habiter', 'foyer'],
+    'eau': ['liquide', 'boire', 'mer', 'rivière', 'pluie'],
+    'feu': ['flamme', 'chaud', 'brûler', 'rouge', 'chaleur'],
+    'livre': ['lire', 'page', 'histoire', 'auteur', 'papier'],
+    'voiture': ['rouler', 'route', 'essence', 'volant', 'roue']
+  };
+  
+  // Vérifier les groupes sémantiques
+  for (const [key, related] of Object.entries(semanticGroups)) {
+    if (w2 === key && related.includes(w1)) {
+      score += 40;
+      break;
+    }
+    if (w1 === key && related.includes(w2)) {
+      score += 40;
+      break;
+    }
+  }
+  
+  // Ajouter un peu de randomness pour rendre le jeu plus intéressant
+  score += Math.random() * 10;
+  
+  return Math.min(100, Math.max(1, Math.round(score)));
+}
+
 const MIN_LEN = 2;
 const MAX_LEN = 10;
 const MAX_ATTEMPTS = 6;
@@ -584,18 +651,44 @@ wss.on("connection", (ws) => {
       return;
     }
 
-    if (msg.type === "effect") {
+    if (msg.type === "cementix") {
       if (!currentRoomId) return;
       const room = rooms.get(currentRoomId);
       if (!room) return;
-      const effect = typeof msg.effect === "string" ? msg.effect : "";
-      if (!effect) return;
+      
+      const sender = room.players.find((p) => p.id === clientId);
+      if (!sender) return;
+      
+      const word = typeof msg.word === "string" ? msg.word.trim().toLowerCase() : "";
+      if (!word || word.length < 2 || word.length > 20) {
+        ws.send(JSON.stringify({
+          type: "error",
+          message: "Le mot doit faire entre 2 et 20 lettres."
+        }));
+        return;
+      }
+      
+      // Vérifier que le mot ne contient que des lettres
+      if (!/^[a-zA-ZàâäéèêëïîôöùûüÿçÀÂÄÉÈÊËÏÎÔÖÙÛÜŸÇ]+$/.test(word)) {
+        ws.send(JSON.stringify({
+          type: "error",
+          message: "Le mot ne doit contenir que des lettres."
+        }));
+        return;
+      }
+      
+      // Calculer la proximité sémantique avec le mot cible
+      const score = calculateSemanticProximity(word, room.word);
       
       const payload = JSON.stringify({
-        type: "effect",
-        effect
+        type: "cementix",
+        pseudo: sender.pseudo,
+        word: word,
+        score: score,
+        ts: Date.now()
       });
       
+      // Envoyer à tous les joueurs de la room
       room.players.forEach((p) => {
         if (p.ws.readyState === WebSocket.OPEN) {
           p.ws.send(payload);

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cementix - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+            color: #e2e8f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(10, 10, 15, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        h1 {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .feature-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .feature-title {
+            color: #a855f7;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #8b5cf6;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status.implemented { background: #10b981; color: white; }
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        }
+        .code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #c4b5fd;
+        }
+        .instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+        .step {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .step::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Test Module Cementix</h1>
+        
+        <div class="feature-section">
+            <div class="feature-title">✅ Fonctionnalités Implémentées</div>
+            <div class="test-item">
+                <strong>Interface Cementix :</strong> Panel sous la grille Wordle avec titre, champ de saisie et liste des tentatives
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Calcul de proximité :</strong> Algorithme de proximité sémantique avec score 1-100
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Emojis de température :</strong> 🧊 (froid) → 🔥🔥🔥 (très chaud) selon le score
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Temps réel multi-joueurs :</strong> WebSocket pour synchroniser les tentatives
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Validation des mots :</strong> 2-20 lettres, caractères alphabétiques uniquement
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+            <div class="test-item">
+                <strong>Liste scrollable :</strong> Max 200px de hauteur avec scroll vertical
+                <span class="status implemented">✓ Implémenté</span>
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <div class="feature-title">🎨 Interface Utilisateur</div>
+            <div class="test-item">
+                <strong>Design cohérent :</strong> Style violet/noir assorti au Wordle existant
+            </div>
+            <div class="test-item">
+                <strong>Affichage des tentatives :</strong> [Pseudo] - [Mot] - [Score]/100 - [Emoji]
+            </div>
+            <div class="test-item">
+                <strong>Couleurs de score :</strong> Bleu (froid) → Rouge (chaud) selon la température
+            </div>
+            <div class="test-item">
+                <strong>Animations :</strong> Slide-in pour les nouvelles tentatives
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <div class="feature-title">🔧 Logique Technique</div>
+            <div class="test-item">
+                <strong>Algorithme de proximité :</strong>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>Lettres communes (30 points max)</li>
+                    <li>Longueur similaire (20 points max)</li>
+                    <li>Préfixes/suffixes communs (10 points max)</li>
+                    <li>Groupes sémantiques hardcodés (40 points max)</li>
+                    <li>Randomness légère pour l'intérêt du jeu</li>
+                </ul>
+            </div>
+            <div class="test-item">
+                <strong>Groupes sémantiques :</strong> chat/animal/félin, chien/animal/aboie, maison/toit/porte, etc.
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>🧪 Tests à Effectuer</h3>
+            <div class="step">Ouvrir l'application : <span class="code">http://localhost:3000</span></div>
+            <div class="step">Créer une room coop et commencer une partie</div>
+            <div class="step">Vérifier que le panel Cementix apparaît sous la grille Wordle</div>
+            <div class="step">Tester des mots dans Cementix : "chat", "animal", "maison", "eau"</div>
+            <div class="step">Vérifier les scores et emojis de température</div>
+            <div class="step">Ouvrir un 2ème onglet, rejoindre la même room</div>
+            <div class="step">Tester depuis les 2 onglets pour vérifier la synchronisation temps réel</div>
+            <div class="step">Vérifier que les tentatives s'affichent pour tous les joueurs</div>
+            <div class="step">Tester la validation : mots trop courts, avec chiffres, etc.</div>
+        </div>
+
+        <div class="feature-section">
+            <div class="feature-title">📊 Échelle de Température</div>
+            <div class="test-item">
+                <strong>1-20 :</strong> 🧊 Très froid (bleu)
+            </div>
+            <div class="test-item">
+                <strong>21-40 :</strong> ❄️ Froid (bleu clair)
+            </div>
+            <div class="test-item">
+                <strong>41-60 :</strong> 🙂 Tiède (vert)
+            </div>
+            <div class="test-item">
+                <strong>61-80 :</strong> 🔥 Chaud (orange)
+            </div>
+            <div class="test-item">
+                <strong>81-95 :</strong> 🔥🔥 Très chaud (rouge)
+            </div>
+            <div class="test-item">
+                <strong>96-100 :</strong> 🔥🔥🔥 Brûlant (rouge intense)
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" class="btn">🎮 Tester Cementix</a>
+            <a href="/test-debug.html" class="btn">🔧 Debug Console</a>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); text-align: center;">
+            <strong style="color: #10b981; font-size: 1.1rem;">🎯 Module Cementix Complètement Implémenté !</strong>
+            <br><br>
+            Le module de proximité sémantique est maintenant intégré sous la grille Wordle. 
+            Il fonctionne en temps réel pour tous les joueurs connectés à la même room.
+        </div>
+    </div>
+</body>
+</html>

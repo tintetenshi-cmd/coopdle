@@ -1076,82 +1076,7 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
             border-color: rgba(139, 92, 246, 0.2) !important;
         }
-        
-        /* === EFFETS VISUELS === */
-        .effects-section {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(139, 92, 246, 0.3);
-        }
-        
-        .effects-title {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #cbd5e1;
-            text-align: center;
-            margin-bottom: 6px;
-        }
-        
-        .effects-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3px;
-        }
-        
-        .effect-btn {
-            background: 
-                linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 100%);
-            border: 1px solid rgba(168, 85, 247, 0.6);
-            color: #ddd6fe;
-            padding: 6px 3px;
-            border-radius: 8px;
-            font-size: 0.55rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 3px 8px rgba(168, 85, 247, 0.3),
-                inset 0 1px 2px rgba(255, 255, 255, 0.15);
-            font-weight: 600;
-            text-align: center;
-            min-height: 32px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 2px;
-        }
-        
-        .effect-icon {
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-        
-        .effect-cost {
-            font-size: 0.5rem;
-            opacity: 0.95;
-            line-height: 1;
-            font-weight: 500;
-        }
-        
-        .effect-btn:hover {
-            transform: translateY(-2px);
-            background: 
-                linear-gradient(135deg, rgba(168, 85, 247, 0.6) 0%, rgba(139, 92, 246, 0.5) 100%);
-            box-shadow: 
-                0 6px 15px rgba(168, 85, 247, 0.4),
-                inset 0 1px 2px rgba(255, 255, 255, 0.25);
-            border-color: rgba(168, 85, 247, 0.8);
-        }
-        
-        .effect-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: 
-                0 1px 3px rgba(168, 85, 247, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-            border-color: rgba(168, 85, 247, 0.2) !important;
-        }
+
         
         /* === IDLE GAME === */
         .idle-game {
@@ -1451,6 +1376,194 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
         }
         
+        /* === CEMENTIX MODULE === */
+        .cementix-panel {
+            margin-top: 20px;
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(168, 85, 247, 0.04) 100%),
+                rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        .cementix-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .cementix-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+        
+        .cementix-subtitle {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            opacity: 0.9;
+        }
+        
+        .cementix-input-section {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .cementix-input-section input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(168, 85, 247, 0.02) 100%),
+                rgba(10, 10, 15, 0.8);
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cementix-input-section input:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 
+                0 0 0 3px rgba(139, 92, 246, 0.1),
+                inset 0 1px 2px rgba(0, 0, 0, 0.3);
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%),
+                rgba(10, 10, 15, 0.9);
+        }
+        
+        .cementix-btn {
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        .cementix-attempts-container {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+        
+        .cementix-attempts-header {
+            padding: 10px 12px;
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        
+        .cementix-attempts {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        
+        .cementix-attempts::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .cementix-attempts::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 2px;
+        }
+        
+        .cementix-attempts::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border-radius: 2px;
+        }
+        
+        .cementix-attempts::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #a855f7, #c084fc);
+        }
+        
+        .cementix-attempt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            margin-bottom: 4px;
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .cementix-attempt:hover {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+        
+        .cementix-attempt-player {
+            font-weight: 600;
+            font-size: 0.75rem;
+            min-width: 60px;
+            color: #a855f7;
+        }
+        
+        .cementix-attempt-word {
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            min-width: 80px;
+        }
+        
+        .cementix-attempt-score {
+            font-weight: 600;
+            font-size: 0.75rem;
+            min-width: 40px;
+            text-align: right;
+        }
+        
+        .cementix-attempt-emoji {
+            font-size: 1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        /* Score colors based on heat */
+        .score-cold { color: #60a5fa; }
+        .score-cool { color: #34d399; }
+        .score-warm { color: #fbbf24; }
+        .score-hot { color: #f87171; }
+        .score-burning { color: #ef4444; font-weight: 700; }
+        
+        @keyframes slideIn {
+            0% { 
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            100% { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .cementix-empty {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+            padding: 20px;
+            font-style: italic;
+        }
+        
         /* === RESPONSIVE === */
         @media (max-width: 1200px) {
             .game-container {
@@ -1723,169 +1836,7 @@
             10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
             20%, 40%, 60%, 80% { transform: translateX(2px); }
         }
-        
-        /* === VISUAL EFFECTS ANIMATIONS === */
-        
-        /* Flames Effect */
-        .effect-flames {
-            animation: flamesGlow 3s ease-in-out;
-        }
-        
-        .effect-flames::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(255, 69, 0, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.2) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 1000;
-            animation: flamesFlicker 3s ease-in-out;
-        }
-        
-        @keyframes flamesGlow {
-            0%, 100% { 
-                box-shadow: 0 0 20px rgba(255, 69, 0, 0.3);
-                filter: brightness(1);
-            }
-            50% { 
-                box-shadow: 0 0 40px rgba(255, 69, 0, 0.6);
-                filter: brightness(1.2);
-            }
-        }
-        
-        @keyframes flamesFlicker {
-            0%, 100% { opacity: 0; }
-            10%, 90% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-        
-        /* Shake Effect */
-        .effect-shake {
-            animation: intensiveShake 3s ease-in-out;
-        }
-        
-        @keyframes intensiveShake {
-            0%, 100% { transform: translateX(0); }
-            2% { transform: translateX(-5px) translateY(-2px); }
-            4% { transform: translateX(5px) translateY(2px); }
-            6% { transform: translateX(-3px) translateY(-1px); }
-            8% { transform: translateX(3px) translateY(1px); }
-            10% { transform: translateX(-2px) translateY(-1px); }
-            12% { transform: translateX(2px) translateY(1px); }
-            14% { transform: translateX(-1px); }
-            16% { transform: translateX(1px); }
-            18% { transform: translateX(0); }
-        }
-        
-        /* Neon Effect */
-        .effect-neon {
-            animation: neonPulse 3s ease-in-out;
-        }
-        
-        .effect-neon::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
-            border-radius: 20px;
-            z-index: -1;
-            animation: neonRotate 3s linear;
-            filter: blur(1px);
-        }
-        
-        @keyframes neonPulse {
-            0%, 100% { 
-                box-shadow: 
-                    0 0 10px rgba(0, 255, 255, 0.5),
-                    0 0 20px rgba(255, 0, 255, 0.3),
-                    0 0 30px rgba(255, 255, 0, 0.2);
-            }
-            50% { 
-                box-shadow: 
-                    0 0 20px rgba(0, 255, 255, 0.8),
-                    0 0 40px rgba(255, 0, 255, 0.6),
-                    0 0 60px rgba(255, 255, 0, 0.4);
-            }
-        }
-        
-        @keyframes neonRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Rain Effect */
-        .effect-rain::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(transparent 0%, rgba(139, 92, 246, 0.1) 50%, transparent 100%),
-                linear-gradient(90deg, transparent 0%, rgba(168, 85, 247, 0.1) 50%, transparent 100%);
-            background-size: 20px 100%, 100% 20px;
-            animation: rainFall 3s linear;
-            pointer-events: none;
-            z-index: 1000;
-        }
-        
-        @keyframes rainFall {
-            0% { 
-                background-position: 0 -100%, -100% 0;
-                opacity: 0;
-            }
-            10%, 90% { 
-                opacity: 1;
-            }
-            100% { 
-                background-position: 0 100%, 100% 0;
-                opacity: 0;
-            }
-        }
-        
-        /* Blur Effect */
-        .effect-blur {
-            animation: cosmicBlur 3s ease-in-out;
-        }
-        
-        .effect-blur .board-panel,
-        .effect-blur .chat-panel,
-        .effect-blur .players-panel {
-            animation: blurPulse 3s ease-in-out;
-        }
-        
-        @keyframes cosmicBlur {
-            0%, 100% { 
-                filter: blur(0px) hue-rotate(0deg);
-            }
-            25% { 
-                filter: blur(2px) hue-rotate(90deg);
-            }
-            50% { 
-                filter: blur(4px) hue-rotate(180deg);
-            }
-            75% { 
-                filter: blur(2px) hue-rotate(270deg);
-            }
-        }
-        
-        @keyframes blurPulse {
-            0%, 100% { 
-                backdrop-filter: blur(15px);
-            }
-            50% { 
-                backdrop-filter: blur(25px) saturate(1.5);
-            }
-        }
+
     </style>
 </head>
 <body>
@@ -2005,6 +1956,22 @@
                         <div class="result-text" id="result-text-integrated">Partie gagnée !</div>
                         <button id="btn-new-game-integrated" class="btn result-btn-integrated">🔄 Nouvelle partie</button>
                     </div>
+                    
+                    <!-- Module Cementix -->
+                    <div id="cementix-panel" class="cementix-panel">
+                        <div class="cementix-header">
+                            <h3 class="cementix-title">🎯 Cementix – Cherchez le mot !</h3>
+                            <div class="cementix-subtitle">Trouvez des mots proches du mot mystère</div>
+                        </div>
+                        <div class="cementix-input-section">
+                            <input id="cementix-input" type="text" placeholder="Entrez un mot..." maxlength="20" />
+                            <button id="cementix-submit" class="btn cementix-btn">Valider</button>
+                        </div>
+                        <div class="cementix-attempts-container">
+                            <div class="cementix-attempts-header">Tentatives récentes</div>
+                            <div id="cementix-attempts" class="cementix-attempts"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Message de victoire/défaite -->
@@ -2069,33 +2036,7 @@
                                 <div class="upgrade-cost">💰 <span id="cost-hint">500</span></div>
                             </button>
                         </div>
-                        
-                        <!-- Effets visuels -->
-                        <div class="effects-section">
-                            <div class="effects-title">🎨 Effets Visuels</div>
-                            <div class="effects-grid">
-                                <button class="effect-btn" id="btn-effect-flames">
-                                    <div class="effect-icon">🔥</div>
-                                    <div class="effect-cost">💰 <span id="cost-flames">200</span></div>
-                                </button>
-                                <button class="effect-btn" id="btn-effect-shake">
-                                    <div class="effect-icon">📳</div>
-                                    <div class="effect-cost">💰 <span id="cost-shake">300</span></div>
-                                </button>
-                                <button class="effect-btn" id="btn-effect-neon">
-                                    <div class="effect-icon">✨</div>
-                                    <div class="effect-cost">💰 <span id="cost-neon">400</span></div>
-                                </button>
-                                <button class="effect-btn" id="btn-effect-rain">
-                                    <div class="effect-icon">🌧️</div>
-                                    <div class="effect-cost">💰 <span id="cost-rain">500</span></div>
-                                </button>
-                                <button class="effect-btn" id="btn-effect-blur">
-                                    <div class="effect-icon">🌀</div>
-                                    <div class="effect-cost">💰 <span id="cost-blur">600</span></div>
-                                </button>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
