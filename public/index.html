@@ -1233,7 +1233,7 @@
             border-radius: 20px;
             padding: 20px;
             max-width: 80vw;
-            max-height: 50vh; /* Hauteur limitée pour ne pas déborder */
+            max-height: 65vh; /* Augmenté de 50vh à 65vh */
             width: 700px; /* Largeur adaptée */
             box-shadow: 
                 0 10px 25px rgba(0, 0, 0, 0.3),
@@ -2487,11 +2487,16 @@
                 padding: 4px;
                 gap: 6px;
                 max-width: 100vw;
+                height: 100vh;
+                overflow-y: auto;
+                grid-template-rows: auto auto auto auto auto;
             }
             
             .game-header {
                 padding: 6px 8px;
                 font-size: 0.8rem;
+                grid-row: 1;
+                height: auto;
             }
             
             .badge {
@@ -2504,31 +2509,35 @@
                 font-size: 0.7rem;
             }
             
-            /* Wordle optimisé mobile */
+            /* Wordle optimisé mobile - 2ème position */
             .board-panel {
+                grid-row: 2;
                 padding: 8px;
-                min-height: 350px;
+                height: auto;
+                min-height: 320px;
+                max-height: 400px;
+                overflow-y: auto;
             }
             
             .word-info {
                 font-size: 0.8rem;
-                margin-bottom: 12px;
+                margin-bottom: 8px;
             }
             
             .cell {
-                width: 26px;
-                height: 26px;
-                font-size: 0.85rem;
+                width: 24px;
+                height: 24px;
+                font-size: 0.8rem;
                 border-radius: 4px;
             }
             
             .board {
-                gap: 3px;
-                margin-bottom: 12px;
+                gap: 2px;
+                margin-bottom: 10px;
             }
             
             .board-row {
-                gap: 3px;
+                gap: 2px;
             }
             
             .guess-input {
@@ -2537,165 +2546,222 @@
             }
             
             .guess-input input {
-                padding: 8px;
-                font-size: 0.9rem;
+                padding: 6px;
+                font-size: 0.85rem;
             }
             
             .guess-input .btn {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            /* Chat mobile */
-            .chat-panel {
-                height: 150px;
-                min-height: 150px;
-                padding: 8px;
-            }
-            
-            .panel-title {
-                font-size: 0.85rem;
-                margin-bottom: 8px;
-            }
-            
-            .chat-messages {
-                min-height: 80px;
-                max-height: 80px;
-                margin-bottom: 8px;
-            }
-            
-            .chat-message {
-                padding: 6px;
-                margin-bottom: 4px;
-                font-size: 0.75rem;
-            }
-            
-            .chat-input input {
-                padding: 6px;
-                font-size: 0.8rem;
-            }
-            
-            .chat-input .btn {
                 padding: 6px 10px;
                 font-size: 0.75rem;
             }
             
-            /* Alphabet + Joueurs mobile */
+            /* Chat mobile - 3ème position */
+            .chat-panel {
+                grid-row: 3;
+                height: 140px;
+                min-height: 140px;
+                max-height: 140px;
+                padding: 6px;
+                overflow: hidden;
+            }
+            
+            .panel-title {
+                font-size: 0.8rem;
+                margin-bottom: 6px;
+            }
+            
+            .chat-messages {
+                height: 80px;
+                min-height: 80px;
+                max-height: 80px;
+                margin-bottom: 6px;
+                overflow-y: auto;
+            }
+            
+            .chat-message {
+                padding: 4px;
+                margin-bottom: 2px;
+                font-size: 0.7rem;
+            }
+            
+            .chat-input {
+                height: auto;
+            }
+            
+            .chat-input input {
+                padding: 4px;
+                font-size: 0.75rem;
+            }
+            
+            .chat-input .btn {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+            }
+            
+            /* Alphabet + Joueurs mobile - 4ème position */
             .alphabet-players-panel {
-                min-height: 160px;
-                max-height: 200px;
-                padding: 8px;
+                grid-row: 4;
+                height: 180px;
+                min-height: 180px;
+                max-height: 180px;
+                padding: 6px;
+                overflow: hidden;
+            }
+            
+            .alphabet-section {
+                height: 50%;
+                max-height: 50%;
+                overflow: hidden;
             }
             
             .alphabet-grid {
                 grid-template-columns: repeat(6, 1fr);
-                gap: 4px;
+                gap: 3px;
+                height: auto;
             }
             
             .alphabet-letter {
-                width: 24px;
-                height: 24px;
-                font-size: 0.7rem;
+                width: 22px;
+                height: 22px;
+                font-size: 0.65rem;
+            }
+            
+            .players-section-bottom {
+                height: 50%;
+                max-height: 50%;
+                overflow: hidden;
+            }
+            
+            .players-list-vertical {
+                height: calc(100% - 25px);
+                max-height: calc(100% - 25px);
+                overflow-y: auto;
             }
             
             .player-item-vertical {
-                padding: 4px 6px;
-                margin-bottom: 3px;
+                padding: 3px 4px;
+                margin-bottom: 2px;
+                font-size: 0.7rem;
             }
             
             .player-avatar-vertical {
-                font-size: 1rem;
-                width: 18px;
-                height: 18px;
+                font-size: 0.9rem;
+                width: 16px;
+                height: 16px;
             }
             
             .player-name-vertical {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
             
-            /* Cementix + Gacha mobile */
+            /* Cementix + Gacha mobile - 5ème position */
             .cementix-idle-panel {
-                min-height: 180px;
-                max-height: 220px;
-                padding: 8px;
+                grid-row: 5;
+                height: 200px;
+                min-height: 200px;
+                max-height: 200px;
+                padding: 6px;
+                overflow: hidden;
             }
             
             .cementix-section {
+                height: 60%;
                 max-height: 60%;
+                overflow: hidden;
             }
             
             .cementix-panel-compact {
-                padding: 8px;
+                padding: 6px;
+                height: 100%;
+                overflow: hidden;
             }
             
             .cementix-title-compact {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
+                margin-bottom: 4px;
             }
             
             .cementix-subtitle-compact {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
+                margin-bottom: 6px;
+            }
+            
+            .cementix-input-section-compact {
+                margin-bottom: 6px;
             }
             
             .cementix-input-section-compact input {
-                padding: 6px 8px;
-                font-size: 0.75rem;
+                padding: 4px 6px;
+                font-size: 0.7rem;
             }
             
             .cementix-btn-compact {
-                padding: 6px 8px;
-                font-size: 0.65rem;
+                padding: 4px 6px;
+                font-size: 0.6rem;
             }
             
             .cementix-attempts-container-compact {
-                height: 120px;
+                height: 80px;
+                flex: 1;
+            }
+            
+            .cementix-attempts-header-compact {
+                padding: 4px 6px;
+                font-size: 0.6rem;
+            }
+            
+            .cementix-attempts-compact {
+                padding: 4px;
             }
             
             .cementix-attempt-compact {
-                padding: 4px 6px;
-                margin-bottom: 2px;
+                padding: 3px 4px;
+                margin-bottom: 1px;
+                font-size: 0.55rem;
             }
             
-            .cementix-attempt-player-compact,
-            .cementix-attempt-word-compact,
-            .cementix-attempt-score-compact {
-                font-size: 0.6rem;
-            }
-            
-            /* Gacha mobile */
+            /* Gacha mobile - 40% du bas */
             .gacha-section {
+                height: 40%;
                 max-height: 40%;
+                overflow: hidden;
             }
             
             .gacha-panel-compact {
-                padding: 8px;
+                padding: 6px;
+                height: 100%;
+                overflow: hidden;
             }
             
             .gacha-stats {
-                gap: 4px;
+                gap: 3px;
+                margin-bottom: 6px;
             }
             
             .gacha-money, .gacha-items {
-                padding: 4px 6px;
-                font-size: 0.65rem;
+                padding: 3px 4px;
+                font-size: 0.6rem;
             }
             
             .gacha-buttons {
-                gap: 4px;
+                gap: 3px;
+                margin-bottom: 4px;
             }
             
             .gacha-btn, .hint-btn {
-                padding: 6px 4px;
-                font-size: 0.6rem;
+                padding: 4px 3px;
+                font-size: 0.55rem;
+                line-height: 1.1;
             }
             
             .gacha-inventory-btn {
-                padding: 4px;
-                font-size: 0.6rem;
+                padding: 3px;
+                font-size: 0.55rem;
             }
             
             /* Modales mobile */
             .gacha-modal {
-                padding-top: 15vh;
+                padding-top: 10vh;
                 padding-left: 4px;
                 padding-right: 4px;
             }
@@ -2703,7 +2769,7 @@
             .gacha-modal-content {
                 width: calc(100vw - 16px);
                 max-width: none;
-                max-height: 70vh;
+                max-height: 80vh;
                 padding: 12px;
             }
             

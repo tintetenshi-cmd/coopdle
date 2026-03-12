@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Corrections Mobile - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .fix-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test-section {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .layout-demo {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .mobile-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .layout-item {
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .layout-header { background: rgba(139, 92, 246, 0.3); height: 30px; }
+        .layout-wordle { background: rgba(16, 185, 129, 0.3); height: 80px; }
+        .layout-chat { background: rgba(59, 130, 246, 0.3); height: 40px; }
+        .layout-alphabet { background: rgba(245, 158, 11, 0.3); height: 50px; }
+        .layout-gacha { background: rgba(239, 68, 68, 0.3); height: 60px; }
+    </style>
+</head>
+<body>
+    <h1>📱 Test Corrections Mobile</h1>
+    
+    <div class="fix-section">
+        <h2>✅ Corrections Appliquées</h2>
+        <ul>
+            <li><strong>Modale Gacha</strong> : Hauteur augmentée de 50vh à 65vh</li>
+            <li><strong>Layout Mobile</strong> : Hauteurs fixes pour tous les containers</li>
+            <li><strong>Grid Rows</strong> : 5 rangées bien définies avec grid-row</li>
+            <li><strong>Overflow Control</strong> : Chaque section a son propre scroll</li>
+            <li><strong>Conteneurs Stricts</strong> : Tout reste dans ses limites</li>
+        </ul>
+    </div>
+    
+    <div class="layout-demo">
+        <h2>📐 Nouveau Layout Mobile (≤600px)</h2>
+        <div class="mobile-layout">
+            <div class="layout-item layout-header">1. Header (auto)</div>
+            <div class="layout-item layout-wordle">2. Wordle (320-400px)</div>
+            <div class="layout-item layout-chat">3. Chat (140px fixe)</div>
+            <div class="layout-item layout-alphabet">4. Alphabet+Joueurs (180px fixe)</div>
+            <div class="layout-item layout-gacha">5. Cementix+Gacha (200px fixe)</div>
+        </div>
+        <p><em>Chaque section a une hauteur fixe avec scroll interne</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔧 Améliorations Techniques</h2>
+        <ul>
+            <li><strong>Grid Template Rows</strong> : auto auto auto auto auto</li>
+            <li><strong>Hauteurs Fixes</strong> : Chaque panneau a min/max-height identiques</li>
+            <li><strong>Overflow Hidden</strong> : Empêche le débordement des containers</li>
+            <li><strong>Scroll Interne</strong> : Chaque section scrolle indépendamment</li>
+            <li><strong>Cellules Wordle</strong> : 24x24px avec gap 2px</li>
+            <li><strong>Alphabet Compact</strong> : 22x22px, 6 colonnes</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>🧪 Points de Test</h2>
+        <ol>
+            <li><strong>Modale Gacha</strong> : Plus haute, tout visible</li>
+            <li><strong>Wordle</strong> : Grille complète visible, pas de débordement</li>
+            <li><strong>Chat</strong> : 140px fixe, scroll des messages</li>
+            <li><strong>Alphabet</strong> : 6x4 lettres, pas de débordement</li>
+            <li><strong>Joueurs</strong> : Liste scrollable dans sa section</li>
+            <li><strong>Cementix</strong> : Input + tentatives dans 60% du container</li>
+            <li><strong>Gacha</strong> : Stats + boutons dans 40% du container</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>📱 Instructions de Test</h2>
+        <ol>
+            <li>Ouvrez le jeu sur mobile ou DevTools (F12 → mode mobile)</li>
+            <li>Définissez la largeur à 400px</li>
+            <li>Vérifiez que chaque section reste dans ses limites</li>
+            <li>Testez le scroll de chaque panneau individuellement</li>
+            <li>Ouvrez une caisse gacha et vérifiez la hauteur</li>
+        </ol>
+    </div>
+    
+    <button class="test-button" onclick="window.open('public/index.html', '_blank')">
+        🚀 Tester sur Mobile
+    </button>
+    
+    <button class="test-button" onclick="alert('DevTools: F12 → Toggle Device → 400px width')">
+        📱 Instructions DevTools
+    </button>
+</body>
+</html>
