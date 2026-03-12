@@ -63,14 +63,21 @@ document.addEventListener('DOMContentLoaded', function() {
         btnBackToTitle: document.getElementById("btn-back-to-title"),
         btnBackToMode: document.getElementById("btn-back-to-mode"),
         btnNewGame: document.getElementById("btn-new-game"),
+        btnCopyRoomLink: document.getElementById("btn-copy-room-link"),
+        btnJoinRoom: document.getElementById("btn-join-room"),
         
         // Mode selection
         inputPseudo: document.getElementById("input-pseudo"),
+        inputRoomCode: document.getElementById("input-room-code"),
         selectLength: document.getElementById("select-length"),
         selectAvatar: document.getElementById("select-avatar"),
         selectNameColor: document.getElementById("select-name-color"),
+        fieldRoomCode: document.getElementById("field-room-code"),
+        modeButtonsMain: document.getElementById("mode-buttons-main"),
+        modeButtonsJoin: document.getElementById("mode-buttons-join"),
         
         // Game UI
+        gameContainer: document.querySelector(".game-container"),
         badgeMode: document.getElementById("badge-mode"),
         badgeRoom: document.getElementById("badge-room"),
         wordLength: document.getElementById("word-length"),
@@ -84,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         statusCurrentPlayer: document.getElementById("status-current-player"),
         
         // Chat
+        chatPanel: document.getElementById("chat-panel"),
         chatMessages: document.getElementById("chat-messages"),
         inputChat: document.getElementById("input-chat"),
         btnSendChat: document.getElementById("btn-send-chat"),
@@ -254,6 +262,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // === GESTION DU CHAT ===
+    
+    function clearChat() {
+        if (elements.chatMessages) {
+            elements.chatMessages.innerHTML = '';
+        }
+    }
     
     function addChatMessage(from, pseudo, avatar, color, text, timestamp) {
         if (!elements.chatMessages) return;
@@ -513,6 +527,58 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // === GESTION DU JEU ===
     
+    function setupGameLayout(mode) {
+        if (!elements.gameContainer || !elements.chatPanel) return;
+        
+        if (mode === 'solo') {
+            // En mode solo, masquer le chat et ajuster le layout
+            elements.chatPanel.style.display = 'none';
+            elements.gameContainer.classList.add('solo-mode');
+            if (elements.btnCopyRoomLink) elements.btnCopyRoomLink.classList.add('hidden');
+        } else {
+            // En mode coop, afficher le chat
+            elements.chatPanel.style.display = 'flex';
+            elements.gameContainer.classList.remove('solo-mode');
+            if (elements.btnCopyRoomLink) elements.btnCopyRoomLink.classList.remove('hidden');
+        }
+    }
+    
+    function copyRoomLink() {
+        if (!currentRoomId) return;
+        
+        const url = `${window.location.origin}${window.location.pathname}?room=${currentRoomId}`;
+        
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(() => {
+                showInfo('Lien de la room copié !');
+            }).catch(() => {
+                fallbackCopyTextToClipboard(url);
+            });
+        } else {
+            fallbackCopyTextToClipboard(url);
+        }
+    }
+    
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showInfo('Lien de la room copié !');
+        } catch (err) {
+            showError('Impossible de copier le lien');
+        }
+        
+        document.body.removeChild(textArea);
+    }
+    
     function submitGuess() {
         if (!elements.inputGuess || !ws) return;
         
@@ -543,6 +609,9 @@ document.addEventListener('DOMContentLoaded', function() {
         currentRoomId = roomId;
         currentMode = mode;
         
+        // Clear chat when joining a new room
+        clearChat();
+        
         ws.send(JSON.stringify({
             type: 'join',
             roomId: roomId,
@@ -555,7 +624,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.badgeMode) elements.badgeMode.textContent = mode === 'solo' ? 'Mode Solo' : 'Mode Coop';
         if (elements.badgeRoom) elements.badgeRoom.textContent = `Room: ${roomId}`;
         
+        setupGameLayout(mode);
         showScreen(elements.screenGame);
+        
+        // Update URL for coop mode
+        if (mode === 'coop') {
+            const newUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+            window.history.pushState({ roomId }, '', newUrl);
+        }
     }
     
     function startNewGame() {
@@ -614,6 +690,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // === INITIALISATION DES URL PARAMS ===
+    
+    function checkUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomParam = urlParams.get('room');
+        
+        if (roomParam) {
+            // Si on a un paramètre room, pré-remplir le code et montrer l'interface de join
+            if (elements.inputRoomCode) {
+                elements.inputRoomCode.value = roomParam;
+            }
+            if (elements.fieldRoomCode) {
+                elements.fieldRoomCode.style.display = 'block';
+            }
+            if (elements.modeButtonsMain) {
+                elements.modeButtonsMain.classList.add('hidden');
+            }
+            if (elements.modeButtonsJoin) {
+                elements.modeButtonsJoin.classList.remove('hidden');
+            }
+            
+            // Aller directement à l'écran de mode
+            showScreen(elements.screenMode);
+            return true;
+        }
+        return false;
+    }
+    
     // === EVENT LISTENERS ===
     
     function setupEventListeners() {
@@ -626,6 +730,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (elements.btnBackToTitle) {
             elements.btnBackToTitle.addEventListener('click', () => {
+                // Reset URL when going back to title
+                window.history.pushState({}, '', window.location.pathname);
                 showScreen(elements.screenTitle);
             });
         }
@@ -634,6 +740,11 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.btnBackToMode.addEventListener('click', () => {
                 showScreen(elements.screenMode);
             });
+        }
+        
+        // Copy room link
+        if (elements.btnCopyRoomLink) {
+            elements.btnCopyRoomLink.addEventListener('click', copyRoomLink);
         }
         
         // Mode selection
@@ -648,6 +759,17 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.btnCoop.addEventListener('click', () => {
                 const roomId = 'coop-' + Math.random().toString(36).slice(2, 8);
                 joinRoom(roomId, 'coop');
+            });
+        }
+        
+        if (elements.btnJoinRoom) {
+            elements.btnJoinRoom.addEventListener('click', () => {
+                const roomCode = elements.inputRoomCode?.value.trim();
+                if (!roomCode) {
+                    showError('Veuillez entrer un code de room');
+                    return;
+                }
+                joinRoom(roomCode, 'coop');
             });
         }
         
@@ -694,8 +816,11 @@ document.addEventListener('DOMContentLoaded', function() {
         initIdleGame();
         connectWebSocket();
         
-        // Show title screen
-        showScreen(elements.screenTitle);
+        // Check URL params first
+        if (!checkUrlParams()) {
+            // Show title screen only if no URL params
+            showScreen(elements.screenTitle);
+        }
         
         console.log('🎉 App initialization complete!');
     }

@@ -17,10 +17,11 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f23 100%);
             color: #e2e8f0;
             min-height: 100vh;
             overflow-x: hidden;
+            font-size: 14px;
         }
         
         #app {
@@ -49,57 +50,57 @@
         
         /* === ÉCRAN TITRE === */
         .title-card {
-            background: rgba(15, 15, 35, 0.9);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 24px;
-            padding: 60px 40px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 40px 32px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            max-width: 400px;
             width: 100%;
         }
         
         h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #a855f7, #ec4899, #f59e0b);
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             letter-spacing: -0.02em;
         }
         
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: #94a3b8;
-            margin-bottom: 40px;
-            line-height: 1.6;
+            margin-bottom: 32px;
+            line-height: 1.5;
         }
         
         .btn {
             background: linear-gradient(135deg, #8b5cf6, #a855f7);
             color: white;
             border: none;
-            padding: 16px 32px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-            margin: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            margin: 6px;
         }
         
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.6);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
         }
         
         .btn.outline {
             background: transparent;
-            border: 2px solid #8b5cf6;
+            border: 1px solid #8b5cf6;
             box-shadow: none;
         }
         
@@ -109,10 +110,10 @@
         
         .btn.ghost {
             background: transparent;
-            border: 1px solid rgba(148, 163, 184, 0.3);
+            border: 1px solid rgba(148, 163, 184, 0.2);
             color: #94a3b8;
-            font-size: 0.95rem;
-            padding: 12px 24px;
+            font-size: 0.85rem;
+            padding: 8px 16px;
             box-shadow: none;
         }
         
@@ -123,62 +124,63 @@
         
         /* === ÉCRAN MODE === */
         .mode-card {
-            background: rgba(15, 15, 35, 0.95);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 420px;
             width: 100%;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
         
         .mode-card h2 {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 1.6rem;
+            font-weight: 600;
             color: #f1f5f9;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         
         .mode-card p {
             color: #94a3b8;
-            margin-bottom: 32px;
-            line-height: 1.6;
+            margin-bottom: 24px;
+            line-height: 1.5;
+            font-size: 0.9rem;
         }
         
         .field-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         
         .field-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 12px;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 500;
             color: #cbd5e1;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
         
         input, select {
             width: 100%;
-            padding: 14px 16px;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-            border-radius: 10px;
-            background: rgba(15, 15, 35, 0.8);
+            padding: 10px 12px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            background: rgba(10, 10, 15, 0.8);
             color: #e2e8f0;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
         
         input:focus, select:focus {
             outline: none;
             border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
         }
         
         input::placeholder {
@@ -188,20 +190,24 @@
         .mode-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin: 32px 0;
+            gap: 12px;
+            margin: 24px 0;
         }
         
         /* === ÉCRAN JEU === */
         .game-container {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1200px;
             height: 100vh;
             display: grid;
-            grid-template-columns: 300px 1fr 300px;
+            grid-template-columns: 280px 1fr 280px;
             grid-template-rows: auto 1fr;
-            gap: 20px;
-            padding: 20px;
+            gap: 16px;
+            padding: 16px;
+        }
+        
+        .game-container.solo-mode {
+            grid-template-columns: 1fr 280px;
         }
         
         .game-header {
@@ -209,26 +215,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 15, 35, 0.8);
+            background: rgba(10, 10, 15, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 16px;
-            padding: 16px 24px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 12px 20px;
         }
         
         .game-info {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             align-items: center;
         }
         
         .badge {
             background: linear-gradient(135deg, #8b5cf6, #a855f7);
             color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
         
         .badge.secondary {
@@ -238,46 +244,46 @@
         
         /* === CHAT === */
         .chat-panel {
-            background: rgba(15, 15, 35, 0.8);
+            background: rgba(10, 10, 15, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 16px;
-            padding: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             height: 100%;
         }
         
         .panel-title {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #f1f5f9;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            margin-bottom: 16px;
-            padding-right: 8px;
+            margin-bottom: 12px;
+            padding-right: 6px;
         }
         
         .chat-message {
             display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-            padding: 12px;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 8px;
             background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
+            border-radius: 8px;
         }
         
         .chat-avatar {
-            font-size: 1.5rem;
-            width: 32px;
-            height: 32px;
+            font-size: 1.2rem;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -289,50 +295,51 @@
         
         .chat-meta {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         
         .chat-author {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         
         .chat-time {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #64748b;
         }
         
         .chat-text {
             color: #cbd5e1;
-            line-height: 1.4;
+            line-height: 1.3;
+            font-size: 0.85rem;
         }
         
         .chat-input {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
         
         .chat-input input {
             flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
         }
         
         .chat-input .btn {
-            padding: 12px 16px;
-            font-size: 0.9rem;
+            padding: 8px 12px;
+            font-size: 0.8rem;
         }
         
         /* === GRILLE WORDLE === */
         .board-panel {
-            background: rgba(15, 15, 35, 0.8);
+            background: rgba(10, 10, 15, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 16px;
-            padding: 24px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -340,35 +347,35 @@
         
         .word-info {
             color: #94a3b8;
-            margin-bottom: 24px;
-            font-size: 1rem;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
         
         .board {
             display: grid;
-            gap: 6px;
-            margin-bottom: 24px;
+            gap: 4px;
+            margin-bottom: 20px;
         }
         
         .board-row {
             display: grid;
-            gap: 6px;
+            gap: 4px;
         }
         
         .cell {
-            width: 50px;
-            height: 50px;
-            border: 2px solid rgba(148, 163, 184, 0.3);
-            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.3rem;
+            font-weight: 600;
             text-transform: uppercase;
-            background: rgba(15, 15, 35, 0.6);
+            background: rgba(10, 10, 15, 0.6);
             color: #e2e8f0;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         .cell.correct {
@@ -397,26 +404,27 @@
         
         .guess-input {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             width: 100%;
-            max-width: 400px;
+            max-width: 320px;
         }
         
         .guess-input input {
             flex: 1;
-            padding: 14px;
-            font-size: 1.1rem;
+            padding: 10px;
+            font-size: 1rem;
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 0.1em;
         }
         
         .status-message {
-            margin: 16px 0;
-            padding: 12px 16px;
-            border-radius: 8px;
+            margin: 12px 0;
+            padding: 8px 12px;
+            border-radius: 6px;
             text-align: center;
             font-weight: 500;
+            font-size: 0.85rem;
         }
         
         .status-message.error {
@@ -433,108 +441,109 @@
         
         /* === PANNEAU JOUEURS === */
         .players-panel {
-            background: rgba(15, 15, 35, 0.8);
+            background: rgba(10, 10, 15, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 16px;
-            padding: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 16px;
         }
         
         .players-list {
             list-style: none;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         
         .player-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
+            gap: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
             background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
         
         .player-item.current {
-            border: 2px solid #f59e0b;
+            border: 1px solid #f59e0b;
             background: rgba(245, 158, 11, 0.1);
         }
         
         .player-item.you {
-            border: 2px solid #8b5cf6;
+            border: 1px solid #8b5cf6;
             background: rgba(139, 92, 246, 0.1);
         }
         
         .player-avatar {
-            font-size: 1.5rem;
-            width: 32px;
-            height: 32px;
+            font-size: 1.2rem;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
         .player-name {
-            font-weight: 600;
+            font-weight: 500;
             color: #e2e8f0;
+            font-size: 0.85rem;
         }
         
         /* === IDLE GAME === */
         .idle-game {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
         }
         
         .idle-title {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             color: #f1f5f9;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             text-align: center;
         }
         
         .idle-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
         }
         
         .idle-stat {
             background: rgba(0, 0, 0, 0.3);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 6px 8px;
+            border-radius: 6px;
             text-align: center;
         }
         
         .idle-stat-value {
-            font-weight: 700;
+            font-weight: 600;
             color: #f59e0b;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
         }
         
         .idle-clicker {
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
         
         .foot-button {
-            font-size: 4rem;
+            font-size: 3rem;
             background: none;
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
-            padding: 16px;
+            padding: 12px;
             border-radius: 50%;
             background: rgba(139, 92, 246, 0.2);
         }
         
         .foot-button:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             background: rgba(139, 92, 246, 0.3);
         }
         
@@ -544,19 +553,19 @@
         
         .idle-upgrades {
             display: grid;
-            gap: 8px;
-            margin-bottom: 16px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
         
         .upgrade-btn {
             background: rgba(139, 92, 246, 0.2);
             border: 1px solid rgba(139, 92, 246, 0.5);
             color: #c4b5fd;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         .upgrade-btn:hover {
@@ -570,14 +579,14 @@
         
         .shop-section {
             border-top: 1px solid rgba(148, 163, 184, 0.2);
-            padding-top: 16px;
+            padding-top: 12px;
         }
         
         .shop-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #f1f5f9;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             text-align: center;
         }
         
@@ -585,18 +594,18 @@
             background: linear-gradient(135deg, #f59e0b, #d97706);
             border: none;
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
             cursor: pointer;
             width: 100%;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         .hint-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
         }
         
         .hint-btn:disabled {
@@ -608,9 +617,13 @@
         /* === RESPONSIVE === */
         @media (max-width: 1200px) {
             .game-container {
-                grid-template-columns: 250px 1fr 250px;
-                gap: 16px;
-                padding: 16px;
+                grid-template-columns: 240px 1fr 240px;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .game-container.solo-mode {
+                grid-template-columns: 1fr 240px;
             }
         }
         
@@ -618,50 +631,55 @@
             .game-container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto 1fr auto;
-                gap: 16px;
-                padding: 12px;
+                gap: 12px;
+                padding: 10px;
+            }
+            
+            .game-container.solo-mode {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
             }
             
             .chat-panel, .players-panel {
                 height: auto;
-                max-height: 300px;
+                max-height: 250px;
             }
             
             .cell {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
             }
         }
         
         @media (max-width: 600px) {
             h1 {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
             
             .title-card, .mode-card {
-                padding: 30px 20px;
-                margin: 0 10px;
+                padding: 24px 16px;
+                margin: 0 8px;
             }
             
             .field-row {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 8px;
             }
             
             .mode-buttons {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 8px;
             }
             
             .cell {
-                width: 35px;
-                height: 35px;
+                width: 32px;
+                height: 32px;
                 font-size: 1rem;
             }
             
             .foot-button {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
         }
         
@@ -697,14 +715,14 @@
             <div class="title-card">
                 <h1>Coopdle</h1>
                 <p class="subtitle">Devinez le même mot à plusieurs, en 6 essais maximum</p>
-                <button id="btn-play" class="btn">🚀 Commencer à jouer</button>
+                <button id="btn-play" class="btn">Jouer</button>
             </div>
         </div>
 
         <!-- Écran de sélection du mode -->
         <div class="screen screen-mode hidden" id="screen-mode">
             <div class="mode-card">
-                <h2 id="mode-title">🎯 Choix du mode</h2>
+                <h2 id="mode-title">Choix du mode</h2>
                 <p id="mode-description">Choisissez votre mode de jeu et personnalisez votre profil</p>
 
                 <div class="field-group">
@@ -716,21 +734,21 @@
                     <div class="field-group">
                         <label for="select-avatar">🎭 Avatar</label>
                         <select id="select-avatar">
-                            <option value="random">🎲 Aléatoire</option>
+                            <option value="random">Aléatoire</option>
                         </select>
                     </div>
                     <div class="field-group">
                         <label for="select-name-color">🎨 Couleur</label>
                         <select id="select-name-color">
-                            <option value="random">🎲 Aléatoire</option>
+                            <option value="random">Aléatoire</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="field-group" id="field-length">
-                    <label for="select-length">📏 Longueur du mot</label>
+                    <label for="select-length">Longueur du mot</label>
                     <select id="select-length">
-                        <option value="0">🎲 Aléatoire (2-10 lettres)</option>
+                        <option value="0">Aléatoire (2-10 lettres)</option>
                         <option value="2">2 lettres</option>
                         <option value="3">3 lettres</option>
                         <option value="4">4 lettres</option>
@@ -743,13 +761,18 @@
                     </select>
                 </div>
 
+                <div class="field-group" id="field-room-code" style="display: none;">
+                    <label for="input-room-code">Code de la room</label>
+                    <input id="input-room-code" type="text" placeholder="Code de la room à rejoindre" />
+                </div>
+
                 <div class="mode-buttons" id="mode-buttons-main">
                     <button id="btn-solo" class="btn">🎯 Solo</button>
                     <button id="btn-coop" class="btn outline">👥 Coop</button>
                 </div>
 
                 <div class="mode-buttons hidden" id="mode-buttons-join">
-                    <button id="btn-join-room" class="btn">🚪 Rejoindre</button>
+                    <button id="btn-join-room" class="btn">Rejoindre</button>
                 </div>
 
                 <button id="btn-back-to-title" class="btn ghost">← Retour</button>
@@ -765,12 +788,13 @@
                     <div class="game-info">
                         <span class="badge" id="badge-mode">Mode</span>
                         <span class="badge secondary" id="badge-room">Room</span>
+                        <button id="btn-copy-room-link" class="btn ghost hidden">Copier lien</button>
                     </div>
-                    <button id="btn-new-game" class="btn ghost">🔄 Nouvelle partie</button>
+                    <button id="btn-new-game" class="btn ghost">Nouvelle partie</button>
                 </div>
 
                 <!-- Chat (gauche) -->
-                <div class="chat-panel">
+                <div class="chat-panel" id="chat-panel">
                     <div class="panel-title">💬 Chat</div>
                     <div class="chat-messages" id="chat-messages"></div>
                     <div class="chat-input">
@@ -789,7 +813,7 @@
                     <div id="board" class="board"></div>
                     <div class="guess-input">
                         <input id="input-guess" type="text" placeholder="Votre mot..." maxlength="10" />
-                        <button id="btn-submit" class="btn">✅ Valider</button>
+                        <button id="btn-submit" class="btn">Valider</button>
                     </div>
                     <div id="error" class="status-message error hidden"></div>
                     <div id="info" class="status-message info hidden"></div>
@@ -798,12 +822,12 @@
 
                 <!-- Panneau joueurs + Idle game (droite) -->
                 <div class="players-panel">
-                    <div class="panel-title">👥 Joueurs</div>
+                    <div class="panel-title">Joueurs</div>
                     <ul class="players-list" id="participants-list"></ul>
                     
                     <!-- Idle Game -->
                     <div class="idle-game">
-                        <div class="idle-title">🦶 Idle Clicker</div>
+                        <div class="idle-title">Idle Clicker</div>
                         <div class="idle-stats">
                             <div class="idle-stat">
                                 <div>Pièces</div>
@@ -827,16 +851,16 @@
                         </div>
                         <div class="idle-upgrades">
                             <button class="upgrade-btn" id="btn-upgrade-click">
-                                💪 Force +1 (Coût: <span id="cost-click">10</span>)
+                                Force +1 (Coût: <span id="cost-click">10</span>)
                             </button>
                             <button class="upgrade-btn" id="btn-upgrade-auto">
-                                ⚡ Auto +1/s (Coût: <span id="cost-auto">50</span>)
+                                Auto +1/s (Coût: <span id="cost-auto">50</span>)
                             </button>
                         </div>
                         <div class="shop-section">
-                            <div class="shop-title">🛒 Boutique</div>
+                            <div class="shop-title">Boutique</div>
                             <button class="hint-btn" id="btn-buy-hint">
-                                💡 Révéler une lettre<br>
+                                Révéler une lettre<br>
                                 <small>Coût: <span id="cost-hint">1000</span> pièces</small>
                             </button>
                         </div>

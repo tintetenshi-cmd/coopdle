@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Design Compact - Coopdle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0a0a0f;
+            color: #e2e8f0;
+        }
+        .test-section {
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .before, .after {
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .before {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .after {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        button {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .compact-demo {
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .compact-demo h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .compact-demo p {
+            color: #94a3b8;
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+        .compact-demo .btn {
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Test Design Compact - Coopdle</h1>
+    
+    <div class="test-section">
+        <h2>✨ Nouveau design compact et épuré</h2>
+        <div class="compact-demo">
+            <h1>Coopdle</h1>
+            <p>Devinez le même mot à plusieurs, en 6 essais maximum</p>
+            <button class="btn">Jouer</button>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 Comparaison des changements</h2>
+        <div class="comparison">
+            <div class="before">
+                <h3>❌ Avant (trop gros)</h3>
+                <ul>
+                    <li>Titre: 4rem → 2.8rem</li>
+                    <li>Boutons: 16px 32px → 12px 24px</li>
+                    <li>Cellules: 50x50px → 42x42px</li>
+                    <li>Panneaux: 20px padding → 16px</li>
+                    <li>Emojis partout 🚀🎯👥💬</li>
+                    <li>Espacement: 20px → 16px</li>
+                </ul>
+            </div>
+            <div class="after">
+                <h3>✅ Après (compact & tech)</h3>
+                <ul>
+                    <li>Tailles réduites de 20-30%</li>
+                    <li>Design plus épuré</li>
+                    <li>Thème noir/violet tech</li>
+                    <li>Texte sans emojis</li>
+                    <li>Espacement optimisé</li>
+                    <li>Meilleure densité d'information</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🚀 Test de l'application</h2>
+        <button onclick="window.open('index.html', '_blank')">Ouvrir Coopdle Compact</button>
+        <div style="margin-top: 15px; color: #94a3b8;">
+            <strong>Points à vérifier :</strong>
+            <ul>
+                <li>Interface plus compacte et moins "encombrée"</li>
+                <li>Bouton "Jouer" sans emoji</li>
+                <li>Thème noir/violet plus tech</li>
+                <li>Tous les textes sans emojis</li>
+                <li>Espacement réduit mais lisible</li>
+                <li>Design épuré et moderne</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
