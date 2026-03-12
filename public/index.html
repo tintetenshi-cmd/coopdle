@@ -257,19 +257,23 @@
         /* === ÉCRAN JEU === */
         .game-container {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1600px;
             height: 100vh;
             display: grid;
-            grid-template-columns: 280px 1fr 200px;
-            grid-template-rows: auto auto 1fr;
-            gap: 16px;
-            padding: 16px;
+            grid-template-columns: 250px 1fr 300px 150px;
+            grid-template-rows: auto 1fr;
+            gap: 12px;
+            padding: 12px;
             overflow: hidden;
         }
         
         .game-container.solo-mode {
-            grid-template-columns: 1fr 200px;
-            grid-template-rows: auto auto 1fr;
+            grid-template-columns: 1fr 300px 150px;
+            grid-template-rows: auto 1fr;
+        }
+        
+        .game-container.solo-mode .chat-panel {
+            display: none;
         }
         
         .game-header {
@@ -510,7 +514,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: calc(100vh - 200px); /* Hauteur calculée */
+            height: calc(100vh - 200px); /* Hauteur calculée pour éviter le scroll */
             overflow-y: auto;
             box-shadow: 
                 0 8px 25px rgba(0, 0, 0, 0.4),
@@ -700,12 +704,8 @@
             100% { box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); }
         }
         
-        /* === PANNEAU JOUEURS + IDLE HORIZONTAL === */
-        .players-idle-row {
-            grid-column: 2 / -1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+        /* === PANNEAU JOUEURS + IDLE VERTICAL === */
+        .players-idle-panel {
             background: 
                 linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(168, 85, 247, 0.03) 100%),
                 rgba(10, 10, 15, 0.9);
@@ -716,133 +716,12 @@
             box-shadow: 
                 0 8px 25px rgba(0, 0, 0, 0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            height: 120px;
-        }
-        
-        .players-section-horizontal {
             display: flex;
             flex-direction: column;
+            height: calc(100vh - 200px); /* Hauteur calculée pour laisser place au header */
+            overflow: hidden;
         }
         
-        .players-list-horizontal {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            flex: 1;
-            align-content: flex-start;
-        }
-        
-        .idle-game-horizontal {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .idle-content-horizontal {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            flex: 1;
-        }
-        
-        .idle-stats-horizontal {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .idle-stat-horizontal {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: 
-                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.8rem;
-        }
-        
-        .idle-controls-horizontal {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .foot-button-horizontal {
-            font-size: 2rem;
-            background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(168, 85, 247, 0.3) 100%);
-            border: 2px solid rgba(139, 92, 246, 0.6);
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 8px;
-            border-radius: 50%;
-            box-shadow: 
-                0 6px 20px rgba(139, 92, 246, 0.4),
-                inset 0 2px 4px rgba(255, 255, 255, 0.2);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .foot-button-horizontal:hover {
-            transform: scale(1.1);
-            background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.6) 0%, rgba(168, 85, 247, 0.5) 100%);
-        }
-        
-        .foot-button-horizontal:active {
-            transform: scale(0.9);
-            animation: intensiveClick 0.15s ease-out;
-        }
-        
-        .idle-upgrades-horizontal {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .upgrade-btn-horizontal, .hint-btn-horizontal {
-            background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(168, 85, 247, 0.3) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.5);
-            color: #c4b5fd;
-            padding: 6px 8px;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 3px 8px rgba(139, 92, 246, 0.3),
-                inset 0 1px 2px rgba(255, 255, 255, 0.15);
-            font-weight: 500;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 2px;
-        }
-        
-        .hint-btn-horizontal {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
-            border: 1px solid #f59e0b;
-            color: white;
-        }
-        
-        .upgrade-btn-horizontal:hover, .hint-btn-horizontal:hover {
-            transform: translateY(-2px);
-        }
-        
-        .upgrade-btn-horizontal:disabled, .hint-btn-horizontal:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none !important;
-        }
         .players-panel {
             background: 
                 linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(168, 85, 247, 0.03) 100%),
@@ -1787,20 +1666,16 @@
         /* === RESPONSIVE === */
         @media (max-width: 1200px) {
             .game-container {
-                grid-template-columns: 220px 1fr 180px;
+                grid-template-columns: 220px 1fr 280px 130px;
                 gap: 12px;
                 padding: 12px;
             }
             
             .game-container.solo-mode {
-                grid-template-columns: 1fr 180px;
+                grid-template-columns: 1fr 280px 130px;
             }
             
-            .players-idle-row {
-                height: 100px;
-            }
-            
-            .chat-panel, .board-panel, .alphabet-panel {
+            .chat-panel, .board-panel, .alphabet-panel, .players-idle-panel {
                 height: calc(100vh - 180px);
             }
             
@@ -1814,7 +1689,7 @@
         @media (max-width: 900px) {
             .game-container {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr;
+                grid-template-rows: auto 1fr auto;
                 gap: 12px;
                 padding: 10px;
                 height: 100vh;
@@ -1822,14 +1697,13 @@
             
             .game-container.solo-mode {
                 grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr;
+                grid-template-rows: auto 1fr auto;
             }
             
-            .players-idle-row {
-                grid-column: 1;
-                grid-template-columns: 1fr;
+            .players-idle-panel {
+                grid-row: 3;
                 height: auto;
-                gap: 12px;
+                max-height: 200px;
             }
             
             .chat-panel {
@@ -1838,7 +1712,7 @@
             
             .board-panel {
                 padding: 16px;
-                height: calc(100vh - 200px);
+                height: calc(100vh - 300px);
             }
             
             .alphabet-panel {
@@ -1849,20 +1723,6 @@
                 width: 36px;
                 height: 36px;
                 font-size: 1.1rem;
-            }
-            
-            .players-list-horizontal {
-                flex-direction: column;
-                gap: 4px;
-            }
-            
-            .idle-content-horizontal {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .idle-stats-horizontal {
-                justify-content: center;
             }
         }
         
@@ -1916,7 +1776,7 @@
                 padding: 12px;
             }
             
-            .chat-panel, .players-panel {
+            .chat-panel, .players-idle-panel {
                 padding: 12px;
                 max-height: 200px;
             }
@@ -2146,56 +2006,7 @@
                     <button id="btn-new-game" class="btn ghost">Nouvelle partie</button>
                 </div>
 
-                <!-- Panneau Joueurs + Idle Game (2ème ligne, colonnes 2-3) -->
-                <div class="players-idle-row">
-                    <div class="players-section-horizontal">
-                        <div class="panel-title">👥 Joueurs</div>
-                        <ul class="players-list-horizontal" id="participants-list"></ul>
-                    </div>
-                    
-                    <div class="idle-game-horizontal">
-                        <div class="panel-title">🦶 Idle Clicker</div>
-                        <div class="idle-content-horizontal">
-                            <div class="idle-stats-horizontal">
-                                <div class="idle-stat-horizontal">
-                                    <span class="stat-emoji">💰</span>
-                                    <span class="idle-stat-value" id="idle-coins">0</span>
-                                </div>
-                                <div class="idle-stat-horizontal">
-                                    <span class="stat-emoji">👊</span>
-                                    <span class="idle-stat-value" id="idle-per-click">1</span>
-                                </div>
-                                <div class="idle-stat-horizontal">
-                                    <span class="stat-emoji">⚡</span>
-                                    <span class="idle-stat-value" id="idle-auto-rate">0</span>
-                                </div>
-                                <div class="idle-stat-horizontal">
-                                    <span class="stat-emoji">🎯</span>
-                                    <span class="idle-stat-value" id="idle-total">0</span>
-                                </div>
-                            </div>
-                            <div class="idle-controls-horizontal">
-                                <button class="foot-button-horizontal" id="btn-foot-click">🦶</button>
-                                <div class="idle-upgrades-horizontal">
-                                    <button class="upgrade-btn-horizontal" id="btn-upgrade-click">
-                                        <div class="upgrade-icon">💪</div>
-                                        <div class="upgrade-cost">💰 <span id="cost-click">15</span></div>
-                                    </button>
-                                    <button class="upgrade-btn-horizontal" id="btn-upgrade-auto">
-                                        <div class="upgrade-icon">⚡</div>
-                                        <div class="upgrade-cost">💰 <span id="cost-auto">75</span></div>
-                                    </button>
-                                    <button class="hint-btn-horizontal" id="btn-buy-hint">
-                                        <div class="upgrade-icon">💡</div>
-                                        <div class="upgrade-cost">💰 <span id="cost-hint">500</span></div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chat (gauche, 3ème ligne) -->
+                <!-- Chat (gauche, 1ère colonne) -->
                 <div class="chat-panel" id="chat-panel">
                     <div class="panel-title">💬 Chat</div>
                     <div class="chat-messages" id="chat-messages"></div>
@@ -2205,7 +2016,7 @@
                     </div>
                 </div>
 
-                <!-- Grille de jeu (centre) -->
+                <!-- Grille de jeu + Cementix (centre, 2ème colonne large) -->
                 <div class="board-panel">
                     <div class="panel-title">🎯 Mot mystère</div>
                     <div class="word-info">
@@ -2245,7 +2056,66 @@
                     </div>
                 </div>
 
-                <!-- Panneau Alphabet (4ème colonne) -->
+                <!-- Panneau Joueurs + Idle Game (3ème colonne) -->
+                <div class="players-idle-panel">
+                    <!-- Section Joueurs (50% du haut) -->
+                    <div class="players-section">
+                        <div class="panel-title">👥 Joueurs</div>
+                        <ul class="players-list" id="participants-list"></ul>
+                    </div>
+                    
+                    <!-- Séparateur -->
+                    <div class="panel-separator"></div>
+                    
+                    <!-- Idle Game (50% du bas) -->
+                    <div class="idle-game-sidebar">
+                        <div class="panel-title">🦶 Idle Clicker</div>
+                        
+                        <div class="idle-stats-sidebar">
+                            <div class="idle-stat-sidebar">
+                                <div class="stat-emoji">💰</div>
+                                <div class="stat-label">Pièces</div>
+                                <div class="idle-stat-value" id="idle-coins">0</div>
+                            </div>
+                            <div class="idle-stat-sidebar">
+                                <div class="stat-emoji">👊</div>
+                                <div class="stat-label">Force</div>
+                                <div class="idle-stat-value" id="idle-per-click">1</div>
+                            </div>
+                            <div class="idle-stat-sidebar">
+                                <div class="stat-emoji">⚡</div>
+                                <div class="stat-label">Auto</div>
+                                <div class="idle-stat-value" id="idle-auto-rate">0</div>
+                            </div>
+                            <div class="idle-stat-sidebar">
+                                <div class="stat-emoji">🎯</div>
+                                <div class="stat-label">Total</div>
+                                <div class="idle-stat-value" id="idle-total">0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="idle-clicker-sidebar">
+                            <button class="foot-button-sidebar" id="btn-foot-click">🦶</button>
+                        </div>
+                        
+                        <div class="idle-upgrades-sidebar">
+                            <button class="upgrade-btn-sidebar" id="btn-upgrade-click">
+                                <div class="upgrade-icon">💪</div>
+                                <div class="upgrade-cost">💰 <span id="cost-click">15</span></div>
+                            </button>
+                            <button class="upgrade-btn-sidebar" id="btn-upgrade-auto">
+                                <div class="upgrade-icon">⚡</div>
+                                <div class="upgrade-cost">💰 <span id="cost-auto">75</span></div>
+                            </button>
+                            <button class="hint-btn-sidebar" id="btn-buy-hint">
+                                <div class="upgrade-icon">💡</div>
+                                <div class="upgrade-cost">💰 <span id="cost-hint">500</span></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panneau Alphabet (4ème colonne, petite) -->
                 <div class="alphabet-panel">
                     <div class="alphabet-title">🔤 Alphabet</div>
                     <div class="alphabet-grid" id="alphabet-grid"></div>

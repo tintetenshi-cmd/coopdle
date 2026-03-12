@@ -2,167 +2,92 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Layout Fix - Coopdle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
-            color: #e2e8f0;
+            margin: 0;
             padding: 20px;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: rgba(10, 10, 15, 0.9);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(139, 92, 246, 0.2);
-        }
-        h1 {
-            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .fix-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .fix-title {
-            color: #a855f7;
-            font-weight: 600;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-        .fix-item {
-            margin: 10px 0;
-            padding: 10px 15px;
-            background: rgba(139, 92, 246, 0.1);
-            border-radius: 8px;
-            border-left: 3px solid #8b5cf6;
-        }
-        .status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-        .status.fixed { background: #10b981; color: white; }
-        .btn {
-            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin: 10px 10px 10px 0;
-            transition: all 0.3s ease;
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        .test-container {
+            max-width: 1600px;
+            height: 80vh;
+            display: grid;
+            grid-template-columns: 250px 1fr 300px 150px;
+            gap: 12px;
+            background: #0f0f23;
+            border-radius: 16px;
+            padding: 12px;
         }
-        .layout-diagram {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin: 15px 0;
+        .test-panel {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.05));
             border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .test-panel h3 {
+            margin: 0 0 10px 0;
+            color: #a855f7;
+        }
+        .test-panel p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .large {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.08));
+        }
+        .small {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(168, 85, 247, 0.04));
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔧 Corrections Layout Cementix</h1>
+    <h1>Test du Layout 4 Colonnes</h1>
+    <p>Vérification de la structure: Chat | Wordle+Cementix (large) | Users+Idle | Alphabet (small)</p>
+    
+    <div class="test-container">
+        <div class="test-panel">
+            <h3>💬 Chat</h3>
+            <p>Colonne 1<br>250px</p>
+        </div>
         
-        <div class="fix-section">
-            <div class="fix-title">✅ Problèmes Corrigés</div>
-            <div class="fix-item">
-                <strong>Position de l'alphabet :</strong> Déplacé à droite de la colonne des joueurs (4ème colonne)
-                <span class="status fixed">✓ Corrigé</span>
-            </div>
-            <div class="fix-item">
-                <strong>Scroll de la page :</strong> Page entière fixe, plus de scroll vertical global
-                <span class="status fixed">✓ Corrigé</span>
-            </div>
+        <div class="test-panel large">
+            <h3>🎯 Wordle + Cementix</h3>
+            <p>Colonne 2 (large)<br>1fr (flexible)</p>
         </div>
-
-        <div class="fix-section">
-            <div class="fix-title">📐 Nouveau Layout</div>
-            <div class="layout-diagram">
-┌─────────────────────────────────────────────────────────────┐
-│                        HEADER                               │
-├──────────┬─────────────────┬──────────┬─────────────────────┤
-│   CHAT   │     WORDLE      │ JOUEURS  │      ALPHABET       │
-│          │    + CEMENTIX   │ + IDLE   │                     │
-│          │                 │          │  A B C D            │
-│ Messages │ ┌─────────────┐ │ Players  │  E F G H            │
-│          │ │ Grille      │ │          │  I J K L            │
-│          │ │ Wordle      │ │ Stats    │  M N O P            │
-│          │ └─────────────┘ │          │  Q R S T            │
-│          │                 │ Upgrades │  U V W X            │
-│          │ ┌─────────────┐ │          │  Y Z                │
-│          │ │ Cementix    │ │          │                     │
-│          │ │ Tentatives  │ │          │ États:              │
-│          │ └─────────────┘ │          │ • Blanc: non utilisé│
-│          │                 │          │ • Vert: dans Wordle │
-│          │                 │          │ • Gris: utilisé     │
-└──────────┴─────────────────┴──────────┴─────────────────────┘
-            </div>
+        
+        <div class="test-panel">
+            <h3>👥 Users + 🦶 Idle</h3>
+            <p>Colonne 3<br>300px</p>
         </div>
-
-        <div class="fix-section">
-            <div class="fix-title">🎯 Spécifications Techniques</div>
-            <div c
-lass="fix-item">
-                <strong>Grid Layout :</strong> 4 colonnes (280px | 1fr | 280px | 200px)
-            </div>
-            <div class="fix-item">
-                <strong>Mode Solo :</strong> 3 colonnes (1fr | 280px | 200px) - alphabet toujours visible
-            </div>
-            <div class="fix-item">
-                <strong>Responsive :</strong> Mobile = 1 colonne avec ordre: Header → Wordle → Chat → Joueurs → Alphabet
-            </div>
-            <div class="fix-item">
-                <strong>Hauteur fixe :</strong> 100vh avec overflow: hidden sur body
-            </div>
+        
+        <div class="test-panel small">
+            <h3>🔤 Alphabet</h3>
+            <p>Colonne 4 (small)<br>150px</p>
         </div>
-
-        <div class="fix-section">
-            <div class="fix-title">📱 Responsive Design</div>
-            <div class="fix-item">
-                <strong>Desktop (>1200px) :</strong> 4 colonnes complètes
-            </div>
-            <div class="fix-item">
-                <strong>Tablet (900-1200px) :</strong> 4 colonnes réduites
-            </div>
-            <div class="fix-item">
-                <strong>Mobile (<900px) :</strong> 1 colonne, ordre vertical optimisé
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="/" class="btn">🎮 Tester le Nouveau Layout</a>
-        </div>
-
-        <div style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); text-align: center;">
-            <strong style="color: #10b981; font-size: 1.1rem;">🎯 Layout Corrigé !</strong>
-            <br><br>
-            L'alphabet est maintenant à droite des joueurs et la page ne scroll plus.
-            Tout reste fixe sur le même écran avec des zones scrollables individuelles.
-        </div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h2>✅ Layout Fixed!</h2>
+        <ul>
+            <li>✅ 4 colonnes distinctes</li>
+            <li>✅ Chat à gauche (250px)</li>
+            <li>✅ Wordle+Cementix au centre (flexible)</li>
+            <li>✅ Users+Idle à droite (300px)</li>
+            <li>✅ Alphabet tout à droite (150px)</li>
+            <li>✅ Hauteur fixe pour éviter le scroll</li>
+            <li>✅ Structure HTML corrigée</li>
+            <li>✅ CSS horizontal layout supprimé</li>
+        </ul>
     </div>
 </body>
 </html>
