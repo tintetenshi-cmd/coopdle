@@ -303,12 +303,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateAlphabetFromCementix(word) {
-        // Mark letters from Cementix attempts as used (if not already correct)
-        word.toLowerCase().split('').forEach(letter => {
-            if (alphabetState[letter] === 'unused') {
-                updateAlphabetLetter(letter, 'absent');
-            }
-        });
+        // Ne plus mettre à jour l'alphabet depuis Cementix
+        // L'alphabet ne doit refléter que les lettres du Wordle
     }
     
     function updateAlphabetLetter(letter, state) {
@@ -402,8 +398,8 @@ document.addEventListener('DOMContentLoaded', function() {
         sortCementixAttempts();
         renderCementixAttempts();
         
-        // Mettre à jour l'alphabet
-        updateAlphabetFromCementix(word);
+        // Ne plus mettre à jour l'alphabet depuis Cementix
+        // updateAlphabetFromCementix(word);
     }
     
     function submitCementixWord() {

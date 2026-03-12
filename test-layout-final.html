@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Layout Final - Coopdle</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+            color: #e2e8f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(10, 10, 15, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        h1 {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .fix-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .fix-title {
+            color: #a855f7;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .fix-item {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #8b5cf6;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status.fixed { background: #10b981; color: white; }
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        }
+        .layout-diagram {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin: 15px 0;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Layout Final Corrigé</h1>
+        
+        <div class="fix-section">
+            <div class="fix-title">✅ Problèmes Résolus</div>
+            <div class="fix-item">
+                <strong>Panneau utilisateurs :</strong> Déplacé sous le header, plus large, aligné aux colonnes
+                <span class="status fixed">✓ Corrigé</span>
+            </div>
+            <div class="fix-item">
+                <strong>Accessibilité :</strong> Cementix et chat accessibles avec hauteurs calculées
+                <span class="status fixed">✓ Corrigé</span>
+            </div>
+            <div class="fix-item">
+                <strong>Alphabet :</strong> Ne prend plus en compte Cementix/chat, seulement Wordle
+                <span class="status fixed">✓ Corrigé</span>
+            </div>
+        </div>
+
+        <div class="fix-section">
+            <div class="fix-title">📐 Nouveau Layout Final</div>
+            <div class="layout-diagram">
+┌─────────────────────────────────────────────────────────────────────┐
+│                           HEADER                                    │
+├─────────────────────────────────────────────────────────────────────┤
+│              JOUEURS + IDLE GAME (horizontal)                      │
+│  👥 Joueurs: [Player1] [Player2]    🦶 Idle: 💰123 👊2 ⚡1 🎯500  │
+├──────────────┬─────────────────────────────────────┬────────────────┤
+│     CHAT     │            WORDLE + CEMENTIX        │    ALPHABET    │
+│              │  ┌─────────────────────────────────┐ │                │
+│  💬 Messages │  │         Grille Wordle           │ │  A B C D       │
+│              │  └─────────────────────────────────┘ │  E F G H       │
+│  [Input...]  │                                     │  I J K L       │
+│              │  🎯 Cementix – Cherchez le mot !    │  M N O P       │
+│              │  [Input mot...] [Valider]           │  Q R S T       │
+│              │  ┌─────────────────────────────────┐ │  U V W X       │
+│              │  │ Tentatives (triées par score)  │ │  Y Z           │
+│              │  │ Player1 - chat - 85/100 🔥     │ │                │
+│              │  │ Player2 - animal - 70/100 🔥   │ │ États:         │
+│              │  └─────────────────────────────────┘ │ • Vert: Wordle │
+│              │                                     │ • Gris: utilisé│
+│              │                                     │ • Blanc: vierge│
+└──────────────┴─────────────────────────────────────┴────────────────┘
+            </div>
+        </div>
+
+        <div class="fix-section">
+            <div class="fix-title">🔧 Spécifications Techniques</div>
+            <div class="fix-item">
+                <strong>Grid Layout :</strong> 3 colonnes (280px | 1fr | 200px) + 3 lignes
+            </div>
+            <div class="fix-item">
+                <strong>Hauteurs calculées :</strong> calc(100vh - 200px) pour tous les panneaux
+            </div>
+            <div class="fix-item">
+                <strong>Joueurs + Idle :</strong> Layout horizontal 120px de haut, 2 colonnes internes
+            </div>
+            <div class="fix-item">
+                <strong>Alphabet isolé :</strong> Seules les lettres du Wordle affectent l'état
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" class="btn">🎮 Tester le Layout Final</a>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); text-align: center;">
+            <strong style="color: #10b981; font-size: 1.1rem;">🎯 Tous les problèmes résolus !</strong>
+            <br><br>
+            Layout optimisé avec panneau joueurs sous le header, tout accessible dans la fenêtre, et alphabet isolé du Wordle uniquement.
+        </div>
+    </div>
+</body>
+</html>
