@@ -42,58 +42,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gacha rarities configuration
     const gachaRarities = {
         common: { 
-            probability: 80, 
+            probability: 30, 
             color: '#808080', 
-            price: 3, 
+            price: 1, 
             icon: '⚪', 
             variants: ['Épée Commune', 'Bouclier Basique', 'Casque Simple', 'Gants Usés', 'Bottes Trouées', 'Cape Déchirée', 'Anneau Terne', 'Collier Cassé', 'Bracelet Rouillé', 'Ceinture Usagée']
         },
         uncommon: { 
-            probability: 15, 
+            probability: 25, 
             color: '#00FF00', 
-            price: 15, 
+            price: 3, 
             icon: '🟢', 
             variants: ['Épée Verte', 'Bouclier Renforcé', 'Casque Brillant', 'Gants Solides', 'Bottes Neuves', 'Cape Verte', 'Anneau Vert', 'Collier Solide']
         },
         rare: { 
-            probability: 3, 
+            probability: 18, 
             color: '#0080FF', 
-            price: 50, 
+            price: 10, 
             icon: '🔵', 
             variants: ['Épée Bleue', 'Bouclier Magique', 'Casque Enchanté', 'Gants Magiques', 'Bottes Rapides', 'Cape Bleue']
         },
         epic: { 
-            probability: 1, 
+            probability: 12, 
             color: '#AA00FF', 
-            price: 200, 
+            price: 50, 
             icon: '🟣', 
             variants: ['Épée Violette', 'Bouclier Épique', 'Casque Royal', 'Gants Épiques', 'Bottes Volantes']
         },
         legendary: { 
-            probability: 0.6, 
+            probability: 7, 
             color: '#FFAA00', 
-            price: 500, 
+            price: 100, 
             icon: '🟠', 
             variants: ['Épée Légendaire', 'Bouclier Doré', 'Casque Divin', 'Gants Dorés']
         },
         mythic: { 
-            probability: 0.3, 
+            probability: 4, 
             color: '#FF0000', 
-            price: 1000, 
+            price: 250, 
             icon: '🔴', 
             variants: ['Épée Mythique', 'Bouclier Sanglant', 'Casque Démoniaque']
         },
         exotic: { 
-            probability: 0.09, 
-            color: 'linear-gradient(45deg, #0080FF, #00FF00)', 
-            price: 2500, 
+            probability: 2.5, 
+            color: 'linear-gradient(to right, #0080FF, #00FF00)', 
+            price: 500, 
             icon: '🌈', 
             variants: ['Épée Arc-en-ciel', 'Bouclier Prismatique']
         },
         radiant: { 
-            probability: 0.01, 
-            color: 'linear-gradient(45deg, #AA00FF, #FF0000)', 
-            price: 5000, 
+            probability: 1.5, 
+            color: 'linear-gradient(to right, #AA00FF, #FF0000)', 
+            price: 1000, 
             icon: '✨', 
             variants: ['Épée Radieuse', 'Bouclier Cosmique']
         }
@@ -192,6 +192,13 @@ document.addEventListener('DOMContentLoaded', function() {
         inventoryMoney: document.getElementById("inventory-money"),
         inventoryTotal: document.getElementById("inventory-total"),
         inventoryGrid: document.getElementById("inventory-grid"),
+        
+        // Drop Rates Modal
+        btnDropRates: document.getElementById("btn-drop-rates"),
+        dropRatesModal: document.getElementById("drop-rates-modal"),
+        dropRatesClose: document.getElementById("drop-rates-close"),
+        dropRatesChart: document.getElementById("drop-rates-chart"),
+        dropRatesTableBody: document.getElementById("drop-rates-table-body"),
         
         // Cementix elements
         cementixPanel: document.getElementById("cementix-panel"),
@@ -632,6 +639,93 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 3000);
             }
         }
+    }
+    
+    // === DROP RATES MODAL ===
+    function showDropRatesModal() {
+        if (elements.dropRatesModal) {
+            elements.dropRatesModal.classList.add('show');
+            generateDropRatesTable();
+            animateDropRatesTable();
+        }
+    }
+    
+    function hideDropRatesModal() {
+        if (elements.dropRatesModal) {
+            elements.dropRatesModal.classList.remove('show');
+        }
+    }
+    
+    function generateDropRatesTable() {
+        if (!elements.dropRatesTableBody) return;
+        
+        elements.dropRatesTableBody.innerHTML = '';
+        
+        // Convert gachaRarities to array format for easier handling
+        const dropRates = Object.entries(gachaRarities).map(([key, config]) => ({
+            name: key.charAt(0).toUpperCase() + key.slice(1),
+            percent: config.probability,
+            color: config.color,
+            price: config.price,
+            icon: config.icon
+        }));
+        
+        dropRates.forEach((rarity, index) => {
+            const row = document.createElement('tr');
+            row.className = 'drop-rates-row';
+            row.style.animationDelay = `${index * 0.1}s`;
+            
+            // Handle gradient colors for exotic and radiant
+            let colorStyle = '';
+            if (rarity.color.includes('gradient')) {
+                colorStyle = `background: ${rarity.color}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;`;
+            } else {
+                colorStyle = `color: ${rarity.color};`;
+            }
+            
+            row.innerHTML = `
+                <td class="rarity-icon">${rarity.icon}</td>
+                <td class="rarity-name" style="${colorStyle}">${rarity.name}</td>
+                <td class="rarity-percent" style="${colorStyle}">
+                    <span class="percent-counter" data-target="${rarity.percent}">0</span>%
+                </td>
+                <td>
+                    <div class="rarity-bar-container">
+                        <div class="rarity-bar" style="background: ${rarity.color};" data-width="${rarity.percent}"></div>
+                    </div>
+                </td>
+                <td class="rarity-price">${rarity.price}$</td>
+            `;
+            
+            elements.dropRatesTableBody.appendChild(row);
+        });
+    }
+    
+    function animateDropRatesTable() {
+        // Animate percentage counters
+        const counters = elements.dropRatesTableBody.querySelectorAll('.percent-counter');
+        counters.forEach((counter, index) => {
+            const target = parseFloat(counter.dataset.target);
+            let current = 0;
+            const increment = target / 60; // 60 frames for 1 second animation
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = current.toFixed(1);
+            }, 16); // ~60fps
+        });
+        
+        // Animate bars
+        const bars = elements.dropRatesTableBody.querySelectorAll('.rarity-bar');
+        bars.forEach((bar, index) => {
+            setTimeout(() => {
+                const width = parseFloat(bar.dataset.width);
+                bar.style.width = `${Math.min(width * 3, 100)}%`; // Scale for visual effect
+            }, index * 100);
+        });
     }
     
     // Debug functions for testing
@@ -1394,6 +1488,16 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Inventory button not found!');
         }
         
+        // Drop rates button
+        if (elements.btnDropRates) {
+            console.log('✅ Drop rates button found, adding click handler');
+            elements.btnDropRates.addEventListener('click', () => {
+                showDropRatesModal();
+            });
+        } else {
+            console.error('❌ Drop rates button not found!');
+        }
+        
         // Gacha modal close button
         if (elements.gachaClose) {
             elements.gachaClose.addEventListener('click', () => {
@@ -1405,6 +1509,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (elements.inventoryClose) {
             elements.inventoryClose.addEventListener('click', () => {
                 elements.inventoryModal.classList.add('hidden');
+            });
+        }
+        
+        // Drop rates modal close button
+        if (elements.dropRatesClose) {
+            elements.dropRatesClose.addEventListener('click', () => {
+                hideDropRatesModal();
             });
         }
         
@@ -1422,6 +1533,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'Escape') {
                 elements.gachaModal.classList.add('hidden');
                 elements.inventoryModal.classList.add('hidden');
+                hideDropRatesModal();
             }
         });
         
@@ -1437,6 +1549,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 elements.inventoryModal.classList.add('hidden');
             }
         });
+        
+        if (elements.dropRatesModal) {
+            elements.dropRatesModal.addEventListener('click', (e) => {
+                if (e.target === elements.dropRatesModal) {
+                    hideDropRatesModal();
+                }
+            });
+        }
         
         console.log('🎰 Gacha system initialization complete!');
     }
