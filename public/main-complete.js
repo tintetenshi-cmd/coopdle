@@ -793,6 +793,107 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`💡 Revealed letter ${correctLetter} at position (${row}, ${col})`);
     }
     
+    function updateSubmitButton() {
+        if (!elements.crosswordSubmit || crosswordState.selectedWord === null) return;
+        
+        const selectedWord = crosswordState.words.find(w => w.id === crosswordState.selectedWord);
+        if (!selectedWord) return;
+        
+        // Check if the selected word is complete
+        let isComplete = true;
+        for (let i = 0; i < selectedWord.length; i++) {
+            let cellRow, cellCol;
+            if (selectedWord.direction === 'horizontal') {
+                cellRow = selectedWord.row;
+                cellCol = selectedWord.col + i;
+            } else {
+                cellRow = selectedWord.row + i;
+                cellCol = selectedWord.col;
+            }
+            
+            if (!crosswordState.grid[cellRow][cellCol].letter) {
+                isComplete = false;
+                break;
+            }
+        }
+        
+        elements.crosswordSubmit.disabled = !isComplete;
+        elements.crosswordSubmit.textContent = '✓ Valider';
+    }
+    
+    function submitCrosswordWord() {
+        if (crosswordState.selectedWord === null) return;
+        
+        const selectedWord = crosswordState.words.find(w => w.id === crosswordState.selectedWord);
+        if (!selectedWord) return;
+        
+        // Get the word letters
+        const wordLetters = [];
+        for (let i = 0; i < selectedWord.length; i++) {
+            let cellRow, cellCol;
+            if (selectedWord.direction === 'horizontal') {
+                cellRow = selectedWord.row;
+                cellCol = selectedWord.col + i;
+            } else {
+                cellRow = selectedWord.row + i;
+                cellCol = selectedWord.col;
+            }
+            wordLetters.push(crosswordState.grid[cellRow][cellCol].letter || '');
+        }
+        
+        const wordString = wordLetters.join('');
+        
+        if (wordString.length !== selectedWord.word.length) {
+            showError("Le mot n'est pas complet !");
+            return;
+        }
+        
+        // Check if the word is correct
+        if (wordString === selectedWord.word) {
+            // Mark word as found
+            selectedWord.found = true;
+            crosswordState.foundWords++;
+            
+            // Mark cells as correct
+            for (let i = 0; i < selectedWord.length; i++) {
+                let cellRow, cellCol;
+                if (selectedWord.direction === 'horizontal') {
+                    cellRow = selectedWord.row;
+                    cellCol = selectedWord.col + i;
+                } else {
+                    cellRow = selectedWord.row + i;
+                    cellCol = selectedWord.col;
+                }
+                
+                const cell = document.querySelector(`[data-row="${cellRow}"][data-col="${cellCol}"]`);
+                if (cell) {
+                    cell.classList.add('correct');
+                }
+            }
+            
+            // Update UI
+            updateCrosswordUI();
+            renderCrosswordDefinitions();
+            
+            showInfo(`Bravo ! Vous avez trouvé "${wordString}" !`);
+            
+            // Check if all words are found
+            if (crosswordState.foundWords >= crosswordState.totalWords) {
+                showCrosswordResult(true);
+            }
+        } else {
+            showError(`"${wordString}" n'est pas le bon mot !`);
+        }
+        
+        // Clear selection
+        crosswordState.selectedWord = null;
+        crosswordState.selectedCell = null;
+        document.querySelectorAll('.crossword-cell').forEach(cell => {
+            cell.classList.remove('selected', 'word-highlight');
+        });
+        elements.crosswordSubmit.disabled = true;
+    }
+    
     // === GESTION DES MODES DE JEU ===
     function switchGameMode(mode) {
         gameState.mode = mode;
