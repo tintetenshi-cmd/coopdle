@@ -271,6 +271,46 @@
             color: #64748b;
         }
         
+        /* === ONGLETS MODE DE JEU === */
+        .game-mode-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        
+        .game-mode-tab {
+            background: 
+                linear-gradient(135deg, rgba(148, 163, 184, 0.1) 0%, rgba(148, 163, 184, 0.05) 100%),
+                rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-mode-tab:hover {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%),
+                rgba(10, 10, 15, 0.8);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+        }
+        
+        .game-mode-tab.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            border-color: rgba(139, 92, 246, 0.6);
+            color: white;
+            box-shadow: 
+                0 4px 12px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
         .mode-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -596,7 +636,219 @@
             font-size: 0.8rem;
         }
         
-        /* === GRILLE WORDLE === */
+        /* === GRILLE CROSSWORD === */
+        .crossword-panel {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(168, 85, 247, 0.03) 100%),
+                rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: calc(100vh - 160px);
+            overflow-y: auto;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        .crossword-info {
+            color: #94a3b8;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .crossword-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            align-items: flex-start;
+        }
+        
+        .crossword-grid {
+            display: grid;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+        
+        .crossword-cell {
+            width: 32px;
+            height: 32px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .crossword-cell.white {
+            background: 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            color: #1a1a2e;
+            box-shadow: 
+                inset 0 1px 2px rgba(0, 0, 0, 0.1),
+                0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .crossword-cell.black {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%);
+            border-color: rgba(0, 0, 0, 0.5);
+            cursor: default;
+        }
+        
+        .crossword-cell.selected {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%);
+            border-color: #8b5cf6;
+            box-shadow: 
+                0 0 0 2px rgba(139, 92, 246, 0.4),
+                0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        
+        .crossword-cell.word-highlight {
+            background: 
+                linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+        
+        .crossword-cell.correct {
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            border-color: #10b981;
+            color: white;
+            box-shadow: 
+                0 4px 12px rgba(16, 185, 129, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .crossword-cell.hint-revealed {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+            border-color: #f59e0b;
+            color: white;
+            box-shadow: 
+                0 4px 12px rgba(245, 158, 11, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: hintPulse 2s ease-in-out;
+        }
+        
+        @keyframes hintPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 4px 12px rgba(245, 158, 11, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+            50% { 
+                box-shadow: 
+                    0 8px 25px rgba(245, 158, 11, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+        }
+        
+        .crossword-cell-number {
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #64748b;
+            line-height: 1;
+        }
+        
+        .crossword-definitions {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .definitions-section h4 {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .definitions-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .definition-item {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .definition-item:hover {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+        
+        .definition-item.active {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+        
+        .definition-item.completed {
+            background: 
+                linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        
+        .definition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .definition-number {
+            font-weight: 600;
+            color: #a855f7;
+            font-size: 0.8rem;
+        }
+        
+        .definition-direction {
+            font-size: 0.7rem;
+            color: #64748b;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .definition-text {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .definition-progress {
+            margin-top: 6px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
         .board-panel {
             background: 
                 linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(168, 85, 247, 0.03) 100%),
@@ -823,6 +1075,111 @@
             flex-direction: column;
             min-height: 0;
             max-height: 50%;
+        }
+        
+        /* === SECTION DÉFINITIONS CROSSWORD (50% du haut) === */
+        .crossword-definitions-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            max-height: 50%;
+        }
+        
+        .crossword-definitions-panel {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .definitions-list-sidebar {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+            min-height: 0;
+        }
+        
+        .definitions-list-sidebar::-webkit-scrollbar {
+            width: 3px;
+        }
+        
+        .definitions-list-sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 2px;
+        }
+        
+        .definitions-list-sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border-radius: 2px;
+        }
+        
+        .definitions-list-sidebar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+        }
+        
+        .definition-item-sidebar {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .definition-item-sidebar:hover {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+        
+        .definition-item-sidebar.active {
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+        
+        .definition-item-sidebar.completed {
+            background: 
+                linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        
+        .definition-header-sidebar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+        
+        .definition-number-sidebar {
+            font-weight: 600;
+            color: #a855f7;
+            font-size: 0.75rem;
+        }
+        
+        .definition-direction-sidebar {
+            font-size: 0.65rem;
+            color: #64748b;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+        
+        .definition-text-sidebar {
+            color: #cbd5e1;
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
+        
+        .definition-progress-sidebar {
+            margin-top: 4px;
+            font-size: 0.65rem;
+            color: #94a3b8;
         }
         
         .alphabet-grid {
@@ -2812,6 +3169,71 @@
                 overflow-y: visible;
             }
             
+            /* Crossword mobile */
+            .crossword-panel {
+                grid-row: 2;
+                grid-column: 1;
+                padding: 15px;
+                height: auto;
+                min-height: 700px;
+                max-height: none;
+                overflow-y: visible;
+            }
+            
+            .crossword-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .crossword-grid {
+                justify-self: center;
+                max-width: 100%;
+            }
+            
+            .crossword-cell {
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
+            }
+            
+            .crossword-cell-number {
+                font-size: 0.5rem;
+            }
+            
+            .crossword-definitions {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .definitions-list {
+                max-height: 300px;
+            }
+            
+            .definition-item {
+                padding: 8px 10px;
+                margin-bottom: 6px;
+            }
+            
+            .definition-header {
+                margin-bottom: 3px;
+            }
+            
+            .definition-number {
+                font-size: 0.75rem;
+            }
+            
+            .definition-direction {
+                font-size: 0.65rem;
+            }
+            
+            .definition-text {
+                font-size: 0.8rem;
+            }
+            
+            .definition-progress {
+                font-size: 0.7rem;
+            }
+            
             .word-info {
                 font-size: 0.9rem;
                 margin-bottom: 15px;
@@ -2912,6 +3334,52 @@
                 max-height: none;
                 overflow: visible;
                 margin-bottom: 15px; /* PLUS D'ESPACE : 10px → 15px */
+            }
+            
+            .crossword-definitions-section {
+                height: auto;
+                min-height: 250px;
+                max-height: none;
+                overflow: visible;
+                margin-bottom: 15px;
+            }
+            
+            .crossword-definitions-panel {
+                height: 100%;
+            }
+            
+            .definitions-list-sidebar {
+                height: auto;
+                min-height: 200px;
+                max-height: 200px;
+                overflow-y: auto;
+                padding-right: 8px;
+            }
+            
+            .definition-item-sidebar {
+                padding: 6px 8px;
+                margin-bottom: 4px;
+                font-size: 0.75rem;
+            }
+            
+            .definition-header-sidebar {
+                margin-bottom: 2px;
+            }
+            
+            .definition-number-sidebar {
+                font-size: 0.7rem;
+            }
+            
+            .definition-direction-sidebar {
+                font-size: 0.6rem;
+            }
+            
+            .definition-text-sidebar {
+                font-size: 0.7rem;
+            }
+            
+            .definition-progress-sidebar {
+                font-size: 0.6rem;
             }
             
             .alphabet-grid {
@@ -3348,6 +3816,28 @@
                     </select>
                 </div>
 
+                <div class="field-group" id="field-crossword-words" style="display: none;">
+                    <label for="select-crossword-words">🧩 Nombre de mots</label>
+                    <select id="select-crossword-words">
+                        <option value="3">3 mots</option>
+                        <option value="4">4 mots</option>
+                        <option value="5" selected>5 mots</option>
+                        <option value="6">6 mots</option>
+                        <option value="7">7 mots</option>
+                        <option value="8">8 mots</option>
+                        <option value="9">9 mots</option>
+                        <option value="10">10 mots</option>
+                    </select>
+                </div>
+
+                <div class="field-group" id="field-game-mode">
+                    <label>🎮 Mode de jeu</label>
+                    <div class="game-mode-tabs">
+                        <button type="button" id="tab-wordle" class="game-mode-tab active">🎯 Wordle</button>
+                        <button type="button" id="tab-crossword" class="game-mode-tab">🧩 Crossword</button>
+                    </div>
+                </div>
+
                 <div class="field-group" id="field-room-code" style="display: none;">
                     <label for="input-room-code">Code de la room</label>
                     <input id="input-room-code" type="text" placeholder="Code de la room à rejoindre" />
@@ -3414,12 +3904,47 @@
                     </div>
                 </div>
 
+                <!-- Grille Crossword (alternative à Wordle) -->
+                <div class="board-panel crossword-panel hidden">
+                    <div class="panel-title">🧩 Mots croisés</div>
+                    <div class="crossword-info">
+                        Mots : <span id="crossword-found">0</span>/<span id="crossword-total">5</span> • 
+                        Mode : <span id="crossword-mode">Crossword</span>
+                    </div>
+                    <div class="crossword-container">
+                        <div id="crossword-grid" class="crossword-grid"></div>
+                        <div class="crossword-definitions">
+                            <div class="definitions-section">
+                                <h4>📍 Définitions</h4>
+                                <div id="crossword-definitions-list" class="definitions-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="crossword-error" class="status-message error hidden"></div>
+                    <div id="crossword-info-msg" class="status-message info hidden"></div>
+                    
+                    <!-- Résultat crossword -->
+                    <div id="crossword-result-integrated" class="game-result-integrated hidden">
+                        <div class="result-icon">🎉</div>
+                        <div class="result-text">Mots croisés terminés !</div>
+                        <button id="btn-new-crossword-integrated" class="btn result-btn-integrated">🔄 Nouvelle partie</button>
+                    </div>
+                </div>
+
                 <!-- Panneau Alphabet + Joueurs (3ème colonne) -->
                 <div class="alphabet-players-panel">
-                    <!-- Section Alphabet (50% du haut) -->
-                    <div class="alphabet-section">
+                    <!-- Section Alphabet (50% du haut) - Wordle uniquement -->
+                    <div class="alphabet-section wordle-only">
                         <div class="panel-title">🔤 Alphabet</div>
                         <div class="alphabet-grid" id="alphabet-grid"></div>
+                    </div>
+                    
+                    <!-- Section Définitions Crossword (50% du haut) - Crossword uniquement -->
+                    <div class="crossword-definitions-section crossword-only hidden">
+                        <div class="panel-title">📝 Définitions</div>
+                        <div class="crossword-definitions-panel">
+                            <div id="crossword-definitions-sidebar" class="definitions-list-sidebar"></div>
+                        </div>
                     </div>
                     
                     <!-- Séparateur -->

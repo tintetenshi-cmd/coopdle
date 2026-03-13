@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let playerId = null;
     let currentMode = null;
     let gameState = {
+        mode: 'wordle', // 'wordle' ou 'crossword'
         word: '',
         length: 0,
         attempts: 0,
@@ -19,6 +20,17 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPlayerId: null,
         players: [],
         revealedLetters: []
+    };
+    
+    // Crossword State
+    let crosswordState = {
+        grid: [],
+        words: [],
+        definitions: [],
+        selectedWord: null,
+        selectedCell: null,
+        foundWords: 0,
+        totalWords: 5
     };
     
     // Gacha System State
@@ -131,15 +143,22 @@ document.addEventListener('DOMContentLoaded', function() {
         inputPseudo: document.getElementById("input-pseudo"),
         inputRoomCode: document.getElementById("input-room-code"),
         selectLength: document.getElementById("select-length"),
+        selectCrosswordWords: document.getElementById("select-crossword-words"),
         selectAvatar: document.getElementById("select-avatar"),
         selectNameColor: document.getElementById("select-name-color"),
         fieldRoomCode: document.getElementById("field-room-code"),
         fieldLength: document.getElementById("field-length"),
+        fieldCrosswordWords: document.getElementById("field-crossword-words"),
+        fieldGameMode: document.getElementById("field-game-mode"),
+        tabWordle: document.getElementById("tab-wordle"),
+        tabCrossword: document.getElementById("tab-crossword"),
         modeButtonsMain: document.getElementById("mode-buttons-main"),
         modeButtonsJoin: document.getElementById("mode-buttons-join"),
         
         // Game UI
         gameContainer: document.querySelector(".game-container"),
+        boardPanel: document.querySelector(".board-panel:not(.crossword-panel)"),
+        crosswordPanel: document.querySelector(".crossword-panel"),
         badgeMode: document.getElementById("badge-mode"),
         badgeRoom: document.getElementById("badge-room"),
         wordLength: document.getElementById("word-length"),
@@ -151,6 +170,18 @@ document.addEventListener('DOMContentLoaded', function() {
         errorEl: document.getElementById("error"),
         infoEl: document.getElementById("info"),
         statusCurrentPlayer: document.getElementById("status-current-player"),
+        
+        // Crossword elements
+        crosswordGrid: document.getElementById("crossword-grid"),
+        crosswordFound: document.getElementById("crossword-found"),
+        crosswordTotal: document.getElementById("crossword-total"),
+        crosswordMode: document.getElementById("crossword-mode"),
+        crosswordDefinitionsList: document.getElementById("crossword-definitions-list"),
+        crosswordDefinitionsSidebar: document.getElementById("crossword-definitions-sidebar"),
+        crosswordError: document.getElementById("crossword-error"),
+        crosswordInfoMsg: document.getElementById("crossword-info-msg"),
+        crosswordResultIntegrated: document.getElementById("crossword-result-integrated"),
+        btnNewCrosswordIntegrated: document.getElementById("btn-new-crossword-integrated"),
         // Game result elements
         gameResult: document.getElementById("game-result"),
         gameResultIntegrated: document.getElementById("game-result-integrated"),
@@ -647,22 +678,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function buyHintWithGacha() {
-        if (gachaSystem.money >= gachaSystem.hintCost && gameState.status === 'playing' && ws) {
+        if (gachaSystem.money >= gachaSystem.hintCost && ws) {
             const oldCost = gachaSystem.hintCost;
             gachaSystem.money -= gachaSystem.hintCost;
-            gachaSystem.hintCost = Math.floor(gachaSystem.hintCost * 1.5); // Augmentation plus significative
+            gachaSystem.hintCost = Math.floor(gachaSystem.hintCost * 1.5);
             
-            ws.send(JSON.stringify({
-                type: 'shop',
-                item: 'letter'
-            }));
+            // Handle crossword hints
+            if (gameState.mode === 'crossword') {
+                revealRandomCrosswordLetter();
+            } else {
+                // Original Wordle hint logic
+                if (gameState.status === 'playing') {
+                    ws.send(JSON.stringify({
+                        type: 'shop',
+                        item: 'letter'
+                    }));
+                }
+            }
             
             saveGachaSystem();
             updateGachaUI();
             
             // Show feedback message
             if (elements.info) {
-                elements.info.textContent = `💡 Indice acheté pour ${oldCost}$ ! Prochain indice : ${gachaSystem.hintCost}$`;
+                const modeText = gameState.mode === 'crossword' ? 'Lettre révélée' : 'Indice acheté';
+                elements.info.textContent = `💡 ${modeText} pour ${oldCost}$ ! Prochain indice : ${gachaSystem.hintCost}$`;
                 elements.info.classList.remove('hidden');
                 setTimeout(() => {
                     elements.info.classList.add('hidden');
@@ -675,23 +715,578 @@ document.addEventListener('DOMContentLoaded', function() {
             let errorMsg = '';
             if (gachaSystem.money < gachaSystem.hintCost) {
                 errorMsg = `💰 Pas assez d'argent ! Il vous faut ${gachaSystem.hintCost}$ (vous avez ${Math.floor(gachaSystem.money)}$)`;
-            } else if (gameState.status !== 'playing') {
+            } else if (gameState.status !== 'playing' && gameState.mode !== 'crossword') {
                 errorMsg = '🎮 Les indices ne sont disponibles que pendant une partie !';
             } else {
                 errorMsg = '❌ Impossible d\'acheter un indice maintenant';
             }
             
-            if (elements.error) {
-                elements.error.textContent = errorMsg;
-                elements.error.classList.remove('hidden');
-                setTimeout(() => {
-                    elements.error.classList.add('hidden');
-                }, 3000);
+            if (elements.error || elements.crosswordError) {
+                const errorElement = gameState.mode === 'crossword' ? elements.crosswordError : elements.error;
+                if (errorElement) {
+                    errorElement.textContent = errorMsg;
+                    errorElement.classList.remove('hidden');
+                    setTimeout(() => {
+                        errorElement.classList.add('hidden');
+                    }, 3000);
+                }
             }
         }
     }
     
-    // === DROP RATES MODAL ===
+    function revealRandomCrosswordLetter() {
+        if (!crosswordState.grid || crosswordState.foundWords >= crosswordState.totalWords) return;
+        
+        // Find all empty white cells that have correct letters
+        const emptyCells = [];
+        for (let row = 0; row < crosswordState.grid.length; row++) {
+            for (let col = 0; col < crosswordState.grid[row].length; col++) {
+                const cell = crosswordState.grid[row][col];
+                if (cell.type === 'white' && !cell.letter && cell.correctLetter) {
+                    emptyCells.push({ row, col, correctLetter: cell.correctLetter });
+                }
+            }
+        }
+        
+        if (emptyCells.length === 0) {
+            if (elements.crosswordInfoMsg) {
+                elements.crosswordInfoMsg.textContent = '💡 Toutes les lettres sont déjà révélées !';
+                elements.crosswordInfoMsg.classList.remove('hidden');
+                setTimeout(() => {
+                    elements.crosswordInfoMsg.classList.add('hidden');
+                }, 3000);
+            }
+            return;
+        }
+        
+        // Select a random empty cell
+        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        const { row, col, correctLetter } = randomCell;
+        
+        // Reveal the letter
+        crosswordState.grid[row][col].letter = correctLetter;
+        
+        // Update the visual cell
+        const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        if (cellElement) {
+            const numberEl = cellElement.querySelector('.crossword-cell-number');
+            cellElement.textContent = correctLetter;
+            if (numberEl) {
+                cellElement.appendChild(numberEl); // Re-add number if it exists
+            }
+            
+            // Add a special hint class for visual feedback
+            cellElement.classList.add('hint-revealed');
+            setTimeout(() => {
+                cellElement.classList.remove('hint-revealed');
+            }, 2000);
+        }
+        
+        // Check if any words are now complete
+        crosswordState.words.forEach(word => {
+            if (!word.found) {
+                checkCrosswordWord(word.id);
+            }
+        });
+        
+        console.log(`💡 Revealed letter ${correctLetter} at position (${row}, ${col})`);
+    }
+    
+    // === GESTION DES MODES DE JEU ===
+    function switchGameMode(mode) {
+        gameState.mode = mode;
+        
+        // Update tab appearance
+        elements.tabWordle.classList.toggle('active', mode === 'wordle');
+        elements.tabCrossword.classList.toggle('active', mode === 'crossword');
+        
+        // Show/hide relevant fields
+        if (mode === 'wordle') {
+            elements.fieldLength.style.display = 'block';
+            elements.fieldCrosswordWords.style.display = 'none';
+        } else {
+            elements.fieldLength.style.display = 'none';
+            elements.fieldCrosswordWords.style.display = 'block';
+        }
+        
+        console.log(`🎮 Game mode switched to: ${mode}`);
+    }
+    
+    function showGameBoard(mode) {
+        if (mode === 'crossword') {
+            elements.boardPanel.classList.add('hidden');
+            elements.crosswordPanel.classList.remove('hidden');
+            
+            // Show crossword definitions in sidebar, hide alphabet
+            document.querySelectorAll('.wordle-only').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.crossword-only').forEach(el => el.classList.remove('hidden'));
+        } else {
+            elements.boardPanel.classList.remove('hidden');
+            elements.crosswordPanel.classList.add('hidden');
+            
+            // Show alphabet, hide crossword definitions in sidebar
+            document.querySelectorAll('.wordle-only').forEach(el => el.classList.remove('hidden'));
+            document.querySelectorAll('.crossword-only').forEach(el => el.classList.add('hidden'));
+        }
+    }
+    
+    // === FONCTIONS CROSSWORD ===
+    function generateCrosswordGrid(wordCount) {
+        // Simple word list for demonstration
+        const wordList = [
+            { word: 'CHAT', definition: 'Animal domestique félin' },
+            { word: 'MAISON', definition: 'Lieu où l\'on habite' },
+            { word: 'SOLEIL', definition: 'Étoile du système solaire' },
+            { word: 'LIVRE', definition: 'Objet pour lire' },
+            { word: 'VOITURE', definition: 'Véhicule à quatre roues' },
+            { word: 'JARDIN', definition: 'Espace vert cultivé' },
+            { word: 'MUSIQUE', definition: 'Art des sons' },
+            { word: 'VOYAGE', definition: 'Déplacement vers un lieu lointain' },
+            { word: 'CUISINE', definition: 'Art de préparer les aliments' },
+            { word: 'AMOUR', definition: 'Sentiment profond d\'affection' }
+        ];
+        
+        // Select random words
+        const selectedWords = wordList.slice(0, wordCount);
+        crosswordState.totalWords = wordCount;
+        crosswordState.foundWords = 0;
+        
+        // Simple grid generation (8x8 for now)
+        const gridSize = 8;
+        crosswordState.grid = Array(gridSize).fill().map(() => Array(gridSize).fill({ type: 'black', letter: '', number: null }));
+        crosswordState.words = [];
+        crosswordState.definitions = [];
+        
+        // Place words in a simple pattern
+        let wordIndex = 0;
+        for (let i = 0; i < selectedWords.length && wordIndex < wordCount; i++) {
+            const wordData = selectedWords[i];
+            const word = wordData.word;
+            const isHorizontal = i % 2 === 0;
+            
+            let row, col;
+            if (isHorizontal) {
+                row = Math.floor(i / 2) * 2 + 1;
+                col = 1;
+                if (row >= gridSize || col + word.length >= gridSize) continue;
+                
+                // Place horizontal word
+                for (let j = 0; j < word.length; j++) {
+                    crosswordState.grid[row][col + j] = {
+                        type: 'white',
+                        letter: '',
+                        correctLetter: word[j],
+                        number: j === 0 ? wordIndex + 1 : null
+                    };
+                }
+                
+                crosswordState.words.push({
+                    id: wordIndex,
+                    word: word,
+                    direction: 'horizontal',
+                    row: row,
+                    col: col,
+                    length: word.length,
+                    found: false
+                });
+            } else {
+                row = 1;
+                col = Math.floor(i / 2) * 2 + 1;
+                if (col >= gridSize || row + word.length >= gridSize) continue;
+                
+                // Place vertical word
+                for (let j = 0; j < word.length; j++) {
+                    if (crosswordState.grid[row + j][col].type === 'white') {
+                        // Intersection - keep existing letter if compatible
+                        if (crosswordState.grid[row + j][col].correctLetter !== word[j]) {
+                            continue; // Skip incompatible intersection
+                        }
+                    } else {
+                        crosswordState.grid[row + j][col] = {
+                            type: 'white',
+                            letter: '',
+                            correctLetter: word[j],
+                            number: j === 0 ? wordIndex + 1 : null
+                        };
+                    }
+                }
+                
+                crosswordState.words.push({
+                    id: wordIndex,
+                    word: word,
+                    direction: 'vertical',
+                    row: row,
+                    col: col,
+                    length: word.length,
+                    found: false
+                });
+            }
+            
+            crosswordState.definitions.push({
+                id: wordIndex,
+                number: wordIndex + 1,
+                direction: isHorizontal ? 'Horizontal' : 'Vertical',
+                definition: wordData.definition,
+                word: word
+            });
+            
+            wordIndex++;
+        }
+        
+        console.log('🧩 Crossword grid generated:', crosswordState);
+    }
+    
+    function renderCrosswordGrid() {
+        if (!elements.crosswordGrid) return;
+        
+        const gridSize = crosswordState.grid.length;
+        elements.crosswordGrid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+        elements.crosswordGrid.innerHTML = '';
+        
+        for (let row = 0; row < gridSize; row++) {
+            for (let col = 0; col < gridSize; col++) {
+                const cellData = crosswordState.grid[row][col];
+                const cell = document.createElement('div');
+                cell.className = `crossword-cell ${cellData.type}`;
+                cell.dataset.row = row;
+                cell.dataset.col = col;
+                
+                if (cellData.type === 'white') {
+                    cell.textContent = cellData.letter;
+                    if (cellData.number) {
+                        const numberEl = document.createElement('div');
+                        numberEl.className = 'crossword-cell-number';
+                        numberEl.textContent = cellData.number;
+                        cell.appendChild(numberEl);
+                    }
+                    
+                    cell.addEventListener('click', () => selectCrosswordCell(row, col));
+                }
+                
+                elements.crosswordGrid.appendChild(cell);
+            }
+        }
+    }
+    
+    function renderCrosswordDefinitions() {
+        // Render in main crossword panel
+        if (elements.crosswordDefinitionsList) {
+            elements.crosswordDefinitionsList.innerHTML = '';
+            
+            crosswordState.definitions.forEach(def => {
+                const defEl = document.createElement('div');
+                defEl.className = 'definition-item';
+                defEl.dataset.wordId = def.id;
+                
+                const word = crosswordState.words.find(w => w.id === def.id);
+                if (word && word.found) {
+                    defEl.classList.add('completed');
+                }
+                
+                defEl.innerHTML = `
+                    <div class="definition-header">
+                        <span class="definition-number">${def.number}</span>
+                        <span class="definition-direction">${def.direction}</span>
+                    </div>
+                    <div class="definition-text">${def.definition}</div>
+                    <div class="definition-progress">${word ? word.word.length : 0} lettres</div>
+                `;
+                
+                defEl.addEventListener('click', () => selectCrosswordWord(def.id));
+                elements.crosswordDefinitionsList.appendChild(defEl);
+            });
+        }
+        
+        // Render in sidebar
+        if (elements.crosswordDefinitionsSidebar) {
+            elements.crosswordDefinitionsSidebar.innerHTML = '';
+            
+            crosswordState.definitions.forEach(def => {
+                const defEl = document.createElement('div');
+                defEl.className = 'definition-item-sidebar';
+                defEl.dataset.wordId = def.id;
+                
+                const word = crosswordState.words.find(w => w.id === def.id);
+                if (word && word.found) {
+                    defEl.classList.add('completed');
+                }
+                
+                defEl.innerHTML = `
+                    <div class="definition-header-sidebar">
+                        <span class="definition-number-sidebar">${def.number}</span>
+                        <span class="definition-direction-sidebar">${def.direction}</span>
+                    </div>
+                    <div class="definition-text-sidebar">${def.definition}</div>
+                    <div class="definition-progress-sidebar">${word ? word.word.length : 0} lettres</div>
+                `;
+                
+                defEl.addEventListener('click', () => selectCrosswordWord(def.id));
+                elements.crosswordDefinitionsSidebar.appendChild(defEl);
+            });
+        }
+    }
+    
+    function selectCrosswordCell(row, col) {
+        // Clear previous selection
+        document.querySelectorAll('.crossword-cell').forEach(cell => {
+            cell.classList.remove('selected', 'word-highlight');
+        });
+        
+        const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        if (cell && cell.classList.contains('white')) {
+            cell.classList.add('selected');
+            crosswordState.selectedCell = { row, col };
+            
+            // Find and highlight words containing this cell
+            const wordsAtCell = crosswordState.words.filter(word => {
+                if (word.direction === 'horizontal') {
+                    return word.row === row && col >= word.col && col < word.col + word.length;
+                } else {
+                    return word.col === col && row >= word.row && row < word.row + word.length;
+                }
+            });
+            
+            if (wordsAtCell.length > 0) {
+                selectCrosswordWord(wordsAtCell[0].id);
+            }
+        }
+    }
+    
+    function selectCrosswordWord(wordId) {
+        // Clear previous highlights
+        document.querySelectorAll('.crossword-cell').forEach(cell => {
+            cell.classList.remove('word-highlight');
+        });
+        document.querySelectorAll('.definition-item, .definition-item-sidebar').forEach(def => {
+            def.classList.remove('active');
+        });
+        
+        const word = crosswordState.words.find(w => w.id === wordId);
+        if (!word) return;
+        
+        crosswordState.selectedWord = wordId;
+        
+        // Highlight word cells
+        for (let i = 0; i < word.length; i++) {
+            let cellRow, cellCol;
+            if (word.direction === 'horizontal') {
+                cellRow = word.row;
+                cellCol = word.col + i;
+            } else {
+                cellRow = word.row + i;
+                cellCol = word.col;
+            }
+            
+            const cell = document.querySelector(`[data-row="${cellRow}"][data-col="${cellCol}"]`);
+            if (cell) {
+                cell.classList.add('word-highlight');
+            }
+        }
+        
+        // Highlight definition in both main panel and sidebar
+        const defEl = document.querySelector(`[data-word-id="${wordId}"]`);
+        if (defEl) {
+            defEl.classList.add('active');
+        }
+        
+        const sidebarDefEl = elements.crosswordDefinitionsSidebar?.querySelector(`[data-word-id="${wordId}"]`);
+        if (sidebarDefEl) {
+            sidebarDefEl.classList.add('active');
+        }
+    }
+    
+    function handleCrosswordInput(letter) {
+        if (!crosswordState.selectedCell || !crosswordState.selectedWord !== null) return;
+        
+        const { row, col } = crosswordState.selectedCell;
+        const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        
+        if (cell && cell.classList.contains('white')) {
+            crosswordState.grid[row][col].letter = letter.toUpperCase();
+            cell.textContent = letter.toUpperCase();
+            
+            // Move to next cell in the selected word
+            moveToNextCellInWord();
+            
+            // Check if word is complete
+            checkCrosswordWord(crosswordState.selectedWord);
+        }
+    }
+    
+    function moveToNextCellInWord() {
+        if (crosswordState.selectedWord === null) return;
+        
+        const word = crosswordState.words.find(w => w.id === crosswordState.selectedWord);
+        if (!word) return;
+        
+        const { row, col } = crosswordState.selectedCell;
+        let nextRow = row, nextCol = col;
+        
+        if (word.direction === 'horizontal') {
+            nextCol = col + 1;
+            if (nextCol >= word.col + word.length) return; // End of word
+        } else {
+            nextRow = row + 1;
+            if (nextRow >= word.row + word.length) return; // End of word
+        }
+        
+        selectCrosswordCell(nextRow, nextCol);
+    }
+    
+    function checkCrosswordWord(wordId) {
+        const word = crosswordState.words.find(w => w.id === wordId);
+        if (!word) return;
+        
+        let isComplete = true;
+        let isCorrect = true;
+        
+        for (let i = 0; i < word.length; i++) {
+            let cellRow, cellCol;
+            if (word.direction === 'horizontal') {
+                cellRow = word.row;
+                cellCol = word.col + i;
+            } else {
+                cellRow = word.row + i;
+                cellCol = word.col;
+            }
+            
+            const cellData = crosswordState.grid[cellRow][cellCol];
+            if (!cellData.letter) {
+                isComplete = false;
+                break;
+            }
+            
+            if (cellData.letter !== cellData.correctLetter) {
+                isCorrect = false;
+            }
+        }
+        
+        if (isComplete && isCorrect && !word.found) {
+            word.found = true;
+            crosswordState.foundWords++;
+            
+            // Mark cells as correct
+            for (let i = 0; i < word.length; i++) {
+                let cellRow, cellCol;
+                if (word.direction === 'horizontal') {
+                    cellRow = word.row;
+                    cellCol = word.col + i;
+                } else {
+                    cellRow = word.row + i;
+                    cellCol = word.col;
+                }
+                
+                const cell = document.querySelector(`[data-row="${cellRow}"][data-col="${cellCol}"]`);
+                if (cell) {
+                    cell.classList.add('correct');
+                }
+            }
+            
+            // Update UI
+            updateCrosswordUI();
+            renderCrosswordDefinitions();
+            
+            // Check if all words are found
+            if (crosswordState.foundWords >= crosswordState.totalWords) {
+                showCrosswordResult(true);
+            }
+        }
+    }
+    
+    function updateCrosswordUI() {
+        if (elements.crosswordFound) {
+            elements.crosswordFound.textContent = crosswordState.foundWords;
+        }
+        if (elements.crosswordTotal) {
+            elements.crosswordTotal.textContent = crosswordState.totalWords;
+        }
+    }
+    
+    function showCrosswordResult(won) {
+        if (elements.crosswordResultIntegrated) {
+            elements.crosswordResultIntegrated.classList.remove('hidden');
+        }
+    }
+    
+    function handleCrosswordInput(letter) {
+        if (!crosswordState.selectedCell || crosswordState.selectedWord === null) return;
+        
+        const { row, col } = crosswordState.selectedCell;
+        const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        
+        if (cell && cell.classList.contains('white')) {
+            crosswordState.grid[row][col].letter = letter.toUpperCase();
+            
+            // Update cell display
+            const numberEl = cell.querySelector('.crossword-cell-number');
+            cell.textContent = letter.toUpperCase();
+            if (numberEl) {
+                cell.appendChild(numberEl); // Re-add number if it exists
+            }
+            
+            // Move to next cell in the selected word
+            moveToNextCellInWord();
+            
+            // Check if word is complete
+            checkCrosswordWord(crosswordState.selectedWord);
+        }
+    }
+    
+    function handleCrosswordBackspace() {
+        if (!crosswordState.selectedCell) return;
+        
+        const { row, col } = crosswordState.selectedCell;
+        const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        
+        if (cell && cell.classList.contains('white')) {
+            crosswordState.grid[row][col].letter = '';
+            
+            // Update cell display
+            const numberEl = cell.querySelector('.crossword-cell-number');
+            cell.textContent = '';
+            if (numberEl) {
+                cell.appendChild(numberEl); // Re-add number if it exists
+            }
+        }
+    }
+    
+    function handleCrosswordArrowKey(key) {
+        if (!crosswordState.selectedCell) return;
+        
+        const { row, col } = crosswordState.selectedCell;
+        let newRow = row, newCol = col;
+        
+        switch (key) {
+            case 'ArrowUp':
+                newRow = Math.max(0, row - 1);
+                break;
+            case 'ArrowDown':
+                newRow = Math.min(crosswordState.grid.length - 1, row + 1);
+                break;
+            case 'ArrowLeft':
+                newCol = Math.max(0, col - 1);
+                break;
+            case 'ArrowRight':
+                newCol = Math.min(crosswordState.grid[0].length - 1, col + 1);
+                break;
+        }
+        
+        // Only move to white cells
+        if (crosswordState.grid[newRow][newCol].type === 'white') {
+            selectCrosswordCell(newRow, newCol);
+        }
+    }
+    
+    function startCrosswordGame(wordCount) {
+        console.log(`🧩 Starting crossword game with ${wordCount} words`);
+        
+        generateCrosswordGrid(wordCount);
+        renderCrosswordGrid();
+        renderCrosswordDefinitions();
+        updateCrosswordUI();
+        
+        showGameBoard('crossword');
+    }
     function showDropRatesModal() {
         if (elements.dropRatesModal) {
             elements.dropRatesModal.classList.add('show');
@@ -1446,7 +2041,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!ws || !elements.inputPseudo) return;
         
         const pseudo = elements.inputPseudo.value.trim() || 'Joueur';
+        const gameMode = gameState.mode; // 'wordle' or 'crossword'
         const desiredLength = parseInt(elements.selectLength?.value) || 0;
+        const crosswordWords = parseInt(elements.selectCrosswordWords?.value) || 5;
         const avatar = elements.selectAvatar?.value || 'random';
         const colorId = elements.selectNameColor?.value || 'random';
         
@@ -1457,6 +2054,20 @@ document.addEventListener('DOMContentLoaded', function() {
         clearChat();
         hideGameResult();
         
+        // Handle crossword mode
+        if (gameMode === 'crossword') {
+            // Start crossword game directly (no server communication for now)
+            startCrosswordGame(crosswordWords);
+            
+            if (elements.badgeMode) elements.badgeMode.textContent = `Mode ${mode === 'solo' ? 'Solo' : 'Coop'} - Crossword`;
+            if (elements.badgeRoom) elements.badgeRoom.textContent = `Room: ${roomId}`;
+            
+            setupGameLayout(mode);
+            showScreen(elements.screenGame);
+            return;
+        }
+        
+        // Original Wordle logic
         ws.send(JSON.stringify({
             type: 'join',
             roomId: roomId,
@@ -1471,6 +2082,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setupGameLayout(mode);
         showScreen(elements.screenGame);
+        showGameBoard('wordle');
         
         // Update URL for coop mode
         if (mode === 'coop') {
@@ -1548,6 +2160,27 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Drop rates button not found!');
         }
         
+        // Game mode tabs
+        if (elements.tabWordle) {
+            elements.tabWordle.addEventListener('click', () => {
+                switchGameMode('wordle');
+            });
+        }
+        
+        if (elements.tabCrossword) {
+            elements.tabCrossword.addEventListener('click', () => {
+                switchGameMode('crossword');
+            });
+        }
+        
+        // Crossword new game button
+        if (elements.btnNewCrosswordIntegrated) {
+            elements.btnNewCrosswordIntegrated.addEventListener('click', () => {
+                const wordCount = parseInt(elements.selectCrosswordWords?.value || '5');
+                startCrosswordGame(wordCount);
+            });
+        }
+        
         // Gacha modal close button
         if (elements.gachaClose) {
             elements.gachaClose.addEventListener('click', () => {
@@ -1578,12 +2211,27 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Close modals on ESC key
+        // Close modals on ESC key and handle crossword input
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 elements.gachaModal.classList.add('hidden');
                 elements.inventoryModal.classList.add('hidden');
                 hideDropRatesModal();
+                return;
+            }
+            
+            // Handle crossword input
+            if (gameState.mode === 'crossword' && !elements.screenGame.classList.contains('hidden')) {
+                if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
+                    e.preventDefault();
+                    handleCrosswordInput(e.key);
+                } else if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    handleCrosswordBackspace();
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    handleCrosswordArrowKey(e.key);
+                }
             }
         });
         
@@ -1814,6 +2462,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function initApp() {
         console.log('🎮 All elements found, setting up app...');
+        
+        // Initialize default game mode
+        switchGameMode('wordle');
         
         setupEventListeners();
         fillSelects();
