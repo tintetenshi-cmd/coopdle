@@ -660,75 +660,95 @@
             margin-bottom: 20px;
             font-size: 0.9rem;
             opacity: 0.9;
+            text-align: center;
         }
         
         .crossword-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 20px;
             width: 100%;
-            max-width: 800px;
-            align-items: flex-start;
+            max-width: 600px;
         }
         
         .crossword-grid {
             display: grid;
-            gap: 2px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 8px;
-            flex-shrink: 0;
+            gap: 3px;
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            will-change: transform;
+            transform: translateZ(0);
         }
         
         .crossword-cell {
-            width: 32px;
-            height: 32px;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-            border-radius: 4px;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(148, 163, 184, 0.3);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.3rem;
+            font-weight: 700;
             text-transform: uppercase;
             color: #e2e8f0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
+            will-change: transform, background-color, border-color;
         }
         
         .crossword-cell.white {
             background: 
-                linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
             color: #1a1a2e;
+            border-color: rgba(148, 163, 184, 0.4);
             box-shadow: 
-                inset 0 1px 2px rgba(0, 0, 0, 0.1),
-                0 1px 3px rgba(0, 0, 0, 0.2);
+                inset 0 1px 3px rgba(0, 0, 0, 0.1),
+                0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .crossword-cell.white:hover {
+            transform: translateY(-1px);
+            box-shadow: 
+                inset 0 1px 3px rgba(0, 0, 0, 0.1),
+                0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
         .crossword-cell.black {
             background: 
-                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%);
-            border-color: rgba(0, 0, 0, 0.5);
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.9) 100%);
+            border-color: rgba(0, 0, 0, 0.7);
             cursor: default;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
         }
         
         .crossword-cell.selected {
             background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%);
+                linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(168, 85, 247, 0.3) 100%);
             border-color: #8b5cf6;
+            color: white;
             box-shadow: 
-                0 0 0 2px rgba(139, 92, 246, 0.4),
-                0 4px 12px rgba(139, 92, 246, 0.3);
+                0 0 0 3px rgba(139, 92, 246, 0.4),
+                0 6px 15px rgba(139, 92, 246, 0.3);
+            transform: scale(1.05);
         }
         
         .crossword-cell.word-highlight {
             background: 
-                linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
             border: 2px solid #8b5cf6;
             color: #1a1a2e;
             box-shadow: 
-                0 0 0 1px rgba(139, 92, 246, 0.3),
-                0 2px 8px rgba(139, 92, 246, 0.2);
+                0 0 0 2px rgba(139, 92, 246, 0.3),
+                0 4px 12px rgba(139, 92, 246, 0.2);
         }
         
         .crossword-cell.correct {
@@ -736,8 +756,8 @@
             border-color: #10b981;
             color: white;
             box-shadow: 
-                0 4px 12px rgba(16, 185, 129, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                0 6px 15px rgba(16, 185, 129, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
         
         .crossword-cell.hint-revealed {
@@ -745,32 +765,70 @@
             border-color: #f59e0b;
             color: white;
             box-shadow: 
-                0 4px 12px rgba(245, 158, 11, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                0 6px 15px rgba(245, 158, 11, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
             animation: hintPulse 2s ease-in-out;
+        }
+        
+        .crossword-cell.disabled {
+            background: 
+                linear-gradient(135deg, rgba(148, 163, 184, 0.3) 0%, rgba(148, 163, 184, 0.2) 100%);
+            color: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
         
         @keyframes hintPulse {
             0%, 100% { 
                 box-shadow: 
-                    0 4px 12px rgba(245, 158, 11, 0.4),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                    0 6px 15px rgba(245, 158, 11, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
             }
             50% { 
                 box-shadow: 
-                    0 8px 25px rgba(245, 158, 11, 0.6),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                    0 10px 25px rgba(245, 158, 11, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.4);
             }
         }
         
         .crossword-cell-number {
             position: absolute;
-            top: 1px;
-            left: 2px;
-            font-size: 0.6rem;
-            font-weight: 500;
+            top: 2px;
+            left: 3px;
+            font-size: 0.65rem;
+            font-weight: 600;
             color: #64748b;
             line-height: 1;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        
+        .crossword-submit {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #9333ea 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 12px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .crossword-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 25px rgba(139, 92, 246, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .crossword-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .crossword-definitions {
@@ -3842,14 +3900,6 @@
                     </select>
                 </div>
 
-                <div class="field-group" id="field-game-mode">
-                    <label>🎮 Mode de jeu</label>
-                    <div class="game-mode-tabs">
-                        <button type="button" id="tab-wordle" class="game-mode-tab active">🔤 Wordle</button>
-                        <button type="button" id="tab-crossword" class="game-mode-tab">🧩 Crossword</button>
-                    </div>
-                </div>
-
                 <div class="field-group" id="field-room-code" style="display: none;">
                     <label for="input-room-code">Code de la room</label>
                     <input id="input-room-code" type="text" placeholder="Code de la room à rejoindre" />
@@ -3925,6 +3975,7 @@
                     </div>
                     <div class="crossword-container">
                         <div id="crossword-grid" class="crossword-grid"></div>
+                        <button id="crossword-submit" class="crossword-submit" disabled>✓ Valider</button>
                     </div>
                     <div id="crossword-error" class="status-message error hidden"></div>
                     <div id="crossword-info-msg" class="status-message info hidden"></div>

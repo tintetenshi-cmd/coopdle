@@ -304,23 +304,29 @@ function broadcastRoomState(room) {
   const payload = {
     type: "state",
     roomId: room.id,
-    length: room.length,
-    guesses: room.guesses,
-    attempts: room.attempts,
-    maxAttempts: room.maxAttempts,
-    status: room.status,
-    currentPlayerId:
-      room.players.length > 0
-        ? room.players[room.currentPlayerIndex % room.players.length]?.id
-        : null,
+    currentPlayerIndex: room.currentPlayerIndex,
     players: room.players.map((p) => ({
       id: p.id,
       pseudo: p.pseudo,
       avatar: p.avatar,
       color: p.color
-    })),
-    revealedLetters: room.revealedLetters
+    }))
   };
+
+  if (room.gameMode === 'crossword') {
+    payload.gameMode = 'crossword';
+    payload.crosswordState = room.crosswordState;
+  } else {
+    payload.length = room.length;
+    payload.guesses = room.guesses;
+    payload.attempts = room.attempts;
+    payload.maxAttempts = room.maxAttempts;
+    payload.status = room.status;
+    payload.currentPlayerId = room.players.length > 0
+      ? room.players[room.currentPlayerIndex % room.players.length]?.id
+      : null;
+    payload.revealedLetters = room.revealedLetters;
+  }
 
   const data = JSON.stringify(payload);
   // Filter out closed connections before broadcasting
@@ -767,6 +773,53 @@ wss.on("connection", (ws) => {
           p.ws.send(payload);
         }
       });
+      return;
+    }
+
+    if (msg.type === "crosswordSubmit") {
+      if (!currentRoomId) return;
+      const room = rooms.get(currentRoomId);
+      if (!room || room.gameMode !== 'crossword') return;
+      
+      // Check if it's the player's turn
+      if (room.players.length > 0 && 
+          room.players[room.currentPlayerIndex % room.players.length]?.id !== clientId) {
+        ws.send(JSON.stringify({
+          type: "error",
+          message: "Ce n'est pas votre tour."
+        }));
+        return;
+      }
+      
+      const { wordId, word, cells } = msg;
+      if (!wordId || !word || !cells) return;
+      
+      // For now, we'll assume the word is correct (in a real implementation, 
+      // you'd validate against a dictionary)
+      const isCorrect = true; // Simplified validation
+      
+      // Broadcast the word submission to all players
+      const payload = JSON.stringify({
+        type: "crosswordWordSubmitted",
+        wordId,
+        word: word.toUpperCase(),
+        cells,
+        correct: isCorrect,
+        playerId: clientId,
+        playerName: room.players.find(p => p.id === clientId)?.pseudo || "Joueur"
+      });
+      
+      room.players.forEach((p) => {
+        if (p.ws.readyState === WebSocket.OPEN) {
+          p.ws.send(payload);
+        }
+      });
+      
+      // Move to next player
+      room.currentPlayerIndex = (room.currentPlayerIndex + 1) % room.players.length;
+      
+      // Broadcast updated game state
+      broadcastRoomState(room);
       return;
     }
 
