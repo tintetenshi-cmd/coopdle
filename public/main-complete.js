@@ -793,6 +793,28 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`💡 Revealed letter ${correctLetter} at position (${row}, ${col})`);
     }
     
+    function showCrosswordError(message) {
+        const errorEl = document.getElementById('crossword-error');
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+            setTimeout(() => {
+                errorEl.classList.add('hidden');
+            }, 4000);
+        }
+    }
+    
+    function showCrosswordInfo(message) {
+        const infoEl = document.getElementById('crossword-info-msg');
+        if (infoEl) {
+            infoEl.textContent = message;
+            infoEl.classList.remove('hidden');
+            setTimeout(() => {
+                infoEl.classList.add('hidden');
+            }, 4000);
+        }
+    }
+    
     function updateSubmitButton() {
         if (!elements.crosswordSubmit || crosswordState.selectedWord === null) return;
         
@@ -819,6 +841,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         elements.crosswordSubmit.disabled = !isComplete;
         elements.crosswordSubmit.textContent = '✓ Valider';
+        
+        // Clear any previous messages when updating
+        const errorEl = document.getElementById('crossword-error');
+        const infoEl = document.getElementById('crossword-info-msg');
+        if (errorEl) errorEl.classList.add('hidden');
+        if (infoEl) infoEl.classList.add('hidden');
     }
     
     function submitCrosswordWord() {
@@ -846,7 +874,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const wordString = wordLetters.join('');
         
         if (wordString.length !== selectedWord.word.length) {
-            showError("Le mot n'est pas complet !");
+            showCrosswordError("Le mot n'est pas complet !");
             return;
         }
         
@@ -880,27 +908,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateCrosswordUI();
                 renderCrosswordDefinitions();
                 
-                showInfo(`Bravo ! Vous avez trouvé "${wordString}" !`);
+                showCrosswordInfo(`🎉 Bravo ! Vous avez trouvé "${wordString}" !`);
                 
                 // Check if all words are found
                 if (crosswordState.foundWords >= crosswordState.totalWords) {
                     showCrosswordResult(true);
                 }
             } else {
-                showError(`"${wordString}" n'est pas le bon mot !`);
+                showCrosswordError(`❌ "${wordString}" n'est pas le bon mot ! Le mot correct est "${selectedWord.word}"`);
                 
-                // Clear the incorrect word
-                cells.forEach(({ row, col }) => {
-                    crosswordState.grid[row][col].letter = '';
-                    const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-                    if (cell) {
-                        const numberEl = cell.querySelector('.crossword-cell-number');
-                        cell.textContent = '';
-                        if (numberEl) {
-                            cell.appendChild(numberEl);
+                // Clear the incorrect word after a delay
+                setTimeout(() => {
+                    cells.forEach(({ row, col }) => {
+                        crosswordState.grid[row][col].letter = '';
+                        const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                        if (cell) {
+                            const numberEl = cell.querySelector('.crossword-cell-number');
+                            cell.textContent = '';
+                            if (numberEl) {
+                                cell.appendChild(numberEl);
+                            }
                         }
-                    }
-                });
+                    });
+                }, 2000); // Wait 2 seconds before clearing
             }
         }
         

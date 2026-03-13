@@ -1028,23 +1028,39 @@
         
         .status-message {
             margin: 12px 0;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 8px;
             text-align: center;
-            font-weight: 500;
-            font-size: 0.85rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            animation: messageSlideIn 0.3s ease-out;
         }
         
         .status-message.error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.5);
+            background: 
+                linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border: 2px solid rgba(239, 68, 68, 0.6);
             color: #fca5a5;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
         
         .status-message.info {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.5);
-            color: #93c5fd;
+            background: 
+                linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 2px solid rgba(16, 185, 129, 0.6);
+            color: #6ee7b7;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        @keyframes messageSlideIn {
+            0% { 
+                transform: translateY(-10px); 
+                opacity: 0; 
+            }
+            100% { 
+                transform: translateY(0); 
+                opacity: 1; 
+            }
         }
         
         /* === MESSAGE DE VICTOIRE INTÉGRÉ === */
