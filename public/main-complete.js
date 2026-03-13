@@ -385,6 +385,27 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="gacha-item-rarity">${item.rarity}</div>
         `;
         
+        // Apply color to the item name and rarity
+        const nameEl = itemEl.querySelector('.gacha-item-name');
+        const rarityEl = itemEl.querySelector('.gacha-item-rarity');
+        
+        if (item.color.includes('gradient')) {
+            // For gradient colors (Exotic and Radiant)
+            nameEl.style.background = item.color;
+            nameEl.style.webkitBackgroundClip = 'text';
+            nameEl.style.webkitTextFillColor = 'transparent';
+            nameEl.style.backgroundClip = 'text';
+            
+            rarityEl.style.background = item.color;
+            rarityEl.style.webkitBackgroundClip = 'text';
+            rarityEl.style.webkitTextFillColor = 'transparent';
+            rarityEl.style.backgroundClip = 'text';
+        } else {
+            // For solid colors
+            nameEl.style.color = item.color;
+            rarityEl.style.color = item.color;
+        }
+        
         return itemEl;
     }
     
@@ -491,7 +512,36 @@ document.addEventListener('DOMContentLoaded', function() {
         resultIcon.style.color = item.color;
         resultName.textContent = item.name;
         resultRarity.textContent = item.rarity;
-        resultRarity.style.color = item.color;
+        
+        // Apply color to both name and rarity
+        if (item.color.includes('gradient')) {
+            // For gradient colors (Exotic and Radiant)
+            resultName.style.background = item.color;
+            resultName.style.webkitBackgroundClip = 'text';
+            resultName.style.webkitTextFillColor = 'transparent';
+            resultName.style.backgroundClip = 'text';
+            resultName.style.color = 'transparent';
+            
+            resultRarity.style.background = item.color;
+            resultRarity.style.webkitBackgroundClip = 'text';
+            resultRarity.style.webkitTextFillColor = 'transparent';
+            resultRarity.style.backgroundClip = 'text';
+            resultRarity.style.color = 'transparent';
+        } else {
+            // For solid colors
+            resultName.style.color = item.color;
+            resultName.style.background = 'none';
+            resultName.style.webkitBackgroundClip = 'initial';
+            resultName.style.webkitTextFillColor = 'initial';
+            resultName.style.backgroundClip = 'initial';
+            
+            resultRarity.style.color = item.color;
+            resultRarity.style.background = 'none';
+            resultRarity.style.webkitBackgroundClip = 'initial';
+            resultRarity.style.webkitTextFillColor = 'initial';
+            resultRarity.style.backgroundClip = 'initial';
+        }
+        
         resultValue.textContent = `${item.price}$`;
         
         elements.gachaResult.classList.remove('hidden');
