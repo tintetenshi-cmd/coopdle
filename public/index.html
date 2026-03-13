@@ -1212,7 +1212,22 @@
         .definition-item-sidebar.completed {
             background: 
                 linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-            border-color: rgba(16, 185, 129, 0.4);
+            border: 1px solid rgba(16, 185, 129, 0.6);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+        
+        .definition-item-sidebar.completed::before {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .definition-item-sidebar {
+            position: relative;
         }
         
         .definition-header-sidebar {

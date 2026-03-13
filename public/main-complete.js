@@ -829,6 +829,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get the word letters
         const wordLetters = [];
+        const cells = [];
         for (let i = 0; i < selectedWord.length; i++) {
             let cellRow, cellCol;
             if (selectedWord.direction === 'horizontal') {
@@ -839,6 +840,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 cellCol = selectedWord.col;
             }
             wordLetters.push(crosswordState.grid[cellRow][cellCol].letter || '');
+            cells.push({ row: cellRow, col: cellCol });
         }
         
         const wordString = wordLetters.join('');
@@ -849,40 +851,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Check if the word is correct
-        if (wordString === selectedWord.word) {
-            // Mark word as found
-            selectedWord.found = true;
-            crosswordState.foundWords++;
-            
-            // Mark cells as correct
-            for (let i = 0; i < selectedWord.length; i++) {
-                let cellRow, cellCol;
-                if (selectedWord.direction === 'horizontal') {
-                    cellRow = selectedWord.row;
-                    cellCol = selectedWord.col + i;
-                } else {
-                    cellRow = selectedWord.row + i;
-                    cellCol = selectedWord.col;
-                }
-                
-                const cell = document.querySelector(`[data-row="${cellRow}"][data-col="${cellCol}"]`);
-                if (cell) {
-                    cell.classList.add('correct');
-                }
-            }
-            
-            // Update UI
-            updateCrosswordUI();
-            renderCrosswordDefinitions();
-            
-            showInfo(`Bravo ! Vous avez trouvé "${wordString}" !`);
-            
-            // Check if all words are found
-            if (crosswordState.foundWords >= crosswordState.totalWords) {
-                showCrosswordResult(true);
-            }
+        const isCorrect = wordString === selectedWord.word;
+        
+        if (currentMode === 'coop' && ws && ws.readyState === WebSocket.OPEN) {
+            // Send to server for multiplayer
+            ws.send(JSON.stringify({
+                type: 'crosswordSubmit',
+                wordId: crosswordState.selectedWord,
+                word: wordString,
+                cells: cells
+            }));
         } else {
-            showError(`"${wordString}" n'est pas le bon mot !`);
+            // Handle solo mode directly
+            if (isCorrect) {
+                // Mark word as found
+                selectedWord.found = true;
+                crosswordState.foundWords++;
+                
+                // Mark cells as correct
+                cells.forEach(({ row, col }) => {
+                    const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    if (cell) {
+                        cell.classList.add('correct');
+                    }
+                });
+                
+                // Update UI
+                updateCrosswordUI();
+                renderCrosswordDefinitions();
+                
+                showInfo(`Bravo ! Vous avez trouvé "${wordString}" !`);
+                
+                // Check if all words are found
+                if (crosswordState.foundWords >= crosswordState.totalWords) {
+                    showCrosswordResult(true);
+                }
+            } else {
+                showError(`"${wordString}" n'est pas le bon mot !`);
+                
+                // Clear the incorrect word
+                cells.forEach(({ row, col }) => {
+                    crosswordState.grid[row][col].letter = '';
+                    const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    if (cell) {
+                        const numberEl = cell.querySelector('.crossword-cell-number');
+                        cell.textContent = '';
+                        if (numberEl) {
+                            cell.appendChild(numberEl);
+                        }
+                    }
+                });
+            }
         }
         
         // Clear selection
@@ -1920,6 +1939,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Handle crossword mode
                 if (data.gameMode === 'crossword') {
                     gameState.mode = 'crossword';
+                    gameState.players = data.players || [];
                     crosswordState.totalWords = data.crosswordWords || 5;
                     
                     // Start crossword game with server data
@@ -1954,13 +1974,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     gameState.players = data.players || [];
                     gameState.currentPlayerIndex = data.currentPlayerIndex || 0;
-                    
-                    // Enable/disable grid based on turn
-                    if (isPlayerTurn()) {
-                        enableCrosswordGrid();
-                    } else {
-                        disableCrosswordGrid();
-                    }
                     
                     updatePlayersList();
                 } else {
@@ -2060,9 +2073,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     showError(`Le mot "${data.word}" n'est pas correct !`);
                 }
-                
-                // Enable grid for next player
-                enableCrosswordGrid();
                 break;
                 
             case 'chat':
