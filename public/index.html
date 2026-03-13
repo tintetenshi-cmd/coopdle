@@ -1577,53 +1577,46 @@
             color: #FFD700;
         }
         
-        /* === BOUTON PROBABILITÉS === */
-        .drop-rates-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 60px;
-            height: 60px;
+        /* === BOUTON PROBABILITÉS INLINE === */
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        
+        .drop-rates-btn-inline {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: 
                 linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%),
                 rgba(10, 10, 15, 0.9);
-            border: 2px solid;
-            border-image: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) 1;
+            border: 1px solid rgba(139, 92, 246, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: float 3s ease-in-out infinite, pulse-glow 2s ease-in-out infinite;
-            z-index: 10;
             backdrop-filter: blur(10px);
+            flex-shrink: 0;
         }
         
-        .drop-rates-btn:hover {
-            transform: scale(1.1) rotate(360deg);
-            animation: float 3s ease-in-out infinite, pulse-glow 1s ease-in-out infinite;
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { 
-                box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-                border-image: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) 1;
-            }
-            50% { 
-                box-shadow: 0 0 40px rgba(255, 0, 0, 0.6), 0 0 60px rgba(255, 127, 0, 0.4);
-                border-image: linear-gradient(45deg, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000) 1;
-            }
-        }
-        
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(0px) rotate(0deg);
-            }
-            50% { 
-                transform: translateY(-5px) rotate(180deg);
-            }
+        .drop-rates-btn-inline:hover {
+            transform: scale(1.1);
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%),
+                rgba(10, 10, 15, 0.95);
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
         
         /* === MODAL PROBABILITÉS === */
@@ -1655,17 +1648,18 @@
                 rgba(10, 10, 15, 0.95);
             border: 2px solid rgba(139, 92, 246, 0.4);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             max-width: 90vw;
             max-height: 90vh;
-            width: 600px;
-            height: 700px;
+            width: 500px;
+            height: auto;
+            min-height: 400px;
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.8),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
             position: relative;
-            overflow: hidden;
+            overflow-y: auto;
             transform: scale(0.8) translateY(50px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -1676,24 +1670,24 @@
         
         .drop-rates-modal-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             position: relative;
         }
         
         .drop-rates-modal-header h2 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #c084fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
         }
         
         .drop-rates-modal-subtitle {
             color: #94a3b8;
-            font-size: 1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
         }
         
@@ -1722,65 +1716,11 @@
             box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
         }
         
-        /* === GRAPHIQUE CAMEMBERT === */
-        .drop-rates-chart {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 30px;
-            border-radius: 50%;
-            position: relative;
-            background: conic-gradient(
-                #808080 0% 30%,
-                #00FF00 30% 55%,
-                #0080FF 55% 73%,
-                #AA00FF 73% 85%,
-                #FFAA00 85% 92%,
-                #FF0000 92% 96%,
-                #00FFFF 96% 98.5%,
-                #FFD700 98.5% 100%
-            );
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.5),
-                inset 0 0 0 10px rgba(10, 10, 15, 0.3);
-            animation: chartSpin 10s linear infinite;
-        }
-        
-        .drop-rates-chart::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: 
-                linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%),
-                rgba(10, 10, 15, 0.95);
-            border-radius: 50%;
-            border: 2px solid rgba(139, 92, 246, 0.4);
-            backdrop-filter: blur(10px);
-        }
-        
-        .drop-rates-chart::after {
-            content: '🎰';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            z-index: 1;
-        }
-        
-        @keyframes chartSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
         /* === TABLEAU PROBABILITÉS === */
         .drop-rates-table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 8px;
+            border-spacing: 0 6px;
         }
         
         .drop-rates-row {
@@ -1802,36 +1742,37 @@
         }
         
         .drop-rates-row td {
-            padding: 12px 15px;
+            padding: 15px 12px;
             border: none;
             vertical-align: middle;
+            font-size: 0.9rem;
         }
         
         .rarity-icon {
-            font-size: 1.2rem;
-            width: 30px;
+            font-size: 1.3rem;
+            width: 35px;
             text-align: center;
         }
         
         .rarity-name {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #e2e8f0;
-            min-width: 80px;
+            min-width: 90px;
         }
         
         .rarity-percent {
             font-weight: 700;
-            font-size: 1rem;
-            min-width: 50px;
+            font-size: 1.1rem;
+            min-width: 60px;
             text-align: right;
         }
         
         .rarity-bar-container {
-            width: 200px;
-            height: 20px;
+            width: 150px;
+            height: 24px;
             background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1839,7 +1780,7 @@
         
         .rarity-bar {
             height: 100%;
-            border-radius: 10px;
+            border-radius: 12px;
             transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -1859,9 +1800,9 @@
         
         .rarity-price {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #10b981;
-            min-width: 60px;
+            min-width: 70px;
             text-align: right;
         }
         
@@ -3110,54 +3051,52 @@
             }
             
             /* Bouton probabilités mobile */
-            .drop-rates-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-                top: 5px;
-                right: 5px;
+            .drop-rates-btn-inline {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
             }
             
             .drop-rates-modal-content {
                 width: calc(100vw - 20px);
-                height: calc(100vh - 40px);
+                height: auto;
+                max-height: calc(100vh - 40px);
                 padding: 20px;
                 max-width: none;
-                max-height: none;
             }
             
             .drop-rates-modal-header h2 {
-                font-size: 1.4rem;
-            }
-            
-            .drop-rates-chart {
-                width: 150px;
-                height: 150px;
-                margin-bottom: 20px;
-            }
-            
-            .drop-rates-chart::before {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .drop-rates-chart::after {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
             
             .drop-rates-row td {
-                padding: 8px 10px;
+                padding: 12px 8px;
                 font-size: 0.8rem;
             }
             
             .rarity-bar-container {
-                width: 120px;
-                height: 16px;
+                width: 100px;
+                height: 20px;
             }
             
             .rarity-icon {
-                font-size: 1rem;
-                width: 25px;
+                font-size: 1.1rem;
+                width: 30px;
+            }
+            
+            .rarity-name {
+                font-size: 0.85rem;
+                min-width: 70px;
+            }
+            
+            .rarity-percent {
+                font-size: 0.9rem;
+                min-width: 45px;
+            }
+            
+            .rarity-price {
+                font-size: 0.85rem;
+                min-width: 50px;
             }
             
             /* Modales mobile - PLUS HAUTES ET MIEUX VISIBLES */
@@ -3494,11 +3433,11 @@
                     
                     <!-- Section Gacha (40% du bas) -->
                     <div class="gacha-section">
-                        <div class="panel-title">📦 Gacha</div>
+                        <div class="panel-title">
+                            📦 Gacha
+                            <button id="btn-drop-rates" class="drop-rates-btn-inline" title="Voir les probabilités de drop">📊</button>
+                        </div>
                         <div class="gacha-panel-compact">
-                            <!-- Bouton probabilités -->
-                            <button id="btn-drop-rates" class="drop-rates-btn" title="Voir les probabilités de drop">📊</button>
-                            
                             <div class="gacha-stats">
                                 <div class="gacha-money">💰 <span id="gacha-money">0</span>$</div>
                                 <div class="gacha-items">📦 <span id="gacha-total-items">0</span> items</div>
@@ -3578,8 +3517,6 @@
                         <p class="drop-rates-modal-subtitle">Chances de drop par rareté</p>
                         <button id="drop-rates-close" class="drop-rates-close">&times;</button>
                     </div>
-                    
-                    <div class="drop-rates-chart" id="drop-rates-chart"></div>
                     
                     <table class="drop-rates-table">
                         <tbody id="drop-rates-table-body">
