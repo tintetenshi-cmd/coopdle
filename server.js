@@ -262,20 +262,31 @@ function pickRandomWord(lengthOverride) {
 /** rooms: roomId -> { word, length, attempts, guesses, maxAttempts, players, currentPlayerIndex, status, revealedLetters } */
 const rooms = new Map();
 
-function createOrResetRoom(roomId, lengthOverride) {
-  const word = pickRandomWord(lengthOverride);
+function createOrResetRoom(roomId, lengthOverride, gameMode = 'wordle', crosswordWords = 5) {
   const room = {
     id: roomId,
-    word,
-    length: word.length,
-    attempts: 0,
-    maxAttempts: MAX_ATTEMPTS,
-    guesses: [],
+    gameMode: gameMode,
     players: [],
     currentPlayerIndex: 0,
-    status: "playing", // "playing" | "won" | "lost"
-    revealedLetters: Array(word.length).fill(null)
+    status: "playing" // "playing" | "won" | "lost"
   };
+
+  if (gameMode === 'crossword') {
+    room.crosswordWords = crosswordWords;
+    room.crosswordState = {
+      foundWords: 0,
+      totalWords: crosswordWords
+    };
+  } else {
+    const word = pickRandomWord(lengthOverride);
+    room.word = word;
+    room.length = word.length;
+    room.attempts = 0;
+    room.maxAttempts = MAX_ATTEMPTS;
+    room.guesses = [];
+    room.revealedLetters = Array(word.length).fill(null);
+  }
+
   rooms.set(roomId, room);
   return room;
 }
@@ -516,7 +527,7 @@ wss.on("connection", (ws) => {
     }
 
     if (msg.type === "join") {
-      const { roomId, pseudo, desiredLength, avatar, colorId } = msg;
+      const { roomId, pseudo, desiredLength, avatar, colorId, gameMode, crosswordWords } = msg;
       if (!roomId || typeof pseudo !== "string" || !pseudo.trim()) return;
 
       currentRoomId = roomId;
@@ -525,7 +536,7 @@ wss.on("connection", (ws) => {
         const lengthOverride = Number.isFinite(desiredLength)
           ? desiredLength
           : undefined;
-        room = createOrResetRoom(roomId, lengthOverride);
+        room = createOrResetRoom(roomId, lengthOverride, gameMode, crosswordWords);
       }
 
       if (!room.players.find((p) => p.id === clientId)) {
@@ -546,22 +557,34 @@ wss.on("connection", (ws) => {
         });
       }
 
-      ws.send(
-        JSON.stringify({
-          type: "joined",
-          roomId: room.id,
-          playerId: clientId,
-          length: room.length,
-          maxAttempts: room.maxAttempts,
-          revealedLetters: room.revealedLetters || Array(room.length).fill(null),
-          players: room.players.map((p) => ({
-            id: p.id,
-            pseudo: p.pseudo,
-            avatar: p.avatar,
-            color: p.color
-          }))
-        })
-      );
+      const joinedPayload = {
+        type: "joined",
+        roomId: room.id,
+        playerId: clientId,
+        gameMode: room.gameMode || 'wordle'
+      };
+
+      if (room.gameMode === 'crossword') {
+        joinedPayload.crosswordWords = room.crosswordWords || 5;
+        joinedPayload.players = room.players.map((p) => ({
+          id: p.id,
+          pseudo: p.pseudo,
+          avatar: p.avatar,
+          color: p.color
+        }));
+      } else {
+        joinedPayload.length = room.length;
+        joinedPayload.maxAttempts = room.maxAttempts;
+        joinedPayload.revealedLetters = room.revealedLetters || Array(room.length).fill(null);
+        joinedPayload.players = room.players.map((p) => ({
+          id: p.id,
+          pseudo: p.pseudo,
+          avatar: p.avatar,
+          color: p.color
+        }));
+      }
+
+      ws.send(JSON.stringify(joinedPayload));
       
       // Send system message to all players when someone joins
       const systemMessages = [
@@ -583,7 +606,7 @@ wss.on("connection", (ws) => {
       ];
       
       const randomMessage = systemMessages[Math.floor(Math.random() * systemMessages.length)];
-      const joinMessage = `${pseudo.trim().slice(0, 16)} a rejoint la partie ! ${randomMessage}`;
+      const joinMessage = `${pseudo.trim().slice(0, 16)} a rejoint la partie ${room.gameMode === 'crossword' ? 'Crossword' : 'Wordle'} ! ${randomMessage}`;
       
       const systemPayload = JSON.stringify({
         type: "systemMessage",
@@ -715,6 +738,32 @@ wss.on("connection", (ws) => {
       
       room.players.forEach((p) => {
         if (p.ws.readyState === WebSocket.OPEN) {
+          p.ws.send(payload);
+        }
+      });
+      return;
+    }
+
+    if (msg.type === "crosswordInput") {
+      if (!currentRoomId) return;
+      const room = rooms.get(currentRoomId);
+      if (!room || room.gameMode !== 'crossword') return;
+      
+      const { row, col, letter, wordId } = msg;
+      if (typeof row !== 'number' || typeof col !== 'number' || typeof letter !== 'string') return;
+      
+      // Broadcast the crossword input to all other players
+      const payload = JSON.stringify({
+        type: "crosswordInput",
+        row,
+        col,
+        letter: letter.toUpperCase(),
+        wordId,
+        from: clientId
+      });
+      
+      room.players.forEach((p) => {
+        if (p.ws.readyState === WebSocket.OPEN && p.id !== clientId) {
           p.ws.send(payload);
         }
       });

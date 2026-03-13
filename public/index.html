@@ -723,8 +723,12 @@
         
         .crossword-cell.word-highlight {
             background: 
-                linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
-            border-color: rgba(245, 158, 11, 0.4);
+                linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 2px solid #8b5cf6;
+            color: #1a1a2e;
+            box-shadow: 
+                0 0 0 1px rgba(139, 92, 246, 0.3),
+                0 2px 8px rgba(139, 92, 246, 0.2);
         }
         
         .crossword-cell.correct {
@@ -3780,6 +3784,14 @@
                 <h2 id="mode-title">Choix du mode</h2>
                 <p id="mode-description">Choisissez votre mode de jeu et personnalisez votre profil</p>
 
+                <div class="field-group" id="field-game-mode">
+                    <label>🎮 Mode de jeu</label>
+                    <div class="game-mode-tabs">
+                        <button type="button" id="tab-wordle" class="game-mode-tab active">🔤 Wordle</button>
+                        <button type="button" id="tab-crossword" class="game-mode-tab">🧩 Crossword</button>
+                    </div>
+                </div>
+
                 <div class="field-group">
                     <label for="input-pseudo">👤 Votre pseudo</label>
                     <input id="input-pseudo" type="text" maxlength="16" placeholder="Entrez votre pseudo" />
@@ -3833,7 +3845,7 @@
                 <div class="field-group" id="field-game-mode">
                     <label>🎮 Mode de jeu</label>
                     <div class="game-mode-tabs">
-                        <button type="button" id="tab-wordle" class="game-mode-tab active">🎯 Wordle</button>
+                        <button type="button" id="tab-wordle" class="game-mode-tab active">🔤 Wordle</button>
                         <button type="button" id="tab-crossword" class="game-mode-tab">🧩 Crossword</button>
                     </div>
                 </div>
@@ -3913,12 +3925,6 @@
                     </div>
                     <div class="crossword-container">
                         <div id="crossword-grid" class="crossword-grid"></div>
-                        <div class="crossword-definitions">
-                            <div class="definitions-section">
-                                <h4>📍 Définitions</h4>
-                                <div id="crossword-definitions-list" class="definitions-list"></div>
-                            </div>
-                        </div>
                     </div>
                     <div id="crossword-error" class="status-message error hidden"></div>
                     <div id="crossword-info-msg" class="status-message info hidden"></div>

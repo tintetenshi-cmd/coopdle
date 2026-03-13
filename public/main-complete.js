@@ -969,35 +969,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function renderCrosswordDefinitions() {
-        // Render in main crossword panel
-        if (elements.crosswordDefinitionsList) {
-            elements.crosswordDefinitionsList.innerHTML = '';
-            
-            crosswordState.definitions.forEach(def => {
-                const defEl = document.createElement('div');
-                defEl.className = 'definition-item';
-                defEl.dataset.wordId = def.id;
-                
-                const word = crosswordState.words.find(w => w.id === def.id);
-                if (word && word.found) {
-                    defEl.classList.add('completed');
-                }
-                
-                defEl.innerHTML = `
-                    <div class="definition-header">
-                        <span class="definition-number">${def.number}</span>
-                        <span class="definition-direction">${def.direction}</span>
-                    </div>
-                    <div class="definition-text">${def.definition}</div>
-                    <div class="definition-progress">${word ? word.word.length : 0} lettres</div>
-                `;
-                
-                defEl.addEventListener('click', () => selectCrosswordWord(def.id));
-                elements.crosswordDefinitionsList.appendChild(defEl);
-            });
-        }
-        
-        // Render in sidebar
+        // Render only in sidebar
         if (elements.crosswordDefinitionsSidebar) {
             elements.crosswordDefinitionsSidebar.innerHTML = '';
             
@@ -1057,7 +1029,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.crossword-cell').forEach(cell => {
             cell.classList.remove('word-highlight');
         });
-        document.querySelectorAll('.definition-item, .definition-item-sidebar').forEach(def => {
+        document.querySelectorAll('.definition-item-sidebar').forEach(def => {
             def.classList.remove('active');
         });
         
@@ -1083,12 +1055,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Highlight definition in both main panel and sidebar
-        const defEl = document.querySelector(`[data-word-id="${wordId}"]`);
-        if (defEl) {
-            defEl.classList.add('active');
-        }
-        
+        // Highlight definition in sidebar only
         const sidebarDefEl = elements.crosswordDefinitionsSidebar?.querySelector(`[data-word-id="${wordId}"]`);
         if (sidebarDefEl) {
             sidebarDefEl.classList.add('active');
@@ -1222,6 +1189,17 @@ document.addEventListener('DOMContentLoaded', function() {
             cell.textContent = letter.toUpperCase();
             if (numberEl) {
                 cell.appendChild(numberEl); // Re-add number if it exists
+            }
+            
+            // Send network message for multiplayer sync
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'crosswordInput',
+                    row: row,
+                    col: col,
+                    letter: letter.toUpperCase(),
+                    wordId: crosswordState.selectedWord
+                }));
             }
             
             // Move to next cell in the selected word
@@ -1860,45 +1838,94 @@ document.addEventListener('DOMContentLoaded', function() {
         switch (data.type) {
             case 'joined':
                 playerId = data.playerId;
-                gameState.length = data.length;
-                gameState.maxAttempts = data.maxAttempts;
-                gameState.revealedLetters = data.revealedLetters || [];
-                gameState.players = data.players || [];
                 
-                if (elements.wordLength) elements.wordLength.textContent = gameState.length;
-                if (elements.maxAttempts) elements.maxAttempts.textContent = gameState.maxAttempts;
-                
-                createBoard();
-                updatePlayersList();
-                showInfo('Connecté à la partie !');
+                // Handle crossword mode
+                if (data.gameMode === 'crossword') {
+                    gameState.mode = 'crossword';
+                    crosswordState.totalWords = data.crosswordWords || 5;
+                    
+                    // Start crossword game with server data
+                    startCrosswordGame(crosswordState.totalWords);
+                    
+                    updatePlayersList();
+                    showInfo('Connecté à la partie Crossword !');
+                } else {
+                    // Original Wordle logic
+                    gameState.length = data.length;
+                    gameState.maxAttempts = data.maxAttempts;
+                    gameState.revealedLetters = data.revealedLetters || [];
+                    gameState.players = data.players || [];
+                    
+                    if (elements.wordLength) elements.wordLength.textContent = gameState.length;
+                    if (elements.maxAttempts) elements.maxAttempts.textContent = gameState.maxAttempts;
+                    
+                    createBoard();
+                    updatePlayersList();
+                    showInfo('Connecté à la partie !');
+                }
                 break;
                 
             case 'state':
-                const previousAttempts = gameState.attempts || 0;
-                
-                gameState.length = data.length;
-                gameState.guesses = data.guesses || [];
-                gameState.attempts = data.attempts || 0;
-                gameState.maxAttempts = data.maxAttempts || 6;
-                gameState.status = data.status || 'playing';
-                gameState.currentPlayerId = data.currentPlayerId;
-                gameState.players = data.players || [];
-                gameState.revealedLetters = data.revealedLetters || [];
-                
-                // Award money for valid guess attempts (only if attempts increased)
-                if (gameState.attempts > previousAttempts && gameState.status === 'playing') {
-                    const moneyReward = 10; // Small reward for each valid guess
-                    gachaSystem.money += moneyReward;
-                    saveGachaSystem();
-                    updateGachaUI();
+                if (gameState.mode === 'crossword') {
+                    // Handle crossword state updates
+                    if (data.crosswordState) {
+                        crosswordState = { ...crosswordState, ...data.crosswordState };
+                        renderCrosswordGrid();
+                        renderCrosswordDefinitions();
+                        updateCrosswordUI();
+                    }
+                    gameState.players = data.players || [];
+                    updatePlayersList();
+                } else {
+                    // Original Wordle logic
+                    const previousAttempts = gameState.attempts || 0;
+                    
+                    gameState.length = data.length;
+                    gameState.guesses = data.guesses || [];
+                    gameState.attempts = data.attempts || 0;
+                    gameState.maxAttempts = data.maxAttempts || 6;
+                    gameState.status = data.status || 'playing';
+                    gameState.currentPlayerId = data.currentPlayerId;
+                    gameState.players = data.players || [];
+                    gameState.revealedLetters = data.revealedLetters || [];
+                    
+                    // Award money for valid guess attempts (only if attempts increased)
+                    if (gameState.attempts > previousAttempts && gameState.status === 'playing') {
+                        const moneyReward = 10; // Small reward for each valid guess
+                        gachaSystem.money += moneyReward;
+                        saveGachaSystem();
+                        updateGachaUI();
+                    }
+                    
+                    if (elements.attempts) elements.attempts.textContent = gameState.attempts;
+                    if (elements.wordLength) elements.wordLength.textContent = gameState.length;
+                    
+                    updateBoard();
+                    updatePlayersList();
+                    updateCurrentPlayerStatus();
                 }
+                break;
                 
-                if (elements.attempts) elements.attempts.textContent = gameState.attempts;
-                if (elements.wordLength) elements.wordLength.textContent = gameState.length;
-                
-                updateBoard();
-                updatePlayersList();
-                updateCurrentPlayerStatus();
+            case 'crosswordInput':
+                // Handle crossword input from other players
+                if (data.row !== undefined && data.col !== undefined) {
+                    crosswordState.grid[data.row][data.col].letter = data.letter;
+                    const cell = document.querySelector(`[data-row="${data.row}"][data-col="${data.col}"]`);
+                    if (cell) {
+                        const numberEl = cell.querySelector('.crossword-cell-number');
+                        cell.textContent = data.letter;
+                        if (numberEl) {
+                            cell.appendChild(numberEl);
+                        }
+                    }
+                    
+                    // Check if any words are complete
+                    crosswordState.words.forEach(word => {
+                        if (!word.found) {
+                            checkCrosswordWord(word.id);
+                        }
+                    });
+                }
                 break;
                 
             case 'chat':
@@ -2054,35 +2081,25 @@ document.addEventListener('DOMContentLoaded', function() {
         clearChat();
         hideGameResult();
         
-        // Handle crossword mode
-        if (gameMode === 'crossword') {
-            // Start crossword game directly (no server communication for now)
-            startCrosswordGame(crosswordWords);
-            
-            if (elements.badgeMode) elements.badgeMode.textContent = `Mode ${mode === 'solo' ? 'Solo' : 'Coop'} - Crossword`;
-            if (elements.badgeRoom) elements.badgeRoom.textContent = `Room: ${roomId}`;
-            
-            setupGameLayout(mode);
-            showScreen(elements.screenGame);
-            return;
-        }
-        
-        // Original Wordle logic
+        // Send join message with game mode information
         ws.send(JSON.stringify({
             type: 'join',
             roomId: roomId,
             pseudo: pseudo,
-            desiredLength: desiredLength === 0 ? undefined : desiredLength,
+            gameMode: gameMode, // Add game mode to the message
+            desiredLength: gameMode === 'wordle' ? (desiredLength === 0 ? undefined : desiredLength) : undefined,
+            crosswordWords: gameMode === 'crossword' ? crosswordWords : undefined,
             avatar: avatar === 'random' ? undefined : avatar,
             colorId: colorId === 'random' ? undefined : colorId
         }));
         
-        if (elements.badgeMode) elements.badgeMode.textContent = mode === 'solo' ? 'Mode Solo' : 'Mode Coop';
+        const modeText = gameMode === 'crossword' ? 'Crossword' : 'Wordle';
+        if (elements.badgeMode) elements.badgeMode.textContent = `Mode ${mode === 'solo' ? 'Solo' : 'Coop'} - ${modeText}`;
         if (elements.badgeRoom) elements.badgeRoom.textContent = `Room: ${roomId}`;
         
         setupGameLayout(mode);
         showScreen(elements.screenGame);
-        showGameBoard('wordle');
+        showGameBoard(gameMode);
         
         // Update URL for coop mode
         if (mode === 'coop') {
